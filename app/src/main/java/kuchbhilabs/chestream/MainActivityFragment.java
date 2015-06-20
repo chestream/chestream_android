@@ -35,7 +35,7 @@ public class MainActivityFragment extends Fragment {
 
     private static final String COMPRESS_CMD = "-y -i %s -strict " +
             "experimental -vcodec libx264 -preset ultrafast -crf 24 -acodec aac -ar 44100 -ac 2 " +
-            "-b:a 96k -s 320x240 -aspect 4:3 %s";
+            "-b:a 96k -s 480x270 %s";
 
     private static final String TAG = "CHESTREAM";
 
