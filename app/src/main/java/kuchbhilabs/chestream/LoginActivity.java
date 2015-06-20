@@ -4,23 +4,25 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
-
-import java.io.IOException;
+import android.widget.VideoView;
 
 public class LoginActivity extends Activity implements SurfaceHolder.Callback {
-
+/*
     private MediaPlayer mediaPlayer;
     SurfaceView surfaceView;
-    SurfaceHolder surfaceHolder;
+    SurfaceHolder surfaceHolder; */
     Button skip;
+
+    private boolean isMediaPlayerInitialized = false;
+    private boolean isSurfaceCreated = false;
+    private boolean videoStarted = false;
+
+    private String URL;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -28,21 +30,28 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
         setContentView(R.layout.activity_login);
 
         skip = (Button) findViewById(R.id.btn_skip);
+        /*
         surfaceView = (SurfaceView) findViewById(R.id.login_surface_view);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
 
         //TODO: Make it work to load from the assets directory
-        mediaPlayer = new MediaPlayer();
-        String UrlPath="android.resource://"+getPackageName()+"/"+R.raw.vid4;
+        mediaPlayer = new MediaPlayer(); */
+        URL = "android.resource://"+getPackageName()+"/"+R.raw.vid4b;
+        VideoView videoView = (VideoView) findViewById(R.id.login_video_view);
+        videoView.setVideoURI(Uri.parse(URL));
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setVolume(0, 0);
+            }
+        });
+        videoView.start();
 //        File sdcard = Environment.getExternalStorageDirectory();
 //        File videoFile = new File(sdcard, "video.mp4");
-        try {
-            mediaPlayer.setDataSource(this, Uri.parse(UrlPath));
-            mediaPlayer.setLooping(true);
-            mediaPlayer.setVolume(0, 0);
-        } catch (IOException e) {
-            e.printStackTrace();
+        isMediaPlayerInitialized = true;
+        if (isSurfaceCreated) {
+//            startMediaPlayer();
         }
 
         skip.setOnClickListener(new View.OnClickListener() {
@@ -57,13 +66,9 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-
-        try {
-            mediaPlayer.setDisplay(surfaceHolder);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
+        isSurfaceCreated = true;
+        if (isMediaPlayerInitialized) {
+//            startMediaPlayer();
         }
     }
 
@@ -74,28 +79,43 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        /*
+        mediaPlayer.stop();
         mediaPlayer.release();
+        mediaPlayer = null;*/
     }
-
-
 /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void startMediaPlayer() {
+        synchronized (this) {
+            if (!videoStarted) {
+                try {
+                    mediaPlayer.setDataSource(this, Uri.parse(URL));
+                    mediaPlayer.setLooping(false);
+                    mediaPlayer.setVolume(0, 0);
+
+                    mediaPlayer.setDisplay(surfaceHolder);
+                    mediaPlayer.prepareAsync();
+
+                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            mp.start();
+                            videoStarted = true;
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return super.onOptionsItemSelected(item);
     }
-    */
+
+    @Override
+    public void onPause() {
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = null;
+        super.onPause();
+    } */
 }
+

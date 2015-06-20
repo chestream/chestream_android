@@ -62,7 +62,7 @@ public class CompressionUploadService extends Service {
         INPUT_VIDEO = intent.getStringExtra("path");
 
         Notification.Builder mBuilder = new Notification.Builder(this)
-                .setContentTitle("Video")
+                .setContentTitle("Chestream")
                 .setContentText("Upload in progress")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setProgress(0, 0, true);
