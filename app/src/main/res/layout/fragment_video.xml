@@ -1,22 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#009688">
 
-    <Button
-        android:id="@+id/button_upload"
+<kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    sothree:panelHeight="30dp"
+    sothree:shadowHeight="0dp"
+    sothree:dragViewClickable="false">
+
+    <FrameLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Compress and Upload"
-        android:layout_centerVertical="true" />
+        android:layout_height="match_parent"
+        android:background="#009688">
+
+        <SurfaceView
+            android:id="@+id/main_surface_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!--
+        <VideoView
+            android:id="@+id/main_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical" />
+-->
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/comments"
+        android:background="#66000000"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_gravity="bottom"
-        >
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"></FrameLayout>
 
-</FrameLayout>
+
+</kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout>

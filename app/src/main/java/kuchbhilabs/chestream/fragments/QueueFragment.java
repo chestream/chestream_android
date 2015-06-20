@@ -4,42 +4,29 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.QueueVideos;
 import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.VolleySingleton;
+import kuchbhilabs.chestream.helpers.CircularRevealView;
+import kuchbhilabs.chestream.helpers.Helper;
 
 /**
  * Created by naman on 20/06/15.
@@ -52,11 +39,11 @@ public class QueueFragment extends Fragment {
     private LinearLayoutManager llm;
     private ArrayList<QueueVideos> queueVideos;
     private FloatingActionButton upload;
-
     public static final String BASE_URL = "https://api-eu.clusterpoint.com/1104/chestream/video_1234132";
     ArrayList<QueueVideos> entries = new ArrayList<QueueVideos>();
-
-
+    private CircularRevealView revealView;
+    private View selectedView;
+    android.os.Handler handler;
 
     public QueueFragment() {
         // Required empty public constructor
@@ -67,13 +54,38 @@ public class QueueFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_queue, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+
+        revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
+
         upload = (FloatingActionButton) rootView.findViewById(R.id.upload);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                 if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivityForResult(takeVideoIntent, 1);
+                    final int color = Color.parseColor("#00bcd4");
+                    final Point p = Helper.getLocationInView(revealView, view);
+
+                    revealView.reveal(p.x, p.y, color, view.getHeight() / 2, 440, null);
+                    selectedView = view;
+
+                    handler=new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            startActivityForResult(takeVideoIntent, 1);
+
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    revealView.hide(p.x, p.y, android.R.color.transparent, 0, 330, null);
+                                }
+                            }, 300);
+
+                        }
+                    }, 500);
+
                 }
             }
         });
