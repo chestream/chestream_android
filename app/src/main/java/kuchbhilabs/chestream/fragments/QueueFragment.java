@@ -13,18 +13,31 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.QueueVideos;
 import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.VolleySingleton;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
 
@@ -39,11 +52,11 @@ public class QueueFragment extends Fragment {
     private LinearLayoutManager llm;
     private ArrayList<QueueVideos> queueVideos;
     private FloatingActionButton upload;
-    public static final String BASE_URL = "https://api-eu.clusterpoint.com/1104/chestream/video_1234132";
     ArrayList<QueueVideos> entries = new ArrayList<QueueVideos>();
     private CircularRevealView revealView;
     private View selectedView;
     android.os.Handler handler;
+    private String TAG = "QueueFragment";
 
     public QueueFragment() {
         // Required empty public constructor
@@ -130,6 +143,15 @@ public class QueueFragment extends Fragment {
 
     public void loadData()
     {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
+                "https://api-eu.clusterpoint.com/1104/chestream/_search.json", new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
         entries.add(
                 new QueueVideos("ds", "ds", "ds", "s", "5", "sa")
@@ -147,6 +169,30 @@ public class QueueFragment extends Fragment {
         queueVideosAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(queueVideosAdapter);
 
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map headers = new HashMap();
+                headers.put("Authorization", ApplicationBase.basicAuth);
+                return headers;
+            }
 
+            @Override
+            public byte[] getBody() {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("query", "*");
+                    jsonObject.put("docs", "50");
+                    jsonObject.put("offset","0");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, jsonObject.toString());
+                return jsonObject.toString().getBytes();
+            }
+        };
+        request.setShouldCache(false);
+        VolleySingleton.getInstance(getActivity()).getRequestQueue().add(request);
     }
 }

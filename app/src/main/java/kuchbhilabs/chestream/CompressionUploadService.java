@@ -75,6 +75,8 @@ public class CompressionUploadService extends Service {
                 .setProgress(0, 0, true);
 
         startForeground(id, mBuilder.build());
+        String timeStamp = System.currentTimeMillis() / 1000 + "";
+        videoName = "video_" + timeStamp;
 
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -163,8 +165,7 @@ public class CompressionUploadService extends Service {
                                         CloudBlobContainer container = blobClient.getContainerReference("videos");
 
                                         // Create or overwrite the blob with contents from a local file.
-                                        String timeStamp = System.currentTimeMillis() / 1000 + "";
-                                        videoName = "video_" + timeStamp;
+
                                         CloudBlockBlob blob = container.getBlockBlobReference(videoName + ".mp4");
                                         File file = new File(INPUT_VIDEO);
                                         blob.upload(new FileInputStream(file), file.length());
