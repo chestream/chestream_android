@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Angels_Chestream.iml" filepath="$PROJECT_DIR$/Angels_Chestream.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chestream.iml" filepath="$PROJECT_DIR$/chestream.iml" />
     </modules>
   </component>
 </project>
