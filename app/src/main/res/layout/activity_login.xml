@@ -24,50 +24,79 @@
             android:orientation="vertical"
             android:layout_gravity="center_vertical|center|center_horizontal"
             android:gravity="center_vertical|center|center_horizontal"
+            android:background="#18000000"
      >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="70dp"
+                android:id="@+id/chestream"
+                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:text="Chestream"
+                android:textColor="#ffffff"
+                android:textSize="45sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:id="@+id/text"
+                android:layout_below="@id/chestream"
+                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:text="A whole new look at the world around you"
+                android:textColor="#ffffff"
+                android:textSize="25sp"
+                android:textStyle="normal"/>
 
             <LinearLayout
                 android:id="@+id/foo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="100dp"
                 android:orientation="horizontal"
-                android:layout_centerVertical="true"
-
-                android:layout_gravity="center_vertical|center|center_horizontal"
-                android:gravity="center_vertical|center|center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_below="@id/text"
                 android:background="@android:color/transparent"
                 >
 
                 <Button
                     android:id="@+id/btn_fb"
-                    android:layout_width="100dp"
+                    android:layout_width="70dp"
                     android:textSize="18sp"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="20dp"
                     android:alpha="0.75"
                     android:background="@drawable/facebook500"
-                    android:layout_height="100dp" />
+                    android:layout_height="70dp" />
 
                 <Button
                     android:id="@+id/btn_tw"
-                    android:layout_width="100dp"
+                    android:layout_width="70dp"
                     android:textSize="18sp"
                     android:layout_marginLeft="10dp"
                     android:alpha="0.75"
                     android:layout_marginRight="20dp"
                     android:background="@drawable/twitter"
-                    android:layout_height="100dp" />
+                    android:layout_height="70dp" />
 
                 <Button
                     android:id="@+id/btn_gp"
-                    android:layout_width="100dp"
+                    android:layout_width="70dp"
                     android:textSize="18sp"
                     android:alpha="0.75"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="20dp"
                     android:background="@drawable/googleplus"
-                    android:layout_height="100dp" />
+                    android:layout_height="70dp" />
 
             </LinearLayout>
 
@@ -82,7 +111,7 @@
                 android:textColor="#ffffff"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom"
-                android:layout_height="60dp" />
+                android:layout_height="60dp"/>
 
         </RelativeLayout>
 
