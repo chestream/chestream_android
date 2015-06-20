@@ -95,7 +95,7 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
             if (!videoStarted) {
                 try {
                     mediaPlayer.setDataSource(this, Uri.parse(URL));
-                    mediaPlayer.setLooping(false);
+                    mediaPlayer.setLooping(true);
                     mediaPlayer.setVolume(0, 0);
 
                     mediaPlayer.setDisplay(surfaceHolder);

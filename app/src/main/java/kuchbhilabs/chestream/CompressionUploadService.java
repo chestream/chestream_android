@@ -145,7 +145,7 @@ public class CompressionUploadService extends Service {
 
                         @Override
                         public void onSuccess(String message) {
-                            mBuilder.setContentTitle("Uploading in progress");
+                            mBuilder.setContentText("Uploading in progress");
                             mNotificationManager.notify(id, mBuilder.build());
                             Log.d(TAG, "FFMPEG onSuccess " + message);
                             new AsyncTask<Void, Void, Void>() {
