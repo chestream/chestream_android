@@ -42,7 +42,13 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
         mediaPlayer = new MediaPlayer(); */
         URL = "android.resource://"+getPackageName()+"/"+R.raw.vid4;
         VideoView videoView = (VideoView) findViewById(R.id.login_video_view);
-        videoView.setVideoPath(URL);
+        videoView.setVideoURI(Uri.parse(URL));
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setVolume(0, 0);
+            }
+        });
         videoView.start();
 //        File sdcard = Environment.getExternalStorageDirectory();
 //        File videoFile = new File(sdcard, "video.mp4");
