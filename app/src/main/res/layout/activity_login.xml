@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="kuchbhilabs.chestream.LoginActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <SurfaceView
+            android:id="@+id/login_surface_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" >
+
+            <EditText
+                android:id="@+id/edit_text_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:textColorHint="#ffffff"
+                android:background="#18ff0000"
+                android:hint="Enter username"
+                android:textSize="25sp"
+                android:paddingLeft="25dp"
+                />
+
+            <EditText
+                android:id="@+id/edit_text_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#18ff0000"
+                android:paddingTop="5dp"
+                android:textColorHint="#ffffff"
+                android:paddingBottom="5dp"
+                android:hint="Enter password"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="20dp"
+                android:textSize="25sp"
+                android:layout_below="@id/edit_text_username"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal"
+                android:background="@android:color/transparent"
+                android:layout_below="@id/edit_text_password">
+
+                <Button
+                    android:id="@+id/button_login"
+                    android:layout_width="0dp"
+                    android:background="#180000ff"
+                    android:text="Log In"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:id="@+id/button_signup"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:background="#180000ff"
+                    android:text="Sign Up"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </FrameLayout>
+
+</RelativeLayout>
