@@ -40,6 +40,7 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
         try {
             mediaPlayer.setDataSource(this, Uri.parse(UrlPath));
             mediaPlayer.setLooping(true);
+            mediaPlayer.setVolume(0, 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
