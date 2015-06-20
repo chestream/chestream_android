@@ -1,7 +1,9 @@
 package kuchbhilabs.chestream;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -47,6 +49,9 @@ public class CompressionUploadService extends Service {
     int id = 1;
     private String videoName;
 
+    Notification.Builder mBuilder;
+    NotificationManager mNotificationManager;
+
     public CompressionUploadService() {
     }
 
@@ -61,9 +66,11 @@ public class CompressionUploadService extends Service {
 
         INPUT_VIDEO = intent.getStringExtra("path");
 
-        Notification.Builder mBuilder = new Notification.Builder(this)
+        mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mBuilder = new Notification.Builder(this)
                 .setContentTitle("Chestream")
-                .setContentText("Upload in progress")
+                .setContentText("Compression in progress")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setProgress(0, 0, true);
 
@@ -138,6 +145,8 @@ public class CompressionUploadService extends Service {
 
                         @Override
                         public void onSuccess(String message) {
+                            mBuilder.setContentTitle("Uploading in progress");
+                            mNotificationManager.notify(id, mBuilder.build());
                             Log.d(TAG, "FFMPEG onSuccess " + message);
                             new AsyncTask<Void, Void, Void>() {
 
