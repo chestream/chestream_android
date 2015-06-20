@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -33,6 +35,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     SurfaceView surfaceView;
     SurfaceHolder holder;
     MediaPlayer mediaPlayer;
+    private static TextView commentFloating;
+    private static TimerCommentText timerCommentText;
 
     private static final String TAG = "VideoFragment";
 
@@ -57,6 +61,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         slidingUpPanelLayout=(SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
         slidingUpPanelLayout.setOverlayed(true);
         slidingUpPanelLayout.setEnableDragViewTouchEvents(true);
+
+        commentFloating=(TextView) rootView.findViewById(R.id.commentText);
 
         CommentsFragment commentsFragment = new CommentsFragment();
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
@@ -142,8 +148,19 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     public static void commentReceived(String message) {
         //TODO: show floating view
-    }
+        commentFloating.setVisibility(View.VISIBLE);
+        commentFloating.setText(message);
 
+        if (timerCommentText!=null) {
+            timerCommentText.cancel();
+        }
+
+            timerCommentText = new TimerCommentText(7 * 1000, 1000);
+
+            timerCommentText.start();
+
+
+    }
     private class CommentsBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, final Intent intent) {
@@ -159,4 +176,24 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
             }
         }
     }
+    public static class TimerCommentText extends CountDownTimer {
+
+        public void startCountdownTimer() {
+        }
+
+        public TimerCommentText(long startTime, long interval) {
+            super(startTime, interval);
+        }
+
+        @Override
+        public void onFinish() {
+            commentFloating.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+    }
+
 }
