@@ -58,7 +58,7 @@ public class CompressionUploadService extends Service {
             protected Void doInBackground(Void... params) {
                 loadFFmpeg();
                 compress();
-                stopForeground(true);
+
                 return null;
             }
         }.execute();
@@ -122,6 +122,7 @@ public class CompressionUploadService extends Service {
                         @Override
                         public void onSuccess(String message) {
                             Log.d(TAG, "FFMPEG onSuccess " + message);
+                            stopForeground(true);
                         }
 
                         @Override
