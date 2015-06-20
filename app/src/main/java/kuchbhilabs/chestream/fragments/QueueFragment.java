@@ -17,7 +17,7 @@ import kuchbhilabs.chestream.R;
 /**
  * Created by naman on 20/06/15.
  */
-public class FeedFragment extends Fragment {
+public class QueueFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
@@ -31,7 +31,7 @@ public class FeedFragment extends Fragment {
         queueVideos.add(new QueueVideos("Silicon Valley", "", 200, "New York"));
     }
 
-    public FeedFragment() {
+    public QueueFragment() {
         // Required empty public constructor
     }
 

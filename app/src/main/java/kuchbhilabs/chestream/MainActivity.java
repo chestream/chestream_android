@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import kuchbhilabs.chestream.fragments.FeedFragment;
+import kuchbhilabs.chestream.fragments.QueueFragment;
 import kuchbhilabs.chestream.fragments.VideoFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case 1:
-                    fragment = new FeedFragment();
+                    fragment = new QueueFragment();
                     break;
 
             }
