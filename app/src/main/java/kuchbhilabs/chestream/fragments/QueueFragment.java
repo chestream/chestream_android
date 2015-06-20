@@ -119,6 +119,22 @@ public class QueueFragment extends Fragment {
     public void loadData()
     {
 
+        entries.add(
+                new QueueVideos("ds", "ds", "ds", "s", "5", "sa")
+        );
+
+        entries.add(
+                new QueueVideos("ds", "ds", "ds", "s", "8", "sa")
+        );
+
+        entries.add(
+                new QueueVideos("ds", "ds", "ds", "s", "15", "sa")
+        );
+
+        QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
+        queueVideosAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(queueVideosAdapter);
+
 
     }
 }
