@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.QueueVideos;
+import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
@@ -129,6 +130,22 @@ public class QueueFragment extends Fragment {
 
     public void loadData()
     {
+
+        entries.add(
+                new QueueVideos("ds", "ds", "ds", "s", "5", "sa")
+        );
+
+        entries.add(
+                new QueueVideos("ds", "ds", "ds", "s", "8", "sa")
+        );
+
+        entries.add(
+                new QueueVideos("ds", "ds", "ds", "s", "15", "sa")
+        );
+
+        QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
+        queueVideosAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(queueVideosAdapter);
 
 
     }
