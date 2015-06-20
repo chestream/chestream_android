@@ -1,6 +1,7 @@
 package kuchbhilabs.chestream;
 
 import android.app.Application;
+import android.util.Base64;
 import android.util.Log;
 
 import com.parse.Parse;
@@ -13,6 +14,10 @@ import com.parse.SaveCallback;
  * Created by root on 20/6/15.
  */
 public class ApplicationBase extends Application {
+
+    public static String userpass = "stomatrix@gmail.com" + ":" + "sauravclusterpoint";
+    public static String basicAuth = "Basic "
+            + Base64.encodeToString(userpass.getBytes(), Base64.DEFAULT);
 
     @Override
     public void onCreate() {

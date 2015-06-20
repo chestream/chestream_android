@@ -45,9 +45,9 @@ public class QueueFragment extends Fragment {
 
     private void initializeData() {
         queueVideos = new ArrayList<>();
-        queueVideos.add(new QueueVideos("YO YO", "", 1000, "Delhi"));
-        queueVideos.add(new QueueVideos("Game Of Thrones", "", 500, "Mumbai"));
-        queueVideos.add(new QueueVideos("Silicon Valley", "", 200, "New York"));
+//        queueVideos.add(new QueueVideos("YO YO", "", 1000, "Delhi"));
+//        queueVideos.add(new QueueVideos("Game Of Thrones", "", 500, "Mumbai"));
+//        queueVideos.add(new QueueVideos("Silicon Valley", "", 200, "New York"));
     }
 
     public QueueFragment() {
