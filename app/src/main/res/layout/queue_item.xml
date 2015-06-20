@@ -10,6 +10,7 @@
     android:layout_marginRight="5dp"
     android:id="@+id/root_layout"
     android:background="#350000ff"
+
     >
 
         <LinearLayout
