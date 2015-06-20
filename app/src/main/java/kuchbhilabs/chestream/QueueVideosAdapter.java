@@ -35,7 +35,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     }
     List<QueueVideos> queueVideosList;
 
-    QueueVideosAdapter(List<QueueVideos> queueVideosList){
+    public QueueVideosAdapter(List<QueueVideos> queueVideosList){
         this.queueVideosList = queueVideosList;
     }
 
