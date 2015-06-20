@@ -2,17 +2,11 @@ package kuchbhilabs.chestream;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.VideoView;
-
-import java.io.IOException;
 
 public class LoginActivity extends Activity implements SurfaceHolder.Callback {
 /*
@@ -26,6 +20,7 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
     private boolean videoStarted = false;
 
     private String URL;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {

@@ -1,19 +1,17 @@
 package kuchbhilabs.chestream.fragments;
 
 import android.app.Activity;
-import android.media.MediaPlayer;
-import android.net.Uri;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.VideoView;
-
-import java.io.IOException;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
@@ -25,6 +23,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     Activity activity;
     SlidingUpPanelLayout slidingUpPanelLayout;
+    CommentsBroadcastReciever broadcastReciever=new CommentsBroadcastReciever();
+    IntentFilter intentFilter=createIntentFilter();
 
 //    SurfaceView surfaceView;
 //    SurfaceHolder holder;
@@ -63,6 +63,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         if (isSurfaceCreated) {
 //            startMediaPlayer();
         }
+
+        registerCommentsReceiver();
 
         return rootView;
     }
@@ -115,4 +117,27 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         mediaPlayer = null;
         super.onPause();
     } */
+
+    private static IntentFilter createIntentFilter(){
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("ask omerjerk");
+        return filter;
+    }
+
+    protected void registerCommentsReceiver() {
+        getActivity().registerReceiver(broadcastReciever, intentFilter);
+    }
+
+    private class CommentsBroadcastReciever extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals("ask omerjerk")){
+
+            }
+        }
+    }
+
+
+
 }
