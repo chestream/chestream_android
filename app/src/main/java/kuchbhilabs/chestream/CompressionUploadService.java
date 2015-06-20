@@ -125,6 +125,7 @@ public class CompressionUploadService extends Service {
                         @Override
                         public void onFailure(String message) {
                             Log.e(TAG, "FFMPEG onFailure " + message);
+                            stopForeground(true);
                         }
 
                         @Override
