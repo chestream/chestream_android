@@ -14,7 +14,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.VideoView;
 
 import java.io.IOException;
 
@@ -51,6 +50,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
         slidingUpPanelLayout=(SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
         slidingUpPanelLayout.setOverlayed(true);
+        slidingUpPanelLayout.setEnableDragViewTouchEvents(true);
 
         CommentsFragment commentsFragment = new CommentsFragment();
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();

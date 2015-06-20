@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:layout_marginBottom="60dp">
 
     <ImageView
         android:id="@+id/secondPanelDragIndicator"
@@ -47,3 +53,22 @@
         android:background="@android:color/transparent" />
 
 </LinearLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="Enter a comment"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:id="@+id/commentEditText"
+        android:gravity="bottom"
+        android:paddingBottom="10dp"
+        android:layout_gravity="bottom"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginBottom="10dp"/>
+
+
+
+</FrameLayout>

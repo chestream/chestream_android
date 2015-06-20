@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
+    android:layout_marginLeft="35dp"
     android:layout_marginRight="10dp"
     android:background="@android:color/transparent"
+    android:paddingTop="20dp"
+    android:elevation="4dp"
    >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,7 +18,7 @@
         <kuchbhilabs.chestream.helpers.CircularImageView
             android:layout_width="52dp"
             android:layout_height="52dp"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/zombie_icon"
             android:id="@+id/avatar"/>
 
         <TextView
@@ -23,7 +26,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/username"
             android:text="naman14"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:textColor="@android:color/white"/>
 
 
@@ -32,7 +35,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="17dp"
         android:id="@+id/comment"
         android:text="Great Video!"
         android:layout_gravity="center_vertical"
