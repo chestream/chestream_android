@@ -49,6 +49,7 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
