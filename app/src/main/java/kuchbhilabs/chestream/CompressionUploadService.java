@@ -131,29 +131,41 @@ public class CompressionUploadService extends Service {
                         @Override
                         public void onSuccess(String message) {
                             Log.d(TAG, "FFMPEG onSuccess " + message);
-                            try
-                            {
-                                // Retrieve storage account from connection-string.
-                                CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
+                            new AsyncTask<Void, Void, Void>(){
 
-                                // Create the blob client.
-                                CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+                                @Override
+                                protected Void doInBackground(Void... voids) {
+                                    try
+                                    {
+                                        // Retrieve storage account from connection-string.
+                                        CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
 
-                                // Retrieve reference to a previously created container.
-                                CloudBlobContainer container = blobClient.getContainerReference("videos");
+                                        // Create the blob client.
+                                        CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
 
-                                // Create or overwrite the blob with contents from a local file.
-                                String timeStamp = System.currentTimeMillis()/1000 + "";
-                                CloudBlockBlob blob = container.getBlockBlobReference("video_" + timeStamp + ".mp4");
-                                File file = new File(INPUT_VIDEO);
-                                blob.upload(new FileInputStream(file), file.length());
-                            }
-                            catch (Exception e)
-                            {
-                                // Output the stack trace.
-                                e.printStackTrace();
-                            }
-                            stopForeground(true);
+                                        // Retrieve reference to a previously created container.
+                                        CloudBlobContainer container = blobClient.getContainerReference("videos");
+
+                                        // Create or overwrite the blob with contents from a local file.
+                                        String timeStamp = System.currentTimeMillis()/1000 + "";
+                                        final String videoName = "video" + timeStamp;
+                                        CloudBlockBlob blob = container.getBlockBlobReference( videoName +"_sexyvideo_Prempal_India" + ".mp4");
+                                        File file = new File(INPUT_VIDEO);
+                                        blob.upload(new FileInputStream(file), file.length());
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        // Output the stack trace.
+                                        e.printStackTrace();
+                                    }
+                                    return null;
+                                }
+
+                                @Override
+                                protected void onPostExecute(Void aVoid) {
+                                    stopForeground(true);
+                                }
+                            }.execute();
                         }
 
                         @Override
@@ -167,6 +179,4 @@ public class CompressionUploadService extends Service {
         }
 
     }
-
-
 }
