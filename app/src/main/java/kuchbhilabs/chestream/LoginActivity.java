@@ -6,15 +6,18 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.VideoView;
 
+import java.io.IOException;
+
 public class LoginActivity extends Activity implements SurfaceHolder.Callback {
-/*
+
     private MediaPlayer mediaPlayer;
     SurfaceView surfaceView;
-    SurfaceHolder surfaceHolder; */
+    SurfaceHolder surfaceHolder;
     Button skip;
 
     private boolean isMediaPlayerInitialized = false;
@@ -30,14 +33,15 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
         setContentView(R.layout.activity_login);
 
         skip = (Button) findViewById(R.id.btn_skip);
-        /*
+
         surfaceView = (SurfaceView) findViewById(R.id.login_surface_view);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
 
         //TODO: Make it work to load from the assets directory
-        mediaPlayer = new MediaPlayer(); */
+        mediaPlayer = new MediaPlayer();
         URL = "android.resource://"+getPackageName()+"/"+R.raw.vid4b;
+        /*
         VideoView videoView = (VideoView) findViewById(R.id.login_video_view);
         videoView.setVideoURI(Uri.parse(URL));
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -46,12 +50,12 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
                 mp.setVolume(0, 0);
             }
         });
-        videoView.start();
+        videoView.start(); */
 //        File sdcard = Environment.getExternalStorageDirectory();
 //        File videoFile = new File(sdcard, "video.mp4");
         isMediaPlayerInitialized = true;
         if (isSurfaceCreated) {
-//            startMediaPlayer();
+            startMediaPlayer();
         }
 
         skip.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +72,7 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         isSurfaceCreated = true;
         if (isMediaPlayerInitialized) {
-//            startMediaPlayer();
+            startMediaPlayer();
         }
     }
 
@@ -79,12 +83,13 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        /*
-        mediaPlayer.stop();
-        mediaPlayer.release();
-        mediaPlayer = null;*/
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
-/*
+
     private void startMediaPlayer() {
         synchronized (this) {
             if (!videoStarted) {
@@ -112,10 +117,12 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
 
     @Override
     public void onPause() {
-        mediaPlayer.stop();
-        mediaPlayer.release();
-        mediaPlayer = null;
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
         super.onPause();
-    } */
+    }
 }
 

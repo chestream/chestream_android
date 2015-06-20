@@ -5,13 +5,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.VideoView;
+
+import java.io.IOException;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
@@ -26,9 +31,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     CommentsBroadcastReciever broadcastReciever=new CommentsBroadcastReciever();
     IntentFilter intentFilter=createIntentFilter();
 
-//    SurfaceView surfaceView;
-//    SurfaceHolder holder;
-//    MediaPlayer mediaPlayer;
+    SurfaceView surfaceView;
+    SurfaceHolder holder;
+    MediaPlayer mediaPlayer;
 
     private static final String TEST_URL = "http://devimages.apple.com/iphone/samples/bipbop" +
             "/bipbopall.m3u8";
@@ -49,19 +54,19 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
         CommentsFragment commentsFragment = new CommentsFragment();
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
-
+/*
         VideoView videoView = (VideoView) rootView.findViewById(R.id.main_video_view);
         videoView.setVideoPath(TEST_URL);
         videoView.start();
+*/
+        surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
+        holder = surfaceView.getHolder();
+        holder.addCallback(this);
 
-//        surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
-//        holder = surfaceView.getHolder();
-//        holder.addCallback(this);
-
-//        mediaPlayer = new MediaPlayer();
+        mediaPlayer = new MediaPlayer();
         isMediaPlayerInitialized = true;
         if (isSurfaceCreated) {
-//            startMediaPlayer();
+            startMediaPlayer();
         }
 
         registerCommentsReceiver();
@@ -73,7 +78,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     public void surfaceCreated(SurfaceHolder holder) {
         isSurfaceCreated = true;
         if (isMediaPlayerInitialized) {
-//            startMediaPlayer();
+            startMediaPlayer();
         }
     }
 
@@ -83,9 +88,12 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-//        mediaPlayer.release();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
-/*
+
     private void startMediaPlayer() {
         synchronized (this) {
             if (!videoStarted) {
@@ -113,10 +121,12 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     @Override
     public void onPause() {
-        mediaPlayer.release();
-        mediaPlayer = null;
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
         super.onPause();
-    } */
+    }
 
     private static IntentFilter createIntentFilter(){
         IntentFilter filter = new IntentFilter();
@@ -137,7 +147,4 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
             }
         }
     }
-
-
-
 }
