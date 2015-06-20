@@ -30,8 +30,6 @@ public class NotificationReceiver extends ParsePushBroadcastReceiver {
 
             Log.d(TAG, "PUSH = " + message);
 
-            JSONObject rootJson = new JSONObject(message);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
