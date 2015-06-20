@@ -1,7 +1,6 @@
 package kuchbhilabs.chestream;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,16 +14,24 @@ import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.blob.CloudBlobClient;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 public class CompressionUploadService extends Service {
 
     int id = 1;
 
     private static final File EXT_DIR = Environment.getExternalStorageDirectory();
-    private static final String INPUT_VIDEO = new File(EXT_DIR, "test_in.mp4").getPath();
-    private static final String OUTPUT_VIDEO = new File(EXT_DIR, "test_out.mp4").getPath();
+    private static String INPUT_VIDEO;
+    private static String OUTPUT_VIDEO = new File(EXT_DIR, "test_out.mp4").getPath();
+    private final String storageConnectionString =
+            "DefaultEndpointsProtocol=http;" + "AccountName=fo0;" +
+                    "AccountKey=AT3WGE4H6+s0PtRiaDCFCKMf81P+lCj5IKvfgD26r0wQzGEHKX5B5Dvp5D/bM8sAcVYRZL+vp+J7kdLwibxPnw==";
 
     private static final String COMPRESS_CMD = "-y -i %s -strict " +
             "experimental -vcodec libx264 -preset ultrafast -crf 24 -acodec aac -ar 44100 -ac 2 " +
@@ -44,6 +51,7 @@ public class CompressionUploadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
 
+        INPUT_VIDEO = intent.getStringExtra("path");
 
         Notification.Builder mBuilder = new Notification.Builder(this)
                 .setContentTitle("Video")
@@ -122,6 +130,28 @@ public class CompressionUploadService extends Service {
                         @Override
                         public void onSuccess(String message) {
                             Log.d(TAG, "FFMPEG onSuccess " + message);
+                            try
+                            {
+                                // Retrieve storage account from connection-string.
+                                CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
+
+                                // Create the blob client.
+                                CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+
+                                // Retrieve reference to a previously created container.
+                                CloudBlobContainer container = blobClient.getContainerReference("videos");
+
+                                // Create or overwrite the blob with contents from a local file.
+                                String timeStamp = System.currentTimeMillis()/1000 + "";
+                                CloudBlockBlob blob = container.getBlockBlobReference("video_" + timeStamp + ".mp4");
+                                File file = new File(INPUT_VIDEO);
+                                blob.upload(new FileInputStream(file), file.length());
+                            }
+                            catch (Exception e)
+                            {
+                                // Output the stack trace.
+                                e.printStackTrace();
+                            }
                             stopForeground(true);
                         }
 
