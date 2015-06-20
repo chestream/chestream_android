@@ -7,18 +7,16 @@ public class QueueVideos {
     String avatar_url;
     String username;
     String gif_url;
-    String image;
-    int numberOfVotes;
+    String numberOfVotes;
     String location;
 
-    public QueueVideos(String title, String username, String avatar_url, String gif_url, int numberOfVotes, String location, String image) {
+    public QueueVideos(String title, String username, String avatar_url, String gif_url, String numberOfVotes, String location) {
         this.title = title;
         this.username = username;
         this.avatar_url = avatar_url;
         this.gif_url = gif_url;
         this.numberOfVotes = numberOfVotes;
         this.location = location;
-        this.image = image;
     }
 
     public String getAvatar_url() {
@@ -45,14 +43,6 @@ public class QueueVideos {
         this.gif_url = gif_url;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -69,11 +59,11 @@ public class QueueVideos {
         this.location = location;
     }
 
-    public int getNumberOfVotes() {
+    public String getNumberOfVotes() {
         return numberOfVotes;
     }
 
-    public void setNumberOfVotes(int numberOfVotes) {
+    public void setNumberOfVotes(String numberOfVotes) {
         this.numberOfVotes = numberOfVotes;
     }
 
