@@ -24,6 +24,7 @@
             android:orientation="vertical"
             android:layout_gravity="center_vertical|center|center_horizontal"
             android:gravity="center_vertical|center|center_horizontal"
+            android:background="#18000000"
      >
 
             <TextView
