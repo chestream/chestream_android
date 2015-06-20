@@ -41,7 +41,7 @@ public class CommentsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         setUpCommentList();
-
+/*
         Button tempButton = (Button) v.findViewById(R.id.button_test);
         tempButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +52,7 @@ public class CommentsFragment extends Fragment {
                 push.sendInBackground();
             }
         });
-
+*/
         return v;
     }
 
