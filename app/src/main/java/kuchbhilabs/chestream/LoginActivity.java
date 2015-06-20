@@ -1,6 +1,7 @@
 package kuchbhilabs.chestream;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 
 import java.io.IOException;
 
@@ -17,12 +20,14 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
     private MediaPlayer mediaPlayer;
     SurfaceView surfaceView;
     SurfaceHolder surfaceHolder;
+    Button skip;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        skip = (Button) findViewById(R.id.btn_skip);
         surfaceView = (SurfaceView) findViewById(R.id.login_surface_view);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
@@ -38,6 +43,14 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
