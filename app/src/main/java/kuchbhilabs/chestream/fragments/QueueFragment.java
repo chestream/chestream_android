@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 import kuchbhilabs.chestream.QueueVideos;
@@ -22,6 +24,7 @@ public class QueueFragment extends Fragment {
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
     private ArrayList<QueueVideos> queueVideos;
+    private FloatingActionButton upload;
 
 
     private void initializeData(){
@@ -40,6 +43,7 @@ public class QueueFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_queue, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        upload=(FloatingActionButton) rootView.findViewById(R.id.upload);
         recyclerView.setHasFixedSize(true);
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
