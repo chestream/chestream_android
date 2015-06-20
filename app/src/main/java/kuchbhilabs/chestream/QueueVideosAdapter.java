@@ -34,6 +34,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             upVote = (ImageButton)itemView.findViewById(R.id.up_vote);
             downVote = (ImageButton)itemView.findViewById(R.id.down_vote);
 
+
         }
     }
     List<QueueVideos> queueVideosList;
