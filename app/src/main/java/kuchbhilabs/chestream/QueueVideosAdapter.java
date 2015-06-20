@@ -17,6 +17,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         ImageView uploaderImage;
         TextView videoTitle;
         TextView location;
+        TextView url_gif;
+        TextView username;
         ImageButton upVote;
         ImageButton downVote;
         TextView totalVotes;
@@ -27,6 +29,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             uploaderImage = (ImageView)itemView.findViewById(R.id.profile_picture);
             videoTitle = (TextView)itemView.findViewById(R.id.video_title);
             location = (TextView)itemView.findViewById(R.id.video_location);
+            username = (TextView)itemView.findViewById(R.id.username);
             totalVotes = (TextView)itemView.findViewById(R.id.video_score);
             upVote = (ImageButton)itemView.findViewById(R.id.up_vote);
             downVote = (ImageButton)itemView.findViewById(R.id.down_vote);
@@ -50,8 +53,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     @Override
     public void onBindViewHolder(final QVHolder holder, int position) {
         holder.videoTitle.setText(queueVideosList.get(position).title);
+        holder.username.setText(queueVideosList.get(position).username);
+        holder.url_gif.setText(queueVideosList.get(position).gif_url);
         holder.location.setText(queueVideosList.get(position).location);
         holder.totalVotes.setText(queueVideosList.get(position).numberOfVotes + "");
+//        holder.uploaderImage.
         final int[] total_votes = {Integer.parseInt(holder.totalVotes.getText().toString())};
 
         holder.upVote.setOnClickListener(new View.OnClickListener() {
@@ -61,8 +67,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 int votes = total_votes[0] + 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
                     holder.totalVotes.setText(votes + "");
-                    holder.upVote.setBackgroundResource(R.drawable.upvote);
-                    holder.downVote.setBackgroundResource(android.R.drawable.arrow_down_float);
                 } else {
 
                 }
@@ -74,8 +78,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 int votes = total_votes[0] - 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
                     holder.totalVotes.setText(votes + "");
-                    holder.downVote.setBackgroundResource(R.drawable.downvote);
-                    holder.upVote.setBackgroundResource(android.R.drawable.arrow_up_float);
                 } else {
 
                 }
@@ -88,7 +90,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     public int getItemCount() {
         return queueVideosList.size();
     }
-
 
 
 }
