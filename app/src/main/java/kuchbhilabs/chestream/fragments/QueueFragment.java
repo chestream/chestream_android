@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.QueueVideos;
-import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
@@ -33,22 +32,17 @@ import kuchbhilabs.chestream.helpers.Helper;
  */
 public class QueueFragment extends Fragment {
 
+    private ArrayList<String> listTitle, listAvatarUrl, listUsername, listGifUrl, listVotes, listLocation;
+
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
     private ArrayList<QueueVideos> queueVideos;
     private FloatingActionButton upload;
-
+    public static final String BASE_URL = "https://api-eu.clusterpoint.com/1104/chestream/video_1234132";
+    ArrayList<QueueVideos> entries = new ArrayList<QueueVideos>();
     private CircularRevealView revealView;
     private View selectedView;
     android.os.Handler handler;
-
-
-    private void initializeData() {
-        queueVideos = new ArrayList<>();
-//        queueVideos.add(new QueueVideos("YO YO", "", 1000, "Delhi"));
-//        queueVideos.add(new QueueVideos("Game Of Thrones", "", 500, "Mumbai"));
-//        queueVideos.add(new QueueVideos("Silicon Valley", "", 200, "New York"));
-    }
 
     public QueueFragment() {
         // Required empty public constructor
@@ -97,9 +91,10 @@ public class QueueFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
-        initializeData();
-        QueueVideosAdapter adapter = new QueueVideosAdapter(queueVideos);
-        recyclerView.setAdapter(adapter);
+
+        loadData();
+//        QueueVideosAdapter adapter = new QueueVideosAdapter(queueVideos);
+//        recyclerView.setAdapter(adapter);
 
         return rootView;
     }
@@ -114,6 +109,8 @@ public class QueueFragment extends Fragment {
         }
     }
 
+
+
     private String getRealPathFromUri(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
@@ -127,5 +124,12 @@ public class QueueFragment extends Fragment {
                 cursor.close();
             }
         }
+    }
+
+
+    public void loadData()
+    {
+
+
     }
 }
