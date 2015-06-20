@@ -33,9 +33,9 @@ public class MainActivityFragment extends Fragment {
     private static final String INPUT_VIDEO = new File(EXT_DIR, "test_in.mp4").getPath();
     private static final String OUTPUT_VIDEO = new File(EXT_DIR, "test_out.mp4").getPath();
 
-    private static final String COMPRESS_CMD = "-y -i " + INPUT_VIDEO + " -strict " +
+    private static final String COMPRESS_CMD = "-y -i %s -strict " +
             "experimental -vcodec libx264 -preset ultrafast -crf 24 -acodec aac -ar 44100 -ac 2 " +
-            "-b:a 96k -s 320x240 -aspect 4:3 " + OUTPUT_VIDEO;
+            "-b:a 96k -s 320x240 -aspect 4:3 %s";
 
     private static final String TAG = "CHESTREAM";
 
@@ -102,7 +102,8 @@ public class MainActivityFragment extends Fragment {
         FFmpeg ffmpeg = FFmpeg.getInstance(activity);
         try {
             // to execute "ffmpeg -version" command you just need to pass "-version"
-            ffmpeg.execute(COMPRESS_CMD, new ExecuteBinaryResponseHandler() {
+            ffmpeg.execute(String.format(COMPRESS_CMD, INPUT_VIDEO, OUTPUT_VIDEO),
+                    new ExecuteBinaryResponseHandler() {
 
                 @Override
                 public void onStart() {
