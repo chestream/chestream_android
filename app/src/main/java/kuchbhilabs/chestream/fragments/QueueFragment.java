@@ -10,36 +10,51 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.QueueVideos;
 import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.VolleySingleton;
 
 /**
  * Created by naman on 20/06/15.
  */
 public class QueueFragment extends Fragment {
 
+    private ArrayList<String> listTitle, listAvatarUrl, listUsername, listGifUrl, listVotes, listLocation;
+
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
     private ArrayList<QueueVideos> queueVideos;
     private FloatingActionButton upload;
 
-
-    private void initializeData() {
-        queueVideos = new ArrayList<>();
-//        queueVideos.add(new QueueVideos("YO YO", "", 1000, "Delhi"));
-//        queueVideos.add(new QueueVideos("Game Of Thrones", "", 500, "Mumbai"));
-//        queueVideos.add(new QueueVideos("Silicon Valley", "", 200, "New York"));
-    }
+    public static final String BASE_URL = "https://api-eu.clusterpoint.com/1104/chestream/video_1234132";
+    ArrayList<QueueVideos> entries = new ArrayList<QueueVideos>();
 
     public QueueFragment() {
         // Required empty public constructor
@@ -63,9 +78,10 @@ public class QueueFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
-        initializeData();
-        QueueVideosAdapter adapter = new QueueVideosAdapter(queueVideos);
-        recyclerView.setAdapter(adapter);
+
+        loadData();
+//        QueueVideosAdapter adapter = new QueueVideosAdapter(queueVideos);
+//        recyclerView.setAdapter(adapter);
 
         return rootView;
     }
@@ -80,6 +96,8 @@ public class QueueFragment extends Fragment {
         }
     }
 
+
+
     private String getRealPathFromUri(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
@@ -93,5 +111,12 @@ public class QueueFragment extends Fragment {
                 cursor.close();
             }
         }
+    }
+
+
+    public void loadData()
+    {
+
+
     }
 }
