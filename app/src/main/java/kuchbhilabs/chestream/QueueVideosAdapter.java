@@ -10,9 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by raghav on 15/06/15.
- */
+
 public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.QVHolder> {
 
     public static class QVHolder extends RecyclerView.ViewHolder {
