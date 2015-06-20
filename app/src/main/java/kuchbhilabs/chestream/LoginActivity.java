@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -64,6 +62,7 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
             mediaPlayer.start();
         } catch (IOException e) {
             e.printStackTrace();
+            Log.d("lol","here");
         }
     }
 

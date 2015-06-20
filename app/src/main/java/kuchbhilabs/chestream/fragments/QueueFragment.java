@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +25,8 @@ import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.QueueVideos;
 import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.helpers.CircularRevealView;
+import kuchbhilabs.chestream.helpers.Helper;
 
 /**
  * Created by naman on 20/06/15.
@@ -32,6 +37,10 @@ public class QueueFragment extends Fragment {
     private LinearLayoutManager llm;
     private ArrayList<QueueVideos> queueVideos;
     private FloatingActionButton upload;
+
+    private CircularRevealView revealView;
+    private View selectedView;
+    android.os.Handler handler;
 
 
     private void initializeData() {
@@ -50,13 +59,38 @@ public class QueueFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_queue, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+
+        revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
+
         upload = (FloatingActionButton) rootView.findViewById(R.id.upload);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                 if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivityForResult(takeVideoIntent, 1);
+                    final int color = Color.parseColor("#00bcd4");
+                    final Point p = Helper.getLocationInView(revealView, view);
+
+                    revealView.reveal(p.x, p.y, color, view.getHeight() / 2, 440, null);
+                    selectedView = view;
+
+                    handler=new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            startActivityForResult(takeVideoIntent, 1);
+
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    revealView.hide(p.x, p.y, android.R.color.transparent, 0, 330, null);
+                                }
+                            }, 300);
+
+                        }
+                    }, 500);
+
                 }
             }
         });
