@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    sothree:panelHeight="68dp"
+    sothree:shadowHeight="0dp"
+>
+
+<FrameLayout
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#009688">
 
-    <Button
-        android:id="@+id/button_upload"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Compress and Upload"
-        android:layout_centerVertical="true" />
+</FrameLayout>
 
     <FrameLayout
         android:id="@+id/comments"
+        android:background="@android:color/transparent"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom"
         >
     </FrameLayout>
 
-</FrameLayout>
+
+
+    </kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout>
