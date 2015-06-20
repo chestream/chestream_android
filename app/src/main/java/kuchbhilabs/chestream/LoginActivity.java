@@ -40,7 +40,7 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
 
         //TODO: Make it work to load from the assets directory
         mediaPlayer = new MediaPlayer(); */
-        URL = "android.resource://"+getPackageName()+"/"+R.raw.vid4;
+        URL = "android.resource://"+getPackageName()+"/"+R.raw.vid4b;
         VideoView videoView = (VideoView) findViewById(R.id.login_video_view);
         videoView.setVideoURI(Uri.parse(URL));
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {

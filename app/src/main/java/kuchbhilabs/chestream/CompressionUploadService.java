@@ -54,8 +54,8 @@ public class CompressionUploadService extends Service {
         INPUT_VIDEO = intent.getStringExtra("path");
 
         Notification.Builder mBuilder = new Notification.Builder(this)
-                .setContentTitle("Video")
-                .setContentText("Upload in progress")
+                .setContentTitle("Chestream")
+                .setContentText("Compression in progress")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setProgress(0, 0, true);
 
@@ -131,8 +131,7 @@ public class CompressionUploadService extends Service {
                         @Override
                         public void onSuccess(String message) {
                             Log.d(TAG, "FFMPEG onSuccess " + message);
-                            try
-                            {
+                            try {
                                 // Retrieve storage account from connection-string.
                                 CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
 
