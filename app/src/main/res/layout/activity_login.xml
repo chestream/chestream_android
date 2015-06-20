@@ -1,0 +1,86 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="kuchbhilabs.chestream.LoginActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <SurfaceView
+            android:id="@+id/login_surface_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical|center|center_horizontal"
+            android:gravity="center_vertical|center|center_horizontal"
+     >
+
+            <LinearLayout
+                android:id="@+id/foo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+
+                android:layout_gravity="center_vertical|center|center_horizontal"
+                android:gravity="center_vertical|center|center_horizontal"
+                android:background="@android:color/transparent"
+                >
+
+                <Button
+                    android:id="@+id/btn_fb"
+                    android:layout_width="100dp"
+                    android:textSize="18sp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:alpha="0.75"
+                    android:background="@drawable/facebook500"
+                    android:layout_height="100dp" />
+
+                <Button
+                    android:id="@+id/btn_tw"
+                    android:layout_width="100dp"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="10dp"
+                    android:alpha="0.75"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/twitter"
+                    android:layout_height="100dp" />
+
+                <Button
+                    android:id="@+id/btn_gp"
+                    android:layout_width="100dp"
+                    android:textSize="18sp"
+                    android:alpha="0.75"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/googleplus"
+                    android:layout_height="100dp" />
+
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btn_skip"
+                android:layout_width="match_parent"
+                android:textSize="24sp"
+                android:background="#18000000"
+                android:text="Skip"
+                android:textStyle="bold"
+                android:textColor="#ffffff"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_height="60dp" />
+
+        </RelativeLayout>
+
+
+    </FrameLayout>
+
+</RelativeLayout>
