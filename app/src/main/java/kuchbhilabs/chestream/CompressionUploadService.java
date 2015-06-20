@@ -1,16 +1,14 @@
 package kuchbhilabs.chestream;
 
-import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.Toast;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
@@ -20,14 +18,9 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedExceptio
 
 import java.io.File;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class MainActivityFragment extends Fragment {
+public class CompressionUploadService extends Service {
 
-    static final int REQUEST_VIDEO_CAPTURE = 1;
-
-    Activity activity;
+    int id = 1;
 
     private static final File EXT_DIR = Environment.getExternalStorageDirectory();
     private static final String INPUT_VIDEO = new File(EXT_DIR, "test_in.mp4").getPath();
@@ -39,36 +32,42 @@ public class MainActivityFragment extends Fragment {
 
     private static final String TAG = "CHESTREAM";
 
-    public MainActivityFragment() {
+    public CompressionUploadService() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        activity = getActivity();
-
-        loadFFmpeg();
-
-        Button button = (Button) rootView.findViewById(R.id.button_compress);
-        button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                compress();
-            }
-        });
-        return rootView;
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
-    public void dispatchTakeVideoIntent() {
-        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (takeVideoIntent.resolveActivity(activity.getPackageManager()) != null) {
-            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-        }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+
+
+        Notification.Builder mBuilder = new Notification.Builder(this)
+                .setContentTitle("Video")
+                .setContentText("Upload in progress")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setProgress(0, 0, true);
+
+        startForeground(id, mBuilder.build());
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                loadFFmpeg();
+                compress();
+                stopForeground(true);
+                return null;
+            }
+        }.execute();
+
+        return START_NOT_STICKY;
     }
 
     private void loadFFmpeg() {
-        FFmpeg ffmpeg = FFmpeg.getInstance(activity);
+        FFmpeg ffmpeg = FFmpeg.getInstance(this);
         try {
             ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
 
@@ -99,41 +98,43 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void compress() {
-        FFmpeg ffmpeg = FFmpeg.getInstance(activity);
+        FFmpeg ffmpeg = FFmpeg.getInstance(this);
         try {
             // to execute "ffmpeg -version" command you just need to pass "-version"
             ffmpeg.execute(String.format(COMPRESS_CMD, INPUT_VIDEO, OUTPUT_VIDEO),
                     new ExecuteBinaryResponseHandler() {
 
-                @Override
-                public void onStart() {
-                    Log.d(TAG, "FFMPEG onStart");
-                }
+                        @Override
+                        public void onStart() {
+                            Log.d(TAG, "FFMPEG onStart");
+                        }
 
-                @Override
-                public void onProgress(String message) {
-                    Log.d(TAG, "FFMPEG onProgress " + message);
-                }
+                        @Override
+                        public void onProgress(String message) {
+                            Log.d(TAG, "FFMPEG onProgress " + message);
+                        }
 
-                @Override
-                public void onFailure(String message) {
-                    Log.e(TAG, "FFMPEG onFailure " + message);
-                }
+                        @Override
+                        public void onFailure(String message) {
+                            Log.e(TAG, "FFMPEG onFailure " + message);
+                        }
 
-                @Override
-                public void onSuccess(String message) {
-                    Log.d(TAG, "FFMPEG onSuccess " + message);
-                }
+                        @Override
+                        public void onSuccess(String message) {
+                            Log.d(TAG, "FFMPEG onSuccess " + message);
+                        }
 
-                @Override
-                public void onFinish() {
-                    Log.d(TAG, "FFMPEG onFinish");
-                }
-            });
+                        @Override
+                        public void onFinish() {
+                            Log.d(TAG, "FFMPEG onFinish");
+                        }
+                    });
         } catch (FFmpegCommandAlreadyRunningException e) {
             // Handle if FFmpeg is already running
             e.printStackTrace();
         }
 
     }
+
+
 }
