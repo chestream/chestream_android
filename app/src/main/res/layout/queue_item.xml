@@ -1,81 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="2dp"
-    card_view:cardCornerRadius="0dp"
-    card_view:cardElevation="5dp"
-    android:layout_height="match_parent"
-    android:foreground="?selectableItemBackground">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-
+    android:layout_height="110dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="5dp"
+    android:background="#350000ff"
+    >
 
         <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+            android:layout_weight="1.3"
         android:orientation="vertical">
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/profile_picture"
-            android:paddingLeft="10dp"
 
+        <ImageView
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="7dp"
+            android:id="@+id/profile_picture"
+            android:background="@drawable/ic_launcher"
             />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textStyle="italic"
+                android:gravity="center_horizontal|center_vertical|center"
+                android:layout_gravity="center_horizontal|center_vertical|center"
+                android:paddingLeft="5dp"
+                android:textSize="15sp"
+                android:textColor="#000000"
+                android:id="@+id/username"
+                />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Video Title"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:id="@+id/video_title"
+            />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/video_location"
             android:paddingLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:textSize="17sp"
+            android:textColor="#000000"
             android:text="Location"
 
             />
+
     </LinearLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Video Title"
-        android:id="@+id/video_title"
-        android:layout_weight="3"
-        />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center_horizontal|center_vertical|center"
+        android:layout_gravity="center_horizontal|center_vertical|center"
+
         android:orientation="vertical"
-        android:gravity="right">
+        >
         <ImageButton
-            android:layout_width="20dp"
+            android:layout_width="25dp"
             android:layout_height="20dp"
             android:id="@+id/up_vote"
-            android:layout_weight="1"
             android:layout_gravity="center"
-            android:background="@android:drawable/arrow_up_float"
+            android:background="@drawable/upvote"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/video_score"
-            android:layout_weight="1"
-            android:text="1000"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:text="0"
             android:layout_gravity="center"/>
         <ImageButton
-            android:layout_width="20dp"
+            android:layout_width="25dp"
             android:layout_height="20dp"
             android:id="@+id/down_vote"
-            android:layout_weight="1"
             android:layout_gravity="center"
-            android:background="@android:drawable/arrow_down_float"
+            android:background="@drawable/downvote"
             />
     </LinearLayout>
-    </LinearLayout>
 
-
-
-</android.support.v7.widget.CardView>
+</LinearLayout>
