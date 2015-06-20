@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 
+import kuchbhilabs.chestream.fragments.VideoFragment;
+
 public class NotificationReceiver extends ParsePushBroadcastReceiver {
 
     private static final String TAG = "NotificationReceiver";
@@ -29,6 +31,12 @@ public class NotificationReceiver extends ParsePushBroadcastReceiver {
             String message = pushData.getString("alert");
 
             Log.d(TAG, "PUSH = " + message);
+            Intent broadcast = new Intent();
+            intent.setAction("intent.omerjerk");
+            intent.putExtra("comment", message);
+            context.sendBroadcast(broadcast);
+
+            VideoFragment.commentReceived(message);
 
         } catch (JSONException e) {
             e.printStackTrace();

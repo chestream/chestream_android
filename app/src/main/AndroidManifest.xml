@@ -76,6 +76,13 @@
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
+        <!--
+        <receiver android:name=".fragments.VideoFragment$CommentsBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="intent.omerjerk" >
+                </action>
+            </intent-filter>
+        </receiver> -->
     </application>
 
 </manifest>

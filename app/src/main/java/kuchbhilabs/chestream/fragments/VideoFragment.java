@@ -9,11 +9,13 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.IOException;
@@ -28,12 +30,12 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     Activity activity;
     SlidingUpPanelLayout slidingUpPanelLayout;
-    CommentsBroadcastReciever broadcastReciever=new CommentsBroadcastReciever();
-    IntentFilter intentFilter=createIntentFilter();
 
     SurfaceView surfaceView;
     SurfaceHolder holder;
     MediaPlayer mediaPlayer;
+
+    private static final String TAG = "VideoFragment";
 
     private static final String TEST_URL = "http://devimages.apple.com/iphone/samples/bipbop" +
             "/bipbopall.m3u8";
@@ -42,12 +44,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     private boolean isSurfaceCreated = false;
     private boolean videoStarted = false;
 
+    private CommentsBroadcastReceiver receiver;
+
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_video, null);
 
         activity = getActivity();
+
+        receiver = new CommentsBroadcastReceiver();
 
         slidingUpPanelLayout=(SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
         slidingUpPanelLayout.setOverlayed(true);
@@ -68,8 +74,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         if (isSurfaceCreated) {
             startMediaPlayer();
         }
-
-        registerCommentsReceiver();
 
         return rootView;
     }
@@ -125,25 +129,33 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
             mediaPlayer.release();
             mediaPlayer = null;
         }
+        activity.unregisterReceiver(receiver);
         super.onPause();
     }
 
-    private static IntentFilter createIntentFilter(){
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("ask omerjerk");
-        return filter;
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter("intent.omerjerk");
+        activity.registerReceiver(receiver, filter);
     }
 
-    protected void registerCommentsReceiver() {
-        getActivity().registerReceiver(broadcastReciever, intentFilter);
+    public static void commentReceived(String message) {
+        //TODO: show floating view
     }
 
-    private class CommentsBroadcastReciever extends BroadcastReceiver {
-
+    private class CommentsBroadcastReceiver extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("ask omerjerk")){
-
+        public void onReceive(Context context, final Intent intent) {
+            Log.d(TAG, "intent received");
+            if(intent.getAction().equals("intent.omerjerk")){
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "comment received = " + intent.getStringExtra("comment"),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
     }
