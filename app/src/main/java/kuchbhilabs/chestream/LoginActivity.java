@@ -26,7 +26,6 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
 
     public static String URL;
 
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

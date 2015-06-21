@@ -40,8 +40,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     private static final String TAG = "VideoFragment";
 
-    private static final String TEST_URL = "http://devimages.apple.com/iphone/samples/bipbop" +
-            "/bipbopall.m3u8";
+    private static final String TEST_URL = "http://128.199.128.227/chestream_raw/video_1434859043/video_1434859043.mp4";
 
     private boolean isMediaPlayerInitialized = false;
     private boolean isSurfaceCreated = false;
@@ -110,6 +109,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         synchronized (this) {
             if (!videoStarted) {
                 try {
+                    if (mediaPlayer == null) {
+                        mediaPlayer = new MediaPlayer();
+                    }
                     mediaPlayer.setDataSource(activity, Uri.parse(TEST_URL));
                     mediaPlayer.setLooping(false);
                     mediaPlayer.setVolume(0, 0);
