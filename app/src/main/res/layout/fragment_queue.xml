@@ -37,6 +37,15 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        style="@style/GNowProgressBar"
+        android:indeterminate="true"
+        android:paddingTop="?attr/actionBarSize"/>
+
 
     <kuchbhilabs.chestream.helpers.CircularRevealView
         android:id="@+id/reveal"
