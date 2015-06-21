@@ -1,13 +1,16 @@
 package kuchbhilabs.chestream.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -34,9 +37,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,33 +104,68 @@ public class QueueFragment extends Fragment {
         upload = (FloatingActionButton) rootView.findViewById(R.id.upload);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    final int color = Color.parseColor("#00bcd4");
-                    final Point p = Helper.getLocationInView(revealView, view);
+            public void onClick(final View view) {
 
-                    revealView.reveal(p.x, p.y, color, view.getHeight() / 2, 440, null);
-                    selectedView = view;
 
-                    handler=new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Choose Image Source");
+                builder.setItems(new CharSequence[] {"Gallery", "Camera"},
+                        new DialogInterface.OnClickListener() {
 
-                            startActivityForResult(takeVideoIntent, 1);
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
 
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    revealView.hide(p.x, p.y, android.R.color.transparent, 0, 330, null);
+                                        // GET Video FROM THE GALLERY
+
+                                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+
+                                        Intent chooser = Intent.createChooser(intent, "Choose a Video");
+                                        startActivityForResult(chooser, 2);
+
+                                        break;
+
+                                    case 1:
+
+                                        final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                                        if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                            final int color = Color.parseColor("#00bcd4");
+                                            final Point p = Helper.getLocationInView(revealView, view);
+
+                                            revealView.reveal(p.x, p.y, color, view.getHeight() / 2, 440, null);
+                                            selectedView = view;
+
+                                            handler=new Handler();
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    startActivityForResult(takeVideoIntent, 1);
+
+                                                    handler.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            revealView.hide(p.x, p.y, android.R.color.transparent, 0, 330, null);
+                                                        }
+                                                    }, 300);
+
+                                                }
+                                            }, 500);
+
+                                        }
+
+                                        break;
+
+                                    default:
+                                        break;
                                 }
-                            }, 300);
+                            }
+                        });
 
-                        }
-                    }, 500);
+                builder.show();
 
-                }
+
             }
         });
         recyclerView.setHasFixedSize(true);
@@ -140,14 +181,26 @@ public class QueueFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            Uri videoUri = data.getData();
-            Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
-            serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
-            getActivity().startService(serviceIntent);
+        if (resultCode == Activity.RESULT_OK) {
+
+            if (requestCode == 1)
+            {
+                Uri videoUri = data.getData();
+                Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
+                serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
+                getActivity().startService(serviceIntent);
+            }
+
+            if (requestCode == 2)
+            {
+                Uri videoUri = data.getData();
+                Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
+                serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
+                getActivity().startService(serviceIntent);
+            }
+
         }
     }
-
 
 
     private String getRealPathFromUri(Context context, Uri contentUri) {
