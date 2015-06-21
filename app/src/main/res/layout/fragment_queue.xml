@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/recycler_view"
         android:paddingTop="?attr/actionBarSize"
+        android:clipToPadding="false"
+        android:paddingBottom="100dp"
         />
 
     <com.getbase.floatingactionbutton.AddFloatingActionButton
