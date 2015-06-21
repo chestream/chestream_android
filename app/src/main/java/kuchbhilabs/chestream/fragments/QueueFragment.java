@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -29,7 +28,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -37,15 +35,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.QueueVideos;
 import kuchbhilabs.chestream.QueueVideosAdapter;
@@ -71,6 +66,7 @@ public class QueueFragment extends Fragment {
     private String TAG = "QueueFragment";
 
     Toolbar toolbar;
+    SmoothProgressBar progressBar;
 
     public QueueFragment() {
         // Required empty public constructor
@@ -83,7 +79,7 @@ public class QueueFragment extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
         revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
-
+        progressBar=(SmoothProgressBar) rootView.findViewById(R.id.progress);
 
         gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
 
@@ -92,6 +88,7 @@ public class QueueFragment extends Fragment {
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Stream");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(5);
 
 
         upload = (FloatingActionButton) rootView.findViewById(R.id.upload);
@@ -390,6 +387,7 @@ public class QueueFragment extends Fragment {
                 }
                 QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
                 queueVideosAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
                 recyclerView.setAdapter(queueVideosAdapter);
             }
 

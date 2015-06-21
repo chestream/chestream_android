@@ -175,8 +175,10 @@ public class CompressionUploadService extends Service {
                                     videos.put("user_location", "India");
                                     videos.put("url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
                                     videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
-                                    videos.put("played", "False");
-                                    videos.put("username", "Prempal Singh");
+                                    boolean played = false;
+                                    videos.put("upvotes","0");
+                                    videos.put("played", played);
+                                    videos.put("username", "Naman");
                                     videos.saveInBackground(new SaveCallback() {
                                         @Override
                                         public void done(ParseException e) {
