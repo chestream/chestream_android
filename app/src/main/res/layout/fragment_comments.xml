@@ -63,6 +63,7 @@
         android:textColorHint="@android:color/white"
         android:id="@+id/commentEditText"
         android:gravity="bottom"
+        android:singleLine="true"
         android:paddingBottom="10dp"
         android:layout_gravity="bottom"
         android:paddingLeft="20dp"
