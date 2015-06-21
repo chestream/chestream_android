@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Base64;
 import android.util.Log;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParsePush;
@@ -39,5 +40,7 @@ public class ApplicationBase extends Application {
                 }
             }
         });
+
+        Fresco.initialize(this);
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,14 +15,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import kuchbhilabs.chestream.CompressionUploadService;
+import kuchbhilabs.chestream.LoginActivity;
 import kuchbhilabs.chestream.QueueVideos;
 import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
@@ -34,6 +41,8 @@ import kuchbhilabs.chestream.helpers.Helper;
 public class QueueFragment extends Fragment {
 
     private ArrayList<String> listTitle, listAvatarUrl, listUsername, listGifUrl, listVotes, listLocation;
+
+    public static SimpleDraweeView gifView;
 
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
@@ -56,6 +65,13 @@ public class QueueFragment extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
         revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
+
+        gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(Uri.parse("http://i.giphy.com/3o85xru50pUfrbXo9W.gif"))
+                .setAutoPlayAnimations(true)
+                .build();
+        gifView.setController(controller);
 
         upload = (FloatingActionButton) rootView.findViewById(R.id.upload);
         upload.setOnClickListener(new View.OnClickListener() {
@@ -149,4 +165,6 @@ public class QueueFragment extends Fragment {
 
 
     }
+
+
 }

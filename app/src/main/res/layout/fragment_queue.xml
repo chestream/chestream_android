@@ -30,5 +30,10 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"/>
 
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/preview_gif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
 
 </FrameLayout>

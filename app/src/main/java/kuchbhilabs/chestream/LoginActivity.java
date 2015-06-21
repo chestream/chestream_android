@@ -24,7 +24,7 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
     private boolean isSurfaceCreated = false;
     private boolean videoStarted = false;
 
-    private String URL;
+    public static String URL;
 
 
     @Override
