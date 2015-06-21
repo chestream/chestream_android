@@ -10,7 +10,7 @@ public class QueueVideos {
     String numberOfVotes;
     String location;
 
-    public QueueVideos(String title, String username, String avatar_url, String gif_url, String numberOfVotes, String location) {
+    public QueueVideos(String title, String avatar_url, String username,  String gif_url, String numberOfVotes, String location) {
         this.title = title;
         this.username = username;
         this.avatar_url = avatar_url;

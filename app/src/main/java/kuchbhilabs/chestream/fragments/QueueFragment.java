@@ -32,6 +32,11 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import kuchbhilabs.chestream.ApplicationBase;
@@ -59,8 +65,6 @@ import kuchbhilabs.chestream.helpers.Helper;
  * Created by naman on 20/06/15.
  */
 public class QueueFragment extends Fragment {
-
-    private ArrayList<String> listTitle, listAvatarUrl, listUsername, listGifUrl, listVotes, listLocation;
 
     public static SimpleDraweeView gifView;
 
@@ -87,6 +91,7 @@ public class QueueFragment extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
         revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
+
 
         gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
         DraweeController controller = Fresco.newDraweeControllerBuilder()
@@ -172,7 +177,7 @@ public class QueueFragment extends Fragment {
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
 
-        loadDatafromAssets();
+        loadFromParse();
 //        QueueVideosAdapter adapter = new QueueVideosAdapter(queueVideos);
 //        recyclerView.setAdapter(adapter);
 
@@ -229,13 +234,6 @@ public class QueueFragment extends Fragment {
             e.printStackTrace();
         }
 
-        listTitle = new ArrayList<String>();
-        listAvatarUrl = new ArrayList<String>();
-        listUsername = new ArrayList<String>();
-        listGifUrl = new ArrayList<String>();
-        listLocation = new ArrayList<String>();
-        listVotes = new ArrayList<String>();
-
 
 
         Log.d("data", obj.toString());
@@ -255,14 +253,6 @@ public class QueueFragment extends Fragment {
                 String gif_url = arrayOutlets.getJSONObject(i).getString("video_gif");
                 String location = arrayOutlets.getJSONObject(i).getString("user_location");
                 String numberOfVotes = arrayOutlets.getJSONObject(i).getString("video_upvotes");
-
-                listTitle.add(title);
-                listAvatarUrl.add(avatar_url);
-                listLocation.add(location);
-                listVotes.add(numberOfVotes);
-                listGifUrl.add(gif_url);
-                listUsername.add(username);
-
 
                 entries.add(
                         new QueueVideos(title, username, avatar_url, gif_url, numberOfVotes, location)
@@ -308,14 +298,6 @@ public class QueueFragment extends Fragment {
                         String gif_url = arrayOutlets.getJSONObject(i).getString("video_gif");
                         String location = arrayOutlets.getJSONObject(i).getString("user_location");
                         String numberOfVotes = arrayOutlets.getJSONObject(i).getString("video_upvotes");
-
-                        listTitle.add(title);
-                        listAvatarUrl.add(avatar_url);
-                        listLocation.add(location);
-                        listVotes.add(numberOfVotes);
-                        listGifUrl.add(gif_url);
-                        listUsername.add(username);
-
 
                         entries.add(
                                 new QueueVideos(title, username, avatar_url, gif_url, numberOfVotes, location)
@@ -390,5 +372,39 @@ public class QueueFragment extends Fragment {
 
     }
 
+    public  void loadFromParse()
+    {
+
+        clear_lists();
+        ParseQuery<ParseObject> query = new ParseQuery<>(
+                "Videos");
+
+        query.orderByDescending("video_upvotes");
+        query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                for (ParseObject videos : parseObjects) {
+
+                    entries.add(
+                            new QueueVideos(  videos.get("title").toString(),
+                                    videos.get("user_avatar").toString(),
+                                    videos.get("username").toString(),
+                                    videos.get("video_gif").toString(),
+                                    videos.get("upvotes").toString(),
+                                    videos.get("user_location").toString()
+                                    ));
+                }
+                QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
+                queueVideosAdapter.notifyDataSetChanged();
+                recyclerView.setAdapter(queueVideosAdapter);
+            }
+
+        });
+    }
+
+    private void clear_lists() {
+        entries.clear();
+    }
 
 }
