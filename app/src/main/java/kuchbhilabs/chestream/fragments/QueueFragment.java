@@ -25,6 +25,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -53,6 +56,8 @@ public class QueueFragment extends Fragment {
 
     private ArrayList<String> listTitle, listAvatarUrl, listUsername, listGifUrl, listVotes, listLocation;
 
+    public static SimpleDraweeView gifView;
+
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
     private ArrayList<QueueVideos> queueVideos;
@@ -76,6 +81,13 @@ public class QueueFragment extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
         revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
+
+        gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(Uri.parse("http://i.giphy.com/3o85xru50pUfrbXo9W.gif"))
+                .setAutoPlayAnimations(true)
+                .build();
+        gifView.setController(controller);
 
         toolbar=(Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);

@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +16,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.List;
 
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
+import kuchbhilabs.chestream.fragments.QueueFragment;
+import kuchbhilabs.chestream.fragments.VideoFragment;
 
 
 public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.QVHolder> {
@@ -131,7 +136,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     Log.d("press", "pressed");
 
 
-                    dialog.show();
+//                    dialog.show();
+                    QueueFragment.gifView.setVisibility(View.VISIBLE);
+
 //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
 
 
@@ -139,7 +146,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.setSelected(false);
                     Log.d("press", "release");
-                    dialog.dismiss();
+//                    dialog.dismiss();
+                    QueueFragment.gifView.setVisibility(View.INVISIBLE);
                     return true;
                 } else
                     return false;
@@ -152,8 +160,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     public int getItemCount() {
         return queueVideosList.size();
     }
-
-
 
 }
 
