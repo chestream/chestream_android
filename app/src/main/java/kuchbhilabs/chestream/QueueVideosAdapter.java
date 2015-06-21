@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -82,7 +85,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
 
     @Override
-    public void onBindViewHolder(final QVHolder holder, int position) {
+    public void onBindViewHolder(final QVHolder holder, final int position) {
         holder.videoTitle.setText(queueVideosList.get(position).title);
         holder.username.setText(queueVideosList.get(position).username);
         holder.location.setText(queueVideosList.get(position).location);
@@ -137,6 +140,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
 
 //                    dialog.show();
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setUri(Uri.parse(queueVideosList.get(position).gif_url))
+                            .setAutoPlayAnimations(true)
+                            .build();
+                    QueueFragment.gifView.setController(controller);
                     QueueFragment.gifView.setVisibility(View.VISIBLE);
 
 //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
