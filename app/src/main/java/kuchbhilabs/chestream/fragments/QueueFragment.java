@@ -25,9 +25,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,7 +109,7 @@ public class QueueFragment extends Fragment {
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
 
-        loadData();
+        loadDatafromAssets();
 //        QueueVideosAdapter adapter = new QueueVideosAdapter(queueVideos);
 //        recyclerView.setAdapter(adapter);
 
@@ -141,6 +144,69 @@ public class QueueFragment extends Fragment {
     }
 
 
+    public void loadDatafromAssets()
+    {
+
+        JSONObject obj=null;
+        try {
+             obj = new JSONObject(loadJSONFromAsset());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        listTitle = new ArrayList<String>();
+        listAvatarUrl = new ArrayList<String>();
+        listUsername = new ArrayList<String>();
+        listGifUrl = new ArrayList<String>();
+        listLocation = new ArrayList<String>();
+        listVotes = new ArrayList<String>();
+
+
+
+        Log.d("data", obj.toString());
+
+        JSONArray arrayOutlets = null;
+
+        try {
+            arrayOutlets = obj.getJSONArray("documents");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < arrayOutlets.length(); i++) {
+            try {
+                String title = arrayOutlets.getJSONObject(i).getString("video_title");
+                String avatar_url = arrayOutlets.getJSONObject(i).getString("user_avatar");
+                String username = arrayOutlets.getJSONObject(i).getString("user_name");
+                String gif_url = arrayOutlets.getJSONObject(i).getString("video_gif");
+                String location = arrayOutlets.getJSONObject(i).getString("user_location");
+                String numberOfVotes = arrayOutlets.getJSONObject(i).getString("video_upvotes");
+
+                listTitle.add(title);
+                listAvatarUrl.add(avatar_url);
+                listLocation.add(location);
+                listVotes.add(numberOfVotes);
+                listGifUrl.add(gif_url);
+                listUsername.add(username);
+
+
+                entries.add(
+                        new QueueVideos(title, username, avatar_url, gif_url, numberOfVotes, location)
+                );
+
+                Log.d("data", title + username + avatar_url + gif_url + numberOfVotes + location);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+//                                Log.d("data", title + username + avatar_url + gif_url + numberOfVotes + location);
+        }
+
+        QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
+        queueVideosAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(queueVideosAdapter);
+
+    }
+
     public void loadData()
     {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
@@ -148,26 +214,53 @@ public class QueueFragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d(TAG, response.toString());
+
+                JSONObject jsonObject = response;
+                Log.d("data", jsonObject.toString());
+
+                JSONArray arrayOutlets = null;
+
+                try {
+                    arrayOutlets = jsonObject.getJSONArray("documents");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < arrayOutlets.length(); i++) {
+                    try {
+                        String title = arrayOutlets.getJSONObject(i).getString("video_title");
+                        String avatar_url = arrayOutlets.getJSONObject(i).getString("user_avatar");
+                        String username = arrayOutlets.getJSONObject(i).getString("user_name");
+                        String gif_url = arrayOutlets.getJSONObject(i).getString("video_gif");
+                        String location = arrayOutlets.getJSONObject(i).getString("user_location");
+                        String numberOfVotes = arrayOutlets.getJSONObject(i).getString("video_upvotes");
+
+                        listTitle.add(title);
+                        listAvatarUrl.add(avatar_url);
+                        listLocation.add(location);
+                        listVotes.add(numberOfVotes);
+                        listGifUrl.add(gif_url);
+                        listUsername.add(username);
+
+
+                        entries.add(
+                                new QueueVideos(title, username, avatar_url, gif_url, numberOfVotes, location)
+                        );
+
+                        Log.d("data", title + username + avatar_url + gif_url + numberOfVotes + location);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+//                                Log.d("data", title + username + avatar_url + gif_url + numberOfVotes + location);
+                }
+
+                QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
+                queueVideosAdapter.notifyDataSetChanged();
+                recyclerView.setAdapter(queueVideosAdapter);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
-        entries.add(
-                new QueueVideos("ds", "ds", "ds", "s", "5", "sa")
-        );
-
-        entries.add(
-                new QueueVideos("ds", "ds", "ds", "s", "8", "sa")
-        );
-
-        entries.add(
-                new QueueVideos("ds", "ds", "ds", "s", "15", "sa")
-        );
-
-        QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
-        queueVideosAdapter.notifyDataSetChanged();
-        recyclerView.setAdapter(queueVideosAdapter);
 
             }
         }) {
@@ -195,4 +288,32 @@ public class QueueFragment extends Fragment {
         request.setShouldCache(false);
         VolleySingleton.getInstance(getActivity()).getRequestQueue().add(request);
     }
+
+
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+
+            InputStream is = getActivity().getAssets().open("sample.json");
+
+            int size = is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+
+    }
+
+
 }
