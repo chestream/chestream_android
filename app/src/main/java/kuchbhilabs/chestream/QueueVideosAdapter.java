@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,7 +43,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         TextView upVote;
         TextView downVote;
         TextView totalVotes;
-        LinearLayout rootLayout;
+        CardView rootLayout;
         CircularRevealView revealView;
 
         QVHolder(final View itemView) {
@@ -55,7 +56,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             totalVotes = (TextView)itemView.findViewById(R.id.video_score);
             upVote = (TextView)itemView.findViewById(R.id.up_vote);
             downVote = (TextView)itemView.findViewById(R.id.down_vote);
-            rootLayout = (LinearLayout)itemView.findViewById(R.id.root_layout);
+            rootLayout = (CardView)itemView.findViewById(R.id.root_layout);
             revealView=(CircularRevealView) itemView.findViewById(R.id.reveal);
         }
     }
@@ -144,6 +145,20 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    v.setSelected(false);
+                    Log.d("press", "release");
+//                    dialog.dismiss();
+                    QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    return true;
+
+                } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    v.setSelected(false);
+                    Log.d("press", "release");
+//                    dialog.dismiss();
+                    QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    return true;
+
+                } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
                     v.setSelected(false);
                     Log.d("press", "release");
 //                    dialog.dismiss();
