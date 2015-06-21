@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,9 +15,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
 import java.util.List;
 
 import kuchbhilabs.chestream.fragments.QueueFragment;
@@ -41,7 +43,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         TextView upVote;
         TextView downVote;
         TextView totalVotes;
-        LinearLayout rootLayout;
+        CardView rootLayout;
         CircularRevealView revealView;
         SimpleDraweeView draweeView;
 
@@ -56,7 +58,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             totalVotes = (TextView)itemView.findViewById(R.id.video_score);
             upVote = (TextView)itemView.findViewById(R.id.up_vote);
             downVote = (TextView)itemView.findViewById(R.id.down_vote);
-            rootLayout = (LinearLayout)itemView.findViewById(R.id.root_layout);
+            rootLayout = (CardView)itemView.findViewById(R.id.root_layout);
             revealView=(CircularRevealView) itemView.findViewById(R.id.reveal);
             draweeView=(SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
         }
@@ -84,7 +86,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
 
     @Override
-    public void onBindViewHolder(final QVHolder holder, int position) {
+    public void onBindViewHolder(final QVHolder holder, final int position) {
         holder.videoTitle.setText(queueVideosList.get(position).title);
         holder.username.setText(queueVideosList.get(position).username);
         holder.location.setText(queueVideosList.get(position).location);
@@ -142,6 +144,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
 
 //                    dialog.show();
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setUri(Uri.parse(queueVideosList.get(position).gif_url))
+                            .setAutoPlayAnimations(true)
+                            .build();
+                    QueueFragment.gifView.setController(controller);
                     QueueFragment.gifView.setVisibility(View.VISIBLE);
 
 //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
@@ -149,6 +156,20 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    v.setSelected(false);
+                    Log.d("press", "release");
+//                    dialog.dismiss();
+                    QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    return true;
+
+                } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    v.setSelected(false);
+                    Log.d("press", "release");
+//                    dialog.dismiss();
+                    QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    return true;
+
+                } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
                     v.setSelected(false);
                     Log.d("press", "release");
 //                    dialog.dismiss();

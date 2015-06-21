@@ -82,11 +82,7 @@ public class QueueFragment extends Fragment {
         progressBar=(SmoothProgressBar) rootView.findViewById(R.id.progress);
 
         gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(Uri.parse("http://i.giphy.com/3o85xru50pUfrbXo9W.gif"))
-                .setAutoPlayAnimations(true)
-                .build();
-        gifView.setController(controller);
+
 
         toolbar=(Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
