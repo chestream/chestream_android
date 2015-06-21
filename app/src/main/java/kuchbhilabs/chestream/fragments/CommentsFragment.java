@@ -12,6 +12,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +47,6 @@ public class CommentsFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setHasFixedSize(true);
 
-        setUpCommentList();
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -51,6 +55,23 @@ public class CommentsFragment extends Fragment {
                     if (commentsList == null) {
                         commentsList = new ArrayList<Comments>();
                     }
+
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
+                    query.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> list, ParseException e) {
+                                for(int i=0;i<list.size();i++){
+                                    Comments comments = new Comments();
+                                    comments.setAvatar(list.get(i).getString("user_avatar"));
+                                    comments.setUsername(list.get(i).getString("username"));
+                                    comments.setComment(list.get(i).getString("comment"));
+                                    commentsList.add(comments);
+
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                        }
+                    });
 
                         Comments comments = new Comments();
 
@@ -82,25 +103,4 @@ public class CommentsFragment extends Fragment {
         return v;
     }
 
-    private void setUpCommentList() {
-
-        if (commentsList == null) {
-            commentsList = new ArrayList<Comments>();
-
-        }
-
-        for (int i = 0; i < 9; i++) {
-            Comments comments = new Comments();
-
-            comments.setAvatar("url");
-            comments.setUsername("@naman14");
-            comments.setComment("Great Video!");
-
-            commentsList.add(comments);
-        }
-
-       adapter = new CommentsAdapter(getActivity(), commentsList);
-        recyclerView.setAdapter(adapter);
-
-    }
 }
