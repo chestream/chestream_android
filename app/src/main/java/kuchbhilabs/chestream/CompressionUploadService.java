@@ -167,7 +167,7 @@ public class CompressionUploadService extends Service {
                                         // Create or overwrite the blob with contents from a local file.
 
                                         CloudBlockBlob blob = container.getBlockBlobReference(videoName + ".mp4");
-                                        File file = new File(INPUT_VIDEO);
+                                        File file = new File(OUTPUT_VIDEO);
                                         blob.upload(new FileInputStream(file), file.length());
                                     } catch (Exception exception) {
                                         exception.printStackTrace();
