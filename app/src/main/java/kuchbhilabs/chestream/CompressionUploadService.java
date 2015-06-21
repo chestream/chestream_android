@@ -11,11 +11,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
@@ -25,14 +20,12 @@ import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CompressionUploadService extends Service {
 
@@ -167,57 +160,31 @@ public class CompressionUploadService extends Service {
                                         // Create or overwrite the blob with contents from a local file.
 
                                         CloudBlockBlob blob = container.getBlockBlobReference(videoName + ".mp4");
-                                        File file = new File(INPUT_VIDEO);
+                                        File file = new File(OUTPUT_VIDEO);
                                         blob.upload(new FileInputStream(file), file.length());
                                     } catch (Exception exception) {
                                         exception.printStackTrace();
                                     }
                                     return null;
                                 }
+
+                                @Override
+                                protected void onPostExecute(Void aVoid) {
+                                    ParseObject videos = new ParseObject("Videos");
+                                    videos.put("title", videoName);
+                                    videos.put("user_location", "India");
+                                    videos.put("url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
+                                    videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
+                                    videos.put("played", "False");
+                                    videos.put("username", "Prempal Singh");
+                                    videos.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            stopForeground(true);
+                                        }
+                                    });
+                                }
                             }.execute();
-                            StringRequest request = new StringRequest(Request.Method.POST,
-                                    "https://api-eu.clusterpoint.com/1104/chestream.json", new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    Log.d(TAG, response);
-                                    stopForeground(true);
-                                }
-                            }, new Response.ErrorListener() {
-
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    error.printStackTrace();
-                                }
-                            }) {
-
-                                @Override
-                                public Map<String, String> getHeaders() throws AuthFailureError {
-                                    Map headers = new HashMap();
-                                    headers.put("Authorization", ApplicationBase.basicAuth);
-                                    return headers;
-                                }
-
-                                @Override
-                                public byte[] getBody() throws AuthFailureError {
-                                    JSONObject jsonObject = new JSONObject();
-                                    try {
-                                        jsonObject.put("id", videoName);
-                                        jsonObject.put("user_location", "India");
-                                        jsonObject.put("video_title", "Sexy video");
-                                        jsonObject.put("video_url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
-                                        jsonObject.put("video_updates", 0);
-                                        jsonObject.put("user_name", "Prempal");
-                                        jsonObject.put("video_played", "False");
-                                        jsonObject.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Log.d(TAG, jsonObject.toString());
-                                    return jsonObject.toString().getBytes();
-                                }
-                            };
-                            request.setShouldCache(false);
-                            VolleySingleton.getInstance(getApplicationContext()).getRequestQueue().add(request);
 
                         }
 
