@@ -2,6 +2,8 @@ package kuchbhilabs.chestream;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
+
+import kuchbhilabs.chestream.helpers.CircularRevealView;
+import kuchbhilabs.chestream.helpers.Helper;
 
 
 public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.QVHolder> {
@@ -33,6 +38,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         TextView downVote;
         TextView totalVotes;
         LinearLayout rootLayout;
+        CircularRevealView revealView;
 
         QVHolder(final View itemView) {
             super(itemView);
@@ -45,6 +51,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             upVote = (TextView)itemView.findViewById(R.id.up_vote);
             downVote = (TextView)itemView.findViewById(R.id.down_vote);
             rootLayout = (LinearLayout)itemView.findViewById(R.id.root_layout);
+            revealView=(CircularRevealView) itemView.findViewById(R.id.reveal);
         }
     }
     List<QueueVideos> queueVideosList;
@@ -88,6 +95,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     holder.totalVotes.setText(votes + "");
                   //  holder.upVote.getBackground().setAlpha(165);
                   //  holder.downVote.getBackground().setAlpha(65);
+                    final int color = Color.parseColor("#00bcd4");
+                    final Point p = Helper.getLocationInView(holder.revealView, v);
+
+                    holder.revealView.reveal(p.x, p.y, color, v.getHeight() / 2, 440, null);
+
 
                 } else {
                 }
@@ -101,6 +113,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     holder.totalVotes.setText(votes + "");
                   //  holder.downVote.getBackground().setAlpha(165);
                   //  holder.upVote.getBackground().setAlpha(65);
+
+                    final int color = Color.TRANSPARENT;
+                    final Point p = Helper.getLocationInView(holder.revealView, v);
+
+                    holder.revealView.hide(p.x, p.y, color, v.getHeight() / 5, 440, null);
                 } else {
                 }
             }
