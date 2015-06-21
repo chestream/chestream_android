@@ -33,6 +33,7 @@ public class CommentsFragment extends Fragment {
     private CommentsAdapter adapter;
     private List<Comments> commentsList=new ArrayList<>();
     EditText editText;
+    static CommentsAdapter commentsAdapter;
 
     private static final String TAG = "CommentsFragment";
 
@@ -47,31 +48,23 @@ public class CommentsFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setHasFixedSize(true);
 
+        commentsAdapter = new CommentsAdapter(getActivity(),commentsList);
+        recyclerView.setAdapter(commentsAdapter);
+
+
+        setUpComments();
+
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE){
+
+
                     if (commentsList == null) {
                         commentsList = new ArrayList<Comments>();
                     }
 
-                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
-                    query.findInBackground(new FindCallback<ParseObject>() {
-                        @Override
-                        public void done(List<ParseObject> list, ParseException e) {
-                                for(int i=0;i<list.size();i++){
-                                    Comments comments = new Comments();
-                                    comments.setAvatar(list.get(i).getString("user_avatar"));
-                                    comments.setUsername(list.get(i).getString("username"));
-                                    comments.setComment(list.get(i).getString("comment"));
-                                    commentsList.add(comments);
-
-                                    adapter.notifyDataSetChanged();
-                                }
-
-                        }
-                    });
 
                         Comments comments = new Comments();
 
@@ -81,13 +74,16 @@ public class CommentsFragment extends Fragment {
 
                         commentsList.add(comments);
 
-                        adapter.notifyDataSetChanged();
+
+                        commentsAdapter.notifyDataSetChanged();
 
                     }
 
                 return false;
             }
         });
+
+
 /*
         Button tempButton = (Button) v.findViewById(R.id.button_test);
         tempButton.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +97,29 @@ public class CommentsFragment extends Fragment {
         });
 */
         return v;
+    }
+
+    private void setUpComments(){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                for(int i=0;i<list.size();i++){
+                    Comments comments = new Comments();
+                    comments.setAvatar(list.get(i).getString("user_avatar"));
+                    comments.setUsername(list.get(i).getString("username"));
+                    comments.setComment(list.get(i).getString("comment"));
+                    commentsList.add(comments);
+
+
+                }
+
+
+                commentsAdapter.notifyDataSetChanged();
+
+            }
+        });
+
     }
 
 }

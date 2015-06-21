@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="35dp"
@@ -15,11 +16,15 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent">
 
-        <kuchbhilabs.chestream.helpers.CircularImageView
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:src="@drawable/zombie_icon"
-            android:id="@+id/avatar"/>
+        <com.facebook.drawee.view.SimpleDraweeView
+            fresco:roundAsCircle="true"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="7dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="7dp"
+            android:id="@+id/profile_picture"
+            />
 
         <TextView
             android:layout_width="wrap_content"
