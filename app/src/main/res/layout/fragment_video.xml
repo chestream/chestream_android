@@ -27,6 +27,8 @@
             android:id="@+id/commentText"
             android:text="Great Video"
             android:visibility="gone"
+            android:textColor="#ffffff"
+            android:textSize="25sp"
             android:layout_gravity="center_horizontal|top"
             android:gravity="center_horizontal|top"
             android:layout_marginTop="50dp"/>
