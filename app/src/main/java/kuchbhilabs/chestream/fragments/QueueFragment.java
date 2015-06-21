@@ -241,9 +241,10 @@ public class QueueFragment extends Fragment {
                 String gif_url = arrayOutlets.getJSONObject(i).getString("video_gif");
                 String location = arrayOutlets.getJSONObject(i).getString("user_location");
                 String numberOfVotes = arrayOutlets.getJSONObject(i).getString("video_upvotes");
+                String url = arrayOutlets.getJSONObject(i).getString("url");
 
                 entries.add(
-                        new QueueVideos(title, username, avatar_url, gif_url, numberOfVotes, location)
+                        new QueueVideos(title, username, avatar_url, gif_url, numberOfVotes, location, url)
                 );
 
                 Log.d("data", title + username + avatar_url + gif_url + numberOfVotes + location);
@@ -370,7 +371,7 @@ public class QueueFragment extends Fragment {
         ParseQuery<ParseObject> query = new ParseQuery<>(
                 "Videos");
 
-        query.orderByDescending("video_upvotes");
+        query.orderByDescending("upvotes");
         query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -383,7 +384,8 @@ public class QueueFragment extends Fragment {
                                     videos.get("username").toString(),
                                     videos.get("video_gif").toString(),
                                     videos.get("upvotes").toString(),
-                                    videos.get("user_location").toString()
+                                    videos.get("user_location").toString(),
+                                    videos.get("url").toString()
                                     ));
                 }
                 QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
