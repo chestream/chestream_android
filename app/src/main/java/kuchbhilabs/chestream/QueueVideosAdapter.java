@@ -84,7 +84,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     @Override
     public void onBindViewHolder(final QVHolder holder, int position) {
         holder.videoTitle.setText(queueVideosList.get(position).title);
-        holder.username.setText("@"+queueVideosList.get(position).username);
+        holder.username.setText(queueVideosList.get(position).username);
         holder.location.setText(queueVideosList.get(position).location);
 
         holder.totalVotes.setText(queueVideosList.get(position).numberOfVotes + "");
