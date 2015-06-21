@@ -8,11 +8,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -31,8 +29,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         TextView videoTitle;
         TextView location;
         TextView username;
-        ImageButton upVote;
-        ImageButton downVote;
+        TextView upVote;
+        TextView downVote;
         TextView totalVotes;
         LinearLayout rootLayout;
 
@@ -44,8 +42,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             location = (TextView)itemView.findViewById(R.id.video_location);
             username = (TextView)itemView.findViewById(R.id.username);
             totalVotes = (TextView)itemView.findViewById(R.id.video_score);
-            upVote = (ImageButton)itemView.findViewById(R.id.up_vote);
-            downVote = (ImageButton)itemView.findViewById(R.id.down_vote);
+            upVote = (TextView)itemView.findViewById(R.id.up_vote);
+            downVote = (TextView)itemView.findViewById(R.id.down_vote);
             rootLayout = (LinearLayout)itemView.findViewById(R.id.root_layout);
         }
     }
@@ -74,7 +72,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     @Override
     public void onBindViewHolder(final QVHolder holder, int position) {
         holder.videoTitle.setText(queueVideosList.get(position).title);
-        holder.username.setText(queueVideosList.get(position).username);
+        holder.username.setText("@"+queueVideosList.get(position).username);
         holder.location.setText(queueVideosList.get(position).location);
 
         holder.totalVotes.setText(queueVideosList.get(position).numberOfVotes + "");
@@ -88,8 +86,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 int votes = total_votes[0] + 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
                     holder.totalVotes.setText(votes + "");
-                    holder.upVote.getBackground().setAlpha(165);
-                    holder.downVote.getBackground().setAlpha(65);
+                  //  holder.upVote.getBackground().setAlpha(165);
+                  //  holder.downVote.getBackground().setAlpha(65);
+
                 } else {
                 }
             }
@@ -100,8 +99,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 int votes = total_votes[0] - 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
                     holder.totalVotes.setText(votes + "");
-                    holder.downVote.getBackground().setAlpha(165);
-                    holder.upVote.getBackground().setAlpha(65);
+                  //  holder.downVote.getBackground().setAlpha(165);
+                  //  holder.upVote.getBackground().setAlpha(65);
                 } else {
                 }
             }

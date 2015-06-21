@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +63,8 @@ public class QueueFragment extends Fragment {
     android.os.Handler handler;
     private String TAG = "QueueFragment";
 
+    Toolbar toolbar;
+
     public QueueFragment() {
         // Required empty public constructor
     }
@@ -72,6 +76,12 @@ public class QueueFragment extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
         revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
+
+        toolbar=(Toolbar) rootView.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Stream");
+
 
         upload = (FloatingActionButton) rootView.findViewById(R.id.upload);
         upload.setOnClickListener(new View.OnClickListener() {
