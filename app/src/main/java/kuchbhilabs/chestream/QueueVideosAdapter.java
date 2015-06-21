@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -16,17 +15,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 
-import java.io.IOException;
+import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
+import kuchbhilabs.chestream.fragments.QueueFragment;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
-import kuchbhilabs.chestream.fragments.QueueFragment;
-import kuchbhilabs.chestream.fragments.VideoFragment;
 
 
 public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.QVHolder> {
@@ -48,11 +45,13 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         TextView totalVotes;
         CardView rootLayout;
         CircularRevealView revealView;
+        SimpleDraweeView draweeView;
+
 
         QVHolder(final View itemView) {
             super(itemView);
 
-            uploaderImage = (ImageView)itemView.findViewById(R.id.profile_picture);
+
             videoTitle = (TextView)itemView.findViewById(R.id.video_title);
             location = (TextView)itemView.findViewById(R.id.video_location);
             username = (TextView)itemView.findViewById(R.id.username);
@@ -61,6 +60,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             downVote = (TextView)itemView.findViewById(R.id.down_vote);
             rootLayout = (CardView)itemView.findViewById(R.id.root_layout);
             revealView=(CircularRevealView) itemView.findViewById(R.id.reveal);
+            draweeView=(SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
         }
     }
     List<QueueVideos> queueVideosList;
@@ -90,6 +90,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.videoTitle.setText(queueVideosList.get(position).title);
         holder.username.setText(queueVideosList.get(position).username);
         holder.location.setText(queueVideosList.get(position).location);
+        Uri uri = Uri.parse(queueVideosList.get(position).avatar_url);
+        holder.draweeView.setImageURI(uri);
+
 
         holder.totalVotes.setText(queueVideosList.get(position).numberOfVotes + "");
 //        holder.uploaderImage.
