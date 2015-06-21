@@ -34,7 +34,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     SurfaceView surfaceView;
     SurfaceHolder holder;
-    MediaPlayer mediaPlayer;
+    static MediaPlayer mediaPlayer;
     private static TextView commentFloating;
     private static TimerCommentText timerCommentText;
 
@@ -146,6 +146,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     @Override
     public void onResume() {
         super.onResume();
+        mediaPlayer=new MediaPlayer();
         IntentFilter filter = new IntentFilter("intent.omerjerk");
         activity.registerReceiver(receiver, filter);
     }
