@@ -9,14 +9,17 @@ public class QueueVideos {
     String gif_url;
     String numberOfVotes;
     String location;
+    String url;
 
-    public QueueVideos(String title, String avatar_url, String username,  String gif_url, String numberOfVotes, String location) {
+    public QueueVideos(String title, String avatar_url, String username,  String gif_url,
+                       String numberOfVotes, String location, String url) {
         this.title = title;
         this.username = username;
         this.avatar_url = avatar_url;
         this.gif_url = gif_url;
         this.numberOfVotes = numberOfVotes;
         this.location = location;
+        this.url = url;
     }
 
     public String getAvatar_url() {

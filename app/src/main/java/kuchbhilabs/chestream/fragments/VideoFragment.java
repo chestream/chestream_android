@@ -1,6 +1,7 @@
 package kuchbhilabs.chestream.fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,8 +20,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import kuchbhilabs.chestream.QueueVideos;
+import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
@@ -44,9 +55,15 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     private boolean isMediaPlayerInitialized = false;
     private boolean isSurfaceCreated = false;
+    private boolean isUrlFetched = false;
     private boolean videoStarted = false;
 
     private CommentsBroadcastReceiver receiver;
+
+    private ArrayList<String> urls = new ArrayList<>();
+    private int i = 0;
+
+    ProgressDialog mProgressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
@@ -58,6 +75,29 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         activity = getActivity();
 
         receiver = new CommentsBroadcastReceiver();
+
+        mProgressDialog = new ProgressDialog(activity);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage("Initializing the stream...");
+        mProgressDialog.show();
+
+        ParseQuery<ParseObject> query = new ParseQuery<>(
+                "Videos");
+
+        query.orderByDescending("upvotes");
+//        query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                for (ParseObject videos : parseObjects) {
+                    urls.add(videos.getString("url"));
+                }
+                isUrlFetched = true;
+                startMediaPlayer();
+            }
+        });
+        mediaPlayer = new MediaPlayer();
+
 
         slidingUpPanelLayout=(SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
         slidingUpPanelLayout.setOverlayed(true);
@@ -76,11 +116,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         holder = surfaceView.getHolder();
         holder.addCallback(this);
 
-        mediaPlayer = new MediaPlayer();
+
         isMediaPlayerInitialized = true;
-        if (isSurfaceCreated) {
-            startMediaPlayer();
-        }
+        startMediaPlayer();
 
         return rootView;
     }
@@ -88,9 +126,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         isSurfaceCreated = true;
-        if (isMediaPlayerInitialized) {
-            startMediaPlayer();
-        }
+        startMediaPlayer();
     }
 
     @Override
@@ -106,28 +142,56 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     }
 
     private void startMediaPlayer() {
-        synchronized (this) {
-            if (!videoStarted) {
-                try {
-                    if (mediaPlayer == null) {
-                        mediaPlayer = new MediaPlayer();
-                    }
-                    mediaPlayer.setDataSource(activity, Uri.parse(TEST_URL));
-                    mediaPlayer.setLooping(false);
-                    mediaPlayer.setVolume(0, 0);
-
-                    mediaPlayer.setDisplay(holder);
-                    mediaPlayer.prepareAsync();
-
-                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            mediaPlayer.start();
-                            videoStarted = true;
+        if (isMediaPlayerInitialized && isSurfaceCreated && isUrlFetched) {
+            synchronized (this) {
+                if (!videoStarted) {
+                    try {
+                        if (mediaPlayer == null) {
+                            mediaPlayer = new MediaPlayer();
                         }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        mediaPlayer.setDataSource(activity, Uri.parse(urls.get(0)));
+                        mediaPlayer.setLooping(false);
+//                        mediaPlayer.setVolume(0, 0);
+
+                        mediaPlayer.setDisplay(holder);
+                        mediaPlayer.prepareAsync();
+
+                        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                if (mProgressDialog != null) {
+                                    mProgressDialog.cancel();
+                                    mProgressDialog = null;
+                                }
+                                mediaPlayer.start();
+                                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                    @Override
+                                    public void onCompletion(MediaPlayer mp) {
+
+                                        Log.d(TAG, "COMPLETION");
+                                        mediaPlayer.reset();
+                                        try {
+//                    if (mediaPlayer == null) {
+//                        mediaPlayer = new MediaPlayer();
+//                    }
+                                            mediaPlayer.setDataSource(activity, Uri.parse(urls.get(++i)));
+//                    mediaPlayer.setLooping(false);
+//                    mediaPlayer.setVolume(0, 0);
+
+//                    mediaPlayer.setDisplay(holder);
+                                            mediaPlayer.prepare();
+                                            mediaPlayer.start();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                                videoStarted = true;
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

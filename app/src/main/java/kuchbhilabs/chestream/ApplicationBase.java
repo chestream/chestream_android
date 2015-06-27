@@ -4,9 +4,11 @@ import android.app.Application;
 import android.util.Base64;
 import android.util.Log;
 
+import com.facebook.FacebookSdk;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -23,8 +25,12 @@ public class ApplicationBase extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
         Parse.initialize(this, "M5tnZk2K6PdF82Ra8485bG2VQwPjpeZLeL96VLPj",
                 "0Sg7WlkNmt0jkC6dOQ91qkOUbGBoyiCqIG8xqU7z");
+
+        ParseFacebookUtils.initialize(this);
 
         ParseUser.enableAutomaticUser();
 

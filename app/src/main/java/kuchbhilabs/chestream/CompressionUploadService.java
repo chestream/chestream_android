@@ -179,7 +179,7 @@ public class CompressionUploadService extends Service {
                                     videos.put("upvotes","0");
                                     videos.put("played", played);
                                     videos.put("username", "Naman");
-                                    videos.put("video_gif","http://31.media.tumblr.com/a7d1b4cccb6f89dd745e88148e82b842/tumblr_mr4mswW7961sd35juo1_500.gif");
+//                                    videos.put("video_gif","http://31.media.tumblr.com/a7d1b4cccb6f89dd745e88148e82b842/tumblr_mr4mswW7961sd35juo1_500.gif");
                                     videos.saveInBackground(new SaveCallback() {
                                         @Override
                                         public void done(ParseException e) {
