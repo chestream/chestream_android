@@ -22,6 +22,7 @@ import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
@@ -176,10 +177,13 @@ public class CompressionUploadService extends Service {
                                     videos.put("url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
                                     videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
                                     boolean played = false;
-                                    videos.put("upvotes","0");
+                                    videos.put("upvotes",0);
                                     videos.put("played", played);
-                                    videos.put("username", "Naman");
-//                                    videos.put("video_gif","http://31.media.tumblr.com/a7d1b4cccb6f89dd745e88148e82b842/tumblr_mr4mswW7961sd35juo1_500.gif");
+                                    ParseUser currentUser = ParseUser.getCurrentUser();
+                                    if (currentUser != null) {
+                                        videos.put("username", currentUser);
+                                    }
+                                    videos.put("video_gif","http://31.media.tumblr.com/a7d1b4cccb6f89dd745e88148e82b842/tumblr_mr4mswW7961sd35juo1_500.gif");
                                     videos.saveInBackground(new SaveCallback() {
                                         @Override
                                         public void done(ParseException e) {
