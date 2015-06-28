@@ -7,6 +7,7 @@ import android.util.Log;
 import com.facebook.FacebookSdk;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.parse.Parse;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParsePush;
@@ -31,7 +32,7 @@ public class ApplicationBase extends Application {
                 "0Sg7WlkNmt0jkC6dOQ91qkOUbGBoyiCqIG8xqU7z");
 
         ParseFacebookUtils.initialize(this);
-
+        ParseACL defaultACL = new ParseACL();
         ParseUser.enableAutomaticUser();
 
         Log.d("OMERJERK", "Signing up for parse");
