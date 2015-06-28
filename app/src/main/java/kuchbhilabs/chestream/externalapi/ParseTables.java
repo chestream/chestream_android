@@ -6,6 +6,7 @@ package kuchbhilabs.chestream.externalapi;
 public class ParseTables {
 
     public static class Users {
-        public static String USERNAME = "username";
+        public static final String USERNAME = "username";
+        public static final String FULLY_REGISTERED = "fully_registered";
     }
 }

@@ -1,6 +1,8 @@
 package kuchbhilabs.chestream;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -28,18 +30,20 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 
+import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.fragments.sign.SignInFragment;
+
 public class LoginActivity extends Activity implements SurfaceHolder.Callback {
+
+    public static final String KEY_PREF_SIGNED_IN = "signed_in";
 
     private MediaPlayer mediaPlayer;
     SurfaceView surfaceView;
     SurfaceHolder surfaceHolder;
-    Button skip;
 
     private boolean isMediaPlayerInitialized = false;
     private boolean isSurfaceCreated = false;
     private boolean videoStarted = false;
-
-    private Button fbLogin;
 
     public static String URL;
 
@@ -50,32 +54,21 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        skip = (Button) findViewById(R.id.btn_skip);
-        fbLogin = (Button) findViewById(R.id.btn_fb);
-
         surfaceView = (SurfaceView) findViewById(R.id.login_surface_view);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        SignInFragment newFragment = new SignInFragment();
+        transaction.replace(R.id.sign_in_container, newFragment,"SignInFragment").commit();
 
         //TODO: Make it work to load from the assets directory
         mediaPlayer = new MediaPlayer();
         URL = "android.resource://"+getPackageName()+"/"+R.raw.vid4b;
 
-        skip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
-        fbLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doFacebookSignOn();
-            }
-        });
 
         ParseUser pUser = ParseUser.getCurrentUser();
         if ((pUser != null)
@@ -156,40 +149,6 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public void doFacebookSignOn() {
-        List<String> permissions = Arrays.asList(
-                "public_profile", "email");
-        ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException err) {
-                Log.d(TAG, "done with login");
-                if (err != null) {
-                    Log.w(TAG, "pe = " + err.getCode() + err.getMessage());
-                    Toast.makeText(LoginActivity.this, err.getMessage(), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (user == null) {
-                    Log.w(TAG, "Uh oh. The user cancelled the Facebook login.");
-                } else {
-
-                    if (user.isNew()) {
-                        Log.d(TAG, "We've got a new user");
-                        try {
-                            user.save();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        //TODO: download user data and sign up
-                    } else {
-                        Log.d(TAG, "Welcome back old user");
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        LoginActivity.this.startActivity(intent);
-                    }
-                }
-            }
-        });
     }
 }
 
