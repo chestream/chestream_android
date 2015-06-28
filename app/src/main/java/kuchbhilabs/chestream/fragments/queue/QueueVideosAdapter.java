@@ -18,6 +18,9 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
@@ -30,6 +33,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
 
     private static boolean isSpeakButtonLongPressed = false;
+    private List<ParseObject> videos;
 
     AlertDialog.Builder builder;
     AlertDialog dialog;
@@ -63,11 +67,10 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             draweeView=(SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
         }
     }
-    List<QueueVideos> queueVideosList;
 
-    public QueueVideosAdapter(Context context2,List<QueueVideos> queueVideosList){
-        this.queueVideosList = queueVideosList;
-        context=context2;
+    public QueueVideosAdapter(Context context, List<ParseObject> videos){
+        this.videos = videos;
+        this.context = context;
     }
 
     @Override
@@ -76,7 +79,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         QVHolder qvh = new QVHolder(v);
 
          builder = new AlertDialog.Builder(context);
-        builder.setMessage("Test for preventing dialog close");
+         builder.setMessage("Test for preventing dialog close");
          dialog = builder.create();
 
         return qvh;
@@ -87,14 +90,19 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     @Override
     public void onBindViewHolder(final QVHolder holder, final int position) {
-        holder.videoTitle.setText(queueVideosList.get(position).title);
-        holder.username.setText(queueVideosList.get(position).user.getString(ParseTables.Users.USERNAME));
-        holder.location.setText(queueVideosList.get(position).location);
-        Uri uri = Uri.parse(queueVideosList.get(position).avatar_url);
+        final ParseObject video = videos.get(position);
+        holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
+        try {
+            holder.username.setText(video.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
+                    .getString(ParseTables.Users.USERNAME));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
+        Uri uri = Uri.parse(video.getString(ParseTables.Videos.AVATAR));
         holder.draweeView.setImageURI(uri);
 
-
-        holder.totalVotes.setText(queueVideosList.get(position).numberOfVotes + "");
+        holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
 //        holder.uploaderImage.
         final int[] total_votes = {Integer.parseInt(holder.totalVotes.getText().toString())};
 
@@ -145,7 +153,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
 //                    dialog.show();
                     DraweeController controller = Fresco.newDraweeControllerBuilder()
-                            .setUri(Uri.parse(queueVideosList.get(position).gif_url))
+                            .setUri(Uri.parse(video.getString(ParseTables.Videos.GIF)))
                             .setAutoPlayAnimations(true)
                             .build();
                     QueueFragment.gifView.setController(controller);
@@ -184,7 +192,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     @Override
     public int getItemCount() {
-        return queueVideosList.size();
+        return videos.size();
     }
 
 }

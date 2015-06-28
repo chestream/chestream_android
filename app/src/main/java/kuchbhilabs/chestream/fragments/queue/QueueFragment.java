@@ -49,9 +49,7 @@ public class QueueFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
-    private ArrayList<QueueVideos> queueVideos;
     private FloatingActionButton upload;
-    ArrayList<QueueVideos> entries = new ArrayList<>();
     private CircularRevealView revealView;
     private View selectedView;
     android.os.Handler handler;
@@ -190,39 +188,19 @@ public class QueueFragment extends Fragment {
     }
 
     public  void loadFromParse() {
-
-        clear_lists();
         ParseQuery<ParseObject> query = new ParseQuery<>(
                 "Videos");
 
-        query.orderByDescending("upvotes");
+        query.orderByDescending(ParseTables.Videos.UPVOTE);
         query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-                for (ParseObject videos : parseObjects) {
-
-                    entries.add(
-                            new QueueVideos(  videos.getString("title"),
-                                    videos.get("user_avatar").toString(),
-                                    videos.getParseUser(ParseTables.Videos.USER),
-                                    videos.get("video_gif").toString(),
-                                    videos.get("upvotes").toString(),
-                                    videos.get("user_location").toString(),
-                                    videos.get("url").toString()
-                                    ));
-                }
-                QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
-                queueVideosAdapter.notifyDataSetChanged();
+                QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(), parseObjects);
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setAdapter(queueVideosAdapter);
+                queueVideosAdapter.notifyDataSetChanged();
             }
-
         });
     }
-
-    private void clear_lists() {
-        entries.clear();
-    }
-
 }
