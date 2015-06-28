@@ -27,6 +27,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -45,6 +46,7 @@ import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.QueueVideos;
 import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
 
@@ -207,56 +209,6 @@ public class QueueFragment extends Fragment {
             }
         }
     }
-
-
-    public void loadDatafromAssets()
-    {
-
-        JSONObject obj=null;
-        try {
-             obj = new JSONObject(loadJSONFromAsset());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-
-        Log.d("data", obj.toString());
-
-        JSONArray arrayOutlets = null;
-
-        try {
-            arrayOutlets = obj.getJSONArray("documents");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        for (int i = 0; i < arrayOutlets.length(); i++) {
-            try {
-                String title = arrayOutlets.getJSONObject(i).getString("video_title");
-                String avatar_url = arrayOutlets.getJSONObject(i).getString("user_avatar");
-                String username = arrayOutlets.getJSONObject(i).getString("user_name");
-                String gif_url = arrayOutlets.getJSONObject(i).getString("video_gif");
-                String location = arrayOutlets.getJSONObject(i).getString("user_location");
-                String numberOfVotes = arrayOutlets.getJSONObject(i).getString("video_upvotes");
-                String url = arrayOutlets.getJSONObject(i).getString("url");
-
-                entries.add(
-                        new QueueVideos(title, username, avatar_url, gif_url, numberOfVotes, location, url)
-                );
-
-                Log.d("data", title + username + avatar_url + gif_url + numberOfVotes + location);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-//                                Log.d("data", title + username + avatar_url + gif_url + numberOfVotes + location);
-        }
-
-        QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
-        queueVideosAdapter.notifyDataSetChanged();
-        recyclerView.setAdapter(queueVideosAdapter);
-
-    }
 /*
 <<<<<<< HEAD
 =======
@@ -376,9 +328,9 @@ public class QueueFragment extends Fragment {
                 for (ParseObject videos : parseObjects) {
 
                     entries.add(
-                            new QueueVideos(  videos.get("title").toString(),
+                            new QueueVideos(  videos.getString("title"),
                                     videos.get("user_avatar").toString(),
-                                    videos.get("username").toString(),
+                                    videos.getParseUser(ParseTables.Videos.USER),
                                     videos.get("video_gif").toString(),
                                     videos.get("upvotes").toString(),
                                     videos.get("user_location").toString(),

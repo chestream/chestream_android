@@ -28,6 +28,8 @@ import com.parse.SaveCallback;
 import java.io.File;
 import java.io.FileInputStream;
 
+import kuchbhilabs.chestream.externalapi.ParseTables;
+
 public class CompressionUploadService extends Service {
 
     private static final File EXT_DIR = Environment.getExternalStorageDirectory();
@@ -181,7 +183,7 @@ public class CompressionUploadService extends Service {
                                     videos.put("played", played);
                                     ParseUser currentUser = ParseUser.getCurrentUser();
                                     if (currentUser != null) {
-                                        videos.put("username", currentUser);
+                                        videos.put(ParseTables.Videos.USER, currentUser);
                                     }
                                     videos.put("video_gif","http://31.media.tumblr.com/a7d1b4cccb6f89dd745e88148e82b842/tumblr_mr4mswW7961sd35juo1_500.gif");
                                     videos.saveInBackground(new SaveCallback() {

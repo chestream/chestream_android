@@ -1,20 +1,28 @@
 package kuchbhilabs.chestream;
 
 
+import com.parse.ParseException;
+import com.parse.ParseUser;
+
 public class QueueVideos {
 
     String title;
     String avatar_url;
-    String username;
+    ParseUser user;
     String gif_url;
     String numberOfVotes;
     String location;
     String url;
 
-    public QueueVideos(String title, String avatar_url, String username,  String gif_url,
+    public QueueVideos(String title, String avatar_url, ParseUser user,  String gif_url,
                        String numberOfVotes, String location, String url) {
         this.title = title;
-        this.username = username;
+        this.user = user;
+        try {
+            this.user.fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         this.avatar_url = avatar_url;
         this.gif_url = gif_url;
         this.numberOfVotes = numberOfVotes;
@@ -30,12 +38,12 @@ public class QueueVideos {
         this.avatar_url = avatar_url;
     }
 
-    public String getUsername() {
-        return username;
+    public ParseUser getUser() {
+        return user;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(String username) {
+        this.user = user;
     }
 
     public String getGif_url() {

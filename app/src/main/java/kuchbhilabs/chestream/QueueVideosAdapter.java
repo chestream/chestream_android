@@ -20,6 +20,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
+import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.QueueFragment;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
@@ -87,7 +88,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     @Override
     public void onBindViewHolder(final QVHolder holder, final int position) {
         holder.videoTitle.setText(queueVideosList.get(position).title);
-        holder.username.setText(queueVideosList.get(position).username);
+        holder.username.setText(queueVideosList.get(position).user.getString(ParseTables.Users.USERNAME));
         holder.location.setText(queueVideosList.get(position).location);
         Uri uri = Uri.parse(queueVideosList.get(position).avatar_url);
         holder.draweeView.setImageURI(uri);
