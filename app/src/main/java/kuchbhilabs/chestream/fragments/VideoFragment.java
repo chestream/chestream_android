@@ -28,11 +28,9 @@ import com.parse.ParseQuery;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import kuchbhilabs.chestream.QueueVideos;
-import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
 /**

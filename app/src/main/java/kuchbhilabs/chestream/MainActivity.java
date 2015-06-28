@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import kuchbhilabs.chestream.fragments.QueueFragment;
+import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.fragments.VideoFragment;
 
 public class MainActivity extends AppCompatActivity {

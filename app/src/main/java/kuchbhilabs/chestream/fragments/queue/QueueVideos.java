@@ -1,4 +1,4 @@
-package kuchbhilabs.chestream;
+package kuchbhilabs.chestream.fragments.queue;
 
 
 import com.parse.ParseException;

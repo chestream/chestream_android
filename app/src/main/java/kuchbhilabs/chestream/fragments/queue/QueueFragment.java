@@ -1,4 +1,4 @@
-package kuchbhilabs.chestream.fragments;
+package kuchbhilabs.chestream.fragments.queue;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,24 +17,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,8 +35,6 @@ import java.util.List;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.CompressionUploadService;
-import kuchbhilabs.chestream.QueueVideos;
-import kuchbhilabs.chestream.QueueVideosAdapter;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
@@ -61,7 +51,7 @@ public class QueueFragment extends Fragment {
     private LinearLayoutManager llm;
     private ArrayList<QueueVideos> queueVideos;
     private FloatingActionButton upload;
-    ArrayList<QueueVideos> entries = new ArrayList<QueueVideos>();
+    ArrayList<QueueVideos> entries = new ArrayList<>();
     private CircularRevealView revealView;
     private View selectedView;
     android.os.Handler handler;
@@ -97,8 +87,6 @@ public class QueueFragment extends Fragment {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Choose Image Source");
                 builder.setItems(new CharSequence[] {"Gallery", "Camera"},
@@ -108,9 +96,6 @@ public class QueueFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-
-                                        // GET Video FROM THE GALLERY
-
                                         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
 
                                         Intent chooser = Intent.createChooser(intent, "Choose a Video");
@@ -154,10 +139,7 @@ public class QueueFragment extends Fragment {
                                 }
                             }
                         });
-
                 builder.show();
-
-
             }
         });
         recyclerView.setHasFixedSize(true);
@@ -165,9 +147,6 @@ public class QueueFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
 
         loadFromParse();
-//        QueueVideosAdapter adapter = new QueueVideosAdapter(queueVideos);
-//        recyclerView.setAdapter(adapter);
-
         return rootView;
     }
 
@@ -209,112 +188,8 @@ public class QueueFragment extends Fragment {
             }
         }
     }
-/*
-<<<<<<< HEAD
-=======
-    public void loadData()
-    {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
-                "https://api-eu.clusterpoint.com/1104/chestream/_search.json", new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d(TAG, response.toString());
 
-                JSONObject jsonObject = response;
-                Log.d("data", jsonObject.toString());
-
-                JSONArray arrayOutlets = null;
-
-                try {
-                    arrayOutlets = jsonObject.getJSONArray("documents");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                for (int i = 0; i < arrayOutlets.length(); i++) {
-                    try {
-                        String title = arrayOutlets.getJSONObject(i).getString("video_title");
-                        String avatar_url = arrayOutlets.getJSONObject(i).getString("user_avatar");
-                        String username = arrayOutlets.getJSONObject(i).getString("user_name");
-                        String gif_url = arrayOutlets.getJSONObject(i).getString("video_gif");
-                        String location = arrayOutlets.getJSONObject(i).getString("user_location");
-                        String numberOfVotes = arrayOutlets.getJSONObject(i).getString("video_upvotes");
-
-                        entries.add(
-                                new QueueVideos(title, username, avatar_url, gif_url, numberOfVotes, location)
-                        );
-
-                        Log.d("data", title + username + avatar_url + gif_url + numberOfVotes + location);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-//                                Log.d("data", title + username + avatar_url + gif_url + numberOfVotes + location);
-                }
-
-                QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(),entries);
-                queueVideosAdapter.notifyDataSetChanged();
-                recyclerView.setAdapter(queueVideosAdapter);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map headers = new HashMap();
-                headers.put("Authorization", ApplicationBase.basicAuth);
-                return headers;
-            }
-
-            @Override
-            public byte[] getBody() {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("query", "*");
-                    jsonObject.put("docs", "50");
-                    jsonObject.put("offset","0");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Log.d(TAG, jsonObject.toString());
-                return jsonObject.toString().getBytes();
-            }
-        };
-        request.setShouldCache(false);
-        VolleySingleton.getInstance(getActivity()).getRequestQueue().add(request);
-    }
->>>>>>> origin/laavanye
-
-*/
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-
-            InputStream is = getActivity().getAssets().open("sample.json");
-
-            int size = is.available();
-
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-
-            is.close();
-
-            json = new String(buffer, "UTF-8");
-
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-
-    }
-
-    public  void loadFromParse()
-    {
+    public  void loadFromParse() {
 
         clear_lists();
         ParseQuery<ParseObject> query = new ParseQuery<>(

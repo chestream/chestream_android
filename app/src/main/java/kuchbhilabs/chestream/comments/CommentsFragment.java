@@ -1,4 +1,4 @@
-package kuchbhilabs.chestream.fragments;
+package kuchbhilabs.chestream.comments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

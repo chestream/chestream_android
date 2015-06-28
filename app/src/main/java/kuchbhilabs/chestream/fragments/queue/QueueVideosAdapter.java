@@ -1,4 +1,4 @@
-package kuchbhilabs.chestream;
+package kuchbhilabs.chestream.fragments.queue;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,8 +20,8 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
+import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.fragments.QueueFragment;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
 
