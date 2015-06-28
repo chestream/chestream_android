@@ -149,7 +149,15 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
                         if (mediaPlayer == null) {
                             mediaPlayer = new MediaPlayer();
                         }
-                        mediaPlayer.setDataSource(activity, Uri.parse(urls.get(0)));
+                        if (urls.size() == 0) {
+                            Toast.makeText(activity, "Stream is empty.", Toast.LENGTH_SHORT).show();
+                            if (mProgressDialog != null) {
+                                mProgressDialog.dismiss();
+                            }
+                            return;
+                        }
+                        String url = urls.get(0);
+                        mediaPlayer.setDataSource(activity, Uri.parse(url));
                         mediaPlayer.setLooping(false);
 //                        mediaPlayer.setVolume(0, 0);
 
