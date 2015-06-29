@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,16 +18,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -34,12 +39,15 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.helpers.AppLocationService;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
 
@@ -57,6 +65,9 @@ public class QueueFragment extends Fragment {
     private View selectedView;
     android.os.Handler handler;
     private String TAG = "QueueFragment";
+
+    String addressString  = "";
+    AppLocationService appLocationService;
 
     Toolbar toolbar;
     SmoothProgressBar progressBar;
@@ -148,6 +159,7 @@ public class QueueFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
 
         loadFromParse();
+
         return rootView;
     }
 
@@ -158,7 +170,55 @@ public class QueueFragment extends Fragment {
             if (requestCode == 1)
             {
 
-                final Intent dataGet= data;
+
+                LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+                if(isNetworkEnabled)
+                {
+                    appLocationService = new AppLocationService(
+                            getActivity());
+
+                    Location nwLocation = appLocationService
+                            .getLocation(LocationManager.NETWORK_PROVIDER);
+
+                    if (nwLocation != null) {
+                        double latitude = nwLocation.getLatitude();
+                        double longitude = nwLocation.getLongitude();
+                        Toast.makeText(
+                                getActivity(),
+                                "Mobile Location (NW): \nLatitude: " + latitude
+                                        + "\nLongitude: " + longitude,
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        showSettingsAlert("NETWORK");
+                    }
+                }
+
+
+
+
+//                Geocoder geocoder;
+//                List<Address> addresses;
+//                geocoder = new Geocoder(getActivity(), Locale.getDefault());
+//
+//                try {
+//                    addresses = geocoder.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+//
+//                    String city = addresses.get(0).getLocality();
+//                    String state = addresses.get(0).getAdminArea();
+//                    String country = addresses.get(0).getCountryName();
+//                    addressString = city + ", " +state+ ", "+ country;
+//
+//                    Log.d("loc","LA"+String.valueOf(lastKnownLocation.getLatitude()));
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+
+
+                final Intent dataGet = data;
 
                 final Dialog dialog = new Dialog(getActivity());
 
@@ -170,21 +230,21 @@ public class QueueFragment extends Fragment {
                 final EditText txt = (EditText) dialog.findViewById(R.id.dialog_title);
                 final EditText loc = (EditText) dialog.findViewById(R.id.dialog_location);
 
+                loc.setText(addressString);
+
                 Button dialogButton = (Button) dialog.findViewById(R.id.dialog_update_details);
 
                 dialogButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        String dialogTitle= txt.getText().toString();
-                        if (dialogTitle.isEmpty())
-                        {
+                        String dialogTitle = txt.getText().toString();
+                        if (dialogTitle.isEmpty()) {
                             dialogTitle = " - ";
                         }
 
-                        String dialogLocation= loc.getText().toString();
-                        if (dialogLocation.isEmpty())
-                        {
+                        String dialogLocation = loc.getText().toString();
+                        if (dialogLocation.isEmpty()) {
                             dialogLocation = " - ";
                         }
 
@@ -246,5 +306,33 @@ public class QueueFragment extends Fragment {
                 queueVideosAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    public void showSettingsAlert(String provider) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                getActivity());
+
+        alertDialog.setTitle(provider + " SETTINGS");
+
+        alertDialog
+                .setMessage(provider + " is not enabled! Want to go to settings menu?");
+
+        alertDialog.setPositiveButton("Settings",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(
+                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        getActivity().startActivity(intent);
+                    }
+                });
+
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
     }
 }
