@@ -107,7 +107,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         final int[] total_votes = {Integer.parseInt(holder.totalVotes.getText().toString())};
 
         holder.upVote.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 int votes = total_votes[0] + 1;
@@ -119,8 +118,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     final Point p = Helper.getLocationInView(holder.revealView, v);
 
                     holder.revealView.reveal(p.x, p.y, color, v.getHeight() / 2, 440, null);
-
-
+                    upvote(position);
                 } else {
                 }
             }
@@ -131,13 +129,10 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 int votes = total_votes[0] - 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
                     holder.totalVotes.setText(votes + "");
-                  //  holder.downVote.getBackground().setAlpha(165);
-                  //  holder.upVote.getBackground().setAlpha(65);
-
                     final int color = Color.TRANSPARENT;
                     final Point p = Helper.getLocationInView(holder.revealView, v);
-
                     holder.revealView.hide(p.x, p.y, color, v.getHeight() / 5, 440, null);
+                    downvote(position);
                 } else {
                 }
             }
@@ -149,19 +144,12 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.setSelected(true);
                     Log.d("press", "pressed");
-
-
-//                    dialog.show();
                     DraweeController controller = Fresco.newDraweeControllerBuilder()
                             .setUri(Uri.parse(video.getString(ParseTables.Videos.GIF)))
                             .setAutoPlayAnimations(true)
                             .build();
                     QueueFragment.gifView.setController(controller);
                     QueueFragment.gifView.setVisibility(View.VISIBLE);
-
-//Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
-
-
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.setSelected(false);
@@ -187,7 +175,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     return false;
             }
         });
-
     }
 
     @Override
@@ -195,5 +182,23 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         return videos.size();
     }
 
+    private void upvote (int position) {
+        ParseObject video = videos.get(position);
+        int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
+        video.put(ParseTables.Videos.UPVOTE, currentVotes+1);
+        video.saveInBackground();
+        //TODO: Issue a gcm request
+    }
+
+    private void downvote(int position) {
+        ParseObject video = videos.get(position);
+        
+        int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
+        if (currentVotes > 0) {
+            video.put(ParseTables.Videos.UPVOTE, currentVotes-1);
+            video.saveInBackground();
+        }
+        //TODO: Issue a GCM request
+    }
 }
 
