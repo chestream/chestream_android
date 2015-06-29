@@ -11,10 +11,6 @@
     android:elevation="4dp"
    >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent">
 
         <com.facebook.drawee.view.SimpleDraweeView
             fresco:roundAsCircle="true"
@@ -26,7 +22,14 @@
             android:id="@+id/profile_picture"
             />
 
-        <TextView
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:background="@android:color/transparent">
+
+
+    <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/username"
@@ -35,16 +38,16 @@
             android:textColor="@android:color/white"/>
 
 
-</LinearLayout>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="17dp"
         android:id="@+id/comment"
         android:text="Great Video!"
-        android:layout_gravity="center_vertical"
         android:textSize="17sp"
         android:textColor="@android:color/white"/>
+
+
+    </LinearLayout>
+
 
 </LinearLayout>
