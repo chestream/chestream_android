@@ -39,7 +39,7 @@ import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     Activity activity;
-    SlidingUpPanelLayout slidingUpPanelLayout;
+    public static SlidingUpPanelLayout slidingUpPanelLayout;
 
     SurfaceView surfaceView;
     SurfaceHolder holder;
