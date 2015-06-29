@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.comments.Comments;
-import kuchbhilabs.chestream.comments.CommentsAdapter;
 
 /**
  * Created by naman on 20/06/15.
@@ -33,6 +31,7 @@ public class CommentsFragment extends Fragment {
     private CommentsAdapter adapter;
     private List<Comments> commentsList=new ArrayList<>();
     EditText editText;
+    private TextView commentsCount;
     static CommentsAdapter commentsAdapter;
 
     private static final String TAG = "CommentsFragment";
@@ -44,6 +43,7 @@ public class CommentsFragment extends Fragment {
 
         recyclerView=(RecyclerView) v.findViewById(R.id.comments_recycler_view);
         editText=(EditText) v.findViewById(R.id.commentEditText);
+        commentsCount=(TextView) v.findViewById(R.id.commentsCount);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setHasFixedSize(true);
@@ -76,6 +76,7 @@ public class CommentsFragment extends Fragment {
 
 
                         commentsAdapter.notifyDataSetChanged();
+                        commentsCount.setText(commentsList.size()+ " Comments");
 
                     }
 
@@ -116,6 +117,7 @@ public class CommentsFragment extends Fragment {
 
 
                 commentsAdapter.notifyDataSetChanged();
+                commentsCount.setText(commentsList.size()+ " Comments");
 
             }
         });

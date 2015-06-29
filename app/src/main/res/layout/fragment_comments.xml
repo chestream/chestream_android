@@ -8,7 +8,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="75dp"
         android:background="@android:color/transparent"
         android:orientation="vertical">
 
@@ -22,6 +22,7 @@
 
 
         <TextView
+            android:id="@+id/commentsCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -29,7 +30,8 @@
             android:paddingTop="15dp"
             android:text="Comments"
             android:textColor="@android:color/white"
-            android:textSize="23sp" />
+            android:textSize="23sp"
+            android:paddingBottom="10dp"/>
 
 
         <android.support.v7.widget.RecyclerView
@@ -41,7 +43,7 @@
             android:background="@android:color/transparent"
             android:clipToPadding="false"
             android:paddingBottom="50dp"
-            android:paddingTop="8dp" />
+            android:paddingTop="10dp" />
 
     </LinearLayout>
 
@@ -49,11 +51,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="6dp"
         android:background="@android:color/transparent"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="10dp">
+        android:paddingBottom="6dp">
 
         <ImageView
             android:layout_width="52dp"
