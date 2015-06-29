@@ -174,6 +174,7 @@ public class QueueFragment extends Fragment {
                 LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
                 boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
                 if(isNetworkEnabled)
                 {
@@ -208,6 +209,35 @@ public class QueueFragment extends Fragment {
                         showSettingsAlert("NETWORK");
                     }
                 }
+
+                else if (isGPSEnabled){
+                    Location gpsLocation = appLocationService
+                            .getLocation(LocationManager.GPS_PROVIDER);
+                    if (gpsLocation != null) {
+                        double latitude = gpsLocation.getLatitude();
+                        double longitude = gpsLocation.getLongitude();
+
+                        Geocoder geocoder;
+                        List<Address> addresses;
+                        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+
+                        try {
+                            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                            String state = addresses.get(0).getAdminArea();
+                            String country = addresses.get(0).getCountryName();
+                            addressString = state+ ", "+ country;
+
+                            Log.d("loc",addressString);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        showSettingsAlert("GPS");
+                    }
+            }
 
                 final Intent dataGet = data;
 
