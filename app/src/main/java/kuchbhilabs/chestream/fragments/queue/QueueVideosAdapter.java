@@ -56,8 +56,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         TextView videoTitle;
         TextView location;
         TextView username;
-        TextView upVote;
-        TextView downVote;
+        ImageButton upVote;
+        ImageButton downVote;
         TextView totalVotes;
         CardView rootLayout;
         CircularRevealView revealView;
@@ -72,8 +72,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             location = (TextView)itemView.findViewById(R.id.video_location);
             username = (TextView)itemView.findViewById(R.id.username);
             totalVotes = (TextView)itemView.findViewById(R.id.video_score);
-            upVote = (TextView)itemView.findViewById(R.id.up_vote);
-            downVote = (TextView)itemView.findViewById(R.id.down_vote);
+            upVote = (ImageButton)itemView.findViewById(R.id.up_vote);
+            downVote = (ImageButton)itemView.findViewById(R.id.down_vote);
             rootLayout = (CardView)itemView.findViewById(R.id.root_layout);
             revealView=(CircularRevealView) itemView.findViewById(R.id.reveal);
             draweeView=(SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
@@ -127,7 +127,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     final int color = Color.parseColor("#00bcd4");
                     final Point p = Helper.getLocationInView(holder.revealView, v);
 
-                    holder.revealView.reveal(p.x, p.y, color, v.getHeight() / 2, 440, null);
+                    holder.revealView.reveal(p.x, p.y, color, v.getHeight() / 10, 440, null);
                     upvote(position);
                 } else {
                 }
@@ -141,7 +141,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     holder.totalVotes.setText(votes + "");
                     final int color = Color.TRANSPARENT;
                     final Point p = Helper.getLocationInView(holder.revealView, v);
-                    holder.revealView.hide(p.x, p.y, color, v.getHeight() / 5, 440, null);
+                    holder.revealView.hide(p.x, p.y, color, v.getHeight() / 20, 440, null);
                     downvote(position);
                 } else {
                 }
