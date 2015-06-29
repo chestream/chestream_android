@@ -77,7 +77,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         mProgressDialog = new ProgressDialog(activity);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Initializing the stream...");
-        mProgressDialog.show();
+//        mProgressDialog.show();
 
         ParseQuery<ParseObject> query = new ParseQuery<>(
                 "Videos");
@@ -91,7 +91,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
                     urls.add(videos.getString("url"));
                 }
                 isUrlFetched = true;
-                startMediaPlayer();
+//                startMediaPlayer();
             }
         });
         mediaPlayer = new MediaPlayer();
@@ -105,18 +105,15 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
         CommentsFragment commentsFragment = new CommentsFragment();
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
-/*
-        VideoView videoView = (VideoView) rootView.findViewById(R.id.main_video_view);
-        videoView.setVideoPath(TEST_URL);
-        videoView.start();
-*/
+
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
         holder.addCallback(this);
 
 
         isMediaPlayerInitialized = true;
-        startMediaPlayer();
+        //TODO: For now only
+//        startMediaPlayer();
 
         return rootView;
     }
@@ -124,7 +121,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         isSurfaceCreated = true;
-        startMediaPlayer();
+//        startMediaPlayer();
     }
 
     @Override
@@ -177,14 +174,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
                                         Log.d(TAG, "COMPLETION");
                                         mediaPlayer.reset();
                                         try {
-//                    if (mediaPlayer == null) {
-//                        mediaPlayer = new MediaPlayer();
-//                    }
                                             mediaPlayer.setDataSource(activity, Uri.parse(urls.get(++i)));
-//                    mediaPlayer.setLooping(false);
-//                    mediaPlayer.setVolume(0, 0);
-
-//                    mediaPlayer.setDisplay(holder);
                                             mediaPlayer.prepare();
                                             mediaPlayer.start();
                                         } catch (IOException e) {
