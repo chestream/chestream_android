@@ -2,12 +2,16 @@ package kuchbhilabs.chestream.fragments.queue;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +24,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -28,9 +34,6 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
@@ -149,15 +152,56 @@ public class QueueFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (resultCode == Activity.RESULT_OK) {
 
             if (requestCode == 1)
             {
-                Uri videoUri = data.getData();
-                Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
-                serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
-                getActivity().startService(serviceIntent);
+
+                final Intent dataGet= data;
+
+                final Dialog dialog = new Dialog(getActivity());
+
+                //tell the Dialog to use the dialog.xml as it's layout description
+                dialog.setContentView(R.layout.post_video_dialog);
+                dialog.setTitle("Update Details");
+                dialog.setCancelable(false);
+
+                final EditText txt = (EditText) dialog.findViewById(R.id.dialog_title);
+                final EditText loc = (EditText) dialog.findViewById(R.id.dialog_location);
+
+                Button dialogButton = (Button) dialog.findViewById(R.id.dialog_update_details);
+
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String dialogTitle= txt.getText().toString();
+                        if (dialogTitle.isEmpty())
+                        {
+                            dialogTitle = " - ";
+                        }
+
+                        String dialogLocation= loc.getText().toString();
+                        if (dialogLocation.isEmpty())
+                        {
+                            dialogLocation = " - ";
+                        }
+
+                        Uri videoUri = dataGet.getData();
+                        Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
+                        serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
+                        serviceIntent.putExtra("title", dialogTitle);
+                        serviceIntent.putExtra("location", dialogLocation);
+                        getActivity().startService(serviceIntent);
+
+
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+
             }
 
             if (requestCode == 2)
