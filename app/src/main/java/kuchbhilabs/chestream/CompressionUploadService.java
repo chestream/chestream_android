@@ -67,7 +67,7 @@ public class CompressionUploadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Uploading", Toast.LENGTH_SHORT).show();
 
         title= intent.getStringExtra("title");
         location= intent.getStringExtra("location");
@@ -193,9 +193,8 @@ public class CompressionUploadService extends Service {
                                     videos.put("user_location", location);
                                     videos.put("url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
                                     videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
-                                    boolean played = false;
                                     videos.put("upvotes",0);
-                                    videos.put("played", played);
+                                    videos.put("played", false);
                                     videos.put("compiled", false);
                                     ParseUser currentUser = ParseUser.getCurrentUser();
                                     if (currentUser != null) {

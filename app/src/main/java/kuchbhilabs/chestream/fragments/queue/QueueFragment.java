@@ -170,7 +170,6 @@ public class QueueFragment extends Fragment {
             if (requestCode == 1)
             {
 
-
                 LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
                 boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -206,7 +205,7 @@ public class QueueFragment extends Fragment {
                         }
 
                     } else {
-                        showSettingsAlert("NETWORK");
+                        Toast.makeText(getActivity(), "Turn on the Location !", Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -235,9 +234,12 @@ public class QueueFragment extends Fragment {
                         }
 
                     } else {
-                        showSettingsAlert("GPS");
+                        Toast.makeText(getActivity(), "Turn on the Location !", Toast.LENGTH_LONG).show();
                     }
             }
+                else{
+                    Toast.makeText(getActivity(), "Turn on the Location !", Toast.LENGTH_LONG).show();
+                }
 
                 final Intent dataGet = data;
 
@@ -329,31 +331,31 @@ public class QueueFragment extends Fragment {
         });
     }
 
-    public void showSettingsAlert(String provider) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                getActivity());
-
-        alertDialog.setTitle(provider + " SETTINGS");
-
-        alertDialog
-                .setMessage(provider + " is not enabled! Want to go to settings menu?");
-
-        alertDialog.setPositiveButton("Settings",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(
-                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        getActivity().startActivity(intent);
-                    }
-                });
-
-        alertDialog.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-        alertDialog.show();
-    }
+//    public void showSettingsAlert(String provider) {
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+//                getActivity());
+//
+//        alertDialog.setTitle(provider + " SETTINGS");
+//
+//        alertDialog
+//                .setMessage(provider + " is not enabled! Want to go to settings menu?");
+//
+//        alertDialog.setPositiveButton("Settings",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Intent intent = new Intent(
+//                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                        getActivity().startActivity(intent);
+//                    }
+//                });
+//
+//        alertDialog.setNegativeButton("Cancel",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//
+//        alertDialog.show();
+//    }
 }

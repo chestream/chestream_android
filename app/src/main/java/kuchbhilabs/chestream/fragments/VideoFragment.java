@@ -110,7 +110,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         holder = surfaceView.getHolder();
         holder.addCallback(this);
 
-
         isMediaPlayerInitialized = true;
         //TODO: For now only
 //        startMediaPlayer();
