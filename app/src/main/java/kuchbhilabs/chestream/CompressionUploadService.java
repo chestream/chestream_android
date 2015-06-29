@@ -1,14 +1,21 @@
 package kuchbhilabs.chestream;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
@@ -47,6 +54,8 @@ public class CompressionUploadService extends Service {
 
     Notification.Builder mBuilder;
     NotificationManager mNotificationManager;
+    String title;
+    String location;
 
     public CompressionUploadService() {
     }
@@ -58,8 +67,10 @@ public class CompressionUploadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Uploading", Toast.LENGTH_SHORT).show();
 
+        title= intent.getStringExtra("title");
+        location= intent.getStringExtra("location");
         INPUT_VIDEO = intent.getStringExtra("path");
 
         mNotificationManager =
@@ -173,14 +184,18 @@ public class CompressionUploadService extends Service {
 
                                 @Override
                                 protected void onPostExecute(Void aVoid) {
+
+
+
                                     ParseObject videos = new ParseObject("Videos");
-                                    videos.put("title", videoName);
-                                    videos.put("user_location", "India");
+                                    videos.put("id", videoName);
+                                    videos.put("title", title);
+                                    videos.put("user_location", location);
                                     videos.put("url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
                                     videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
-                                    boolean played = false;
                                     videos.put("upvotes",0);
-                                    videos.put("played", played);
+                                    videos.put("played", false);
+                                    videos.put("compiled", false);
                                     ParseUser currentUser = ParseUser.getCurrentUser();
                                     if (currentUser != null) {
                                         videos.put(ParseTables.Videos.USER, currentUser);
@@ -192,6 +207,8 @@ public class CompressionUploadService extends Service {
                                             stopForeground(true);
                                         }
                                     });
+
+
                                 }
                             }.execute();
 

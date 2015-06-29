@@ -2,24 +2,35 @@ package kuchbhilabs.chestream.fragments.queue;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -29,14 +40,14 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.helpers.AppLocationService;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
 
@@ -54,6 +65,9 @@ public class QueueFragment extends Fragment {
     private View selectedView;
     android.os.Handler handler;
     private String TAG = "QueueFragment";
+
+    String addressString  = "";
+    AppLocationService appLocationService;
 
     Toolbar toolbar;
     SmoothProgressBar progressBar;
@@ -145,19 +159,132 @@ public class QueueFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
 
         loadFromParse();
+
         return rootView;
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (resultCode == Activity.RESULT_OK) {
 
             if (requestCode == 1)
             {
-                Uri videoUri = data.getData();
-                Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
-                serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
-                getActivity().startService(serviceIntent);
+
+                LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+                boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                if(isNetworkEnabled)
+                {
+                    appLocationService = new AppLocationService(
+                            getActivity());
+
+                    Location nwLocation = appLocationService
+                            .getLocation(LocationManager.NETWORK_PROVIDER);
+
+                    if (nwLocation != null) {
+                        double latitude = nwLocation.getLatitude();
+                        double longitude = nwLocation.getLongitude();
+
+                        Geocoder geocoder;
+                        List<Address> addresses;
+                        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+
+                        try {
+                            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                            String state = addresses.get(0).getAdminArea();
+                            String country = addresses.get(0).getCountryName();
+                            addressString = state+ ", "+ country;
+
+                            Log.d("loc",addressString);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        Toast.makeText(getActivity(), "Turn on the Location !", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                else if (isGPSEnabled){
+                    Location gpsLocation = appLocationService
+                            .getLocation(LocationManager.GPS_PROVIDER);
+                    if (gpsLocation != null) {
+                        double latitude = gpsLocation.getLatitude();
+                        double longitude = gpsLocation.getLongitude();
+
+                        Geocoder geocoder;
+                        List<Address> addresses;
+                        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+
+                        try {
+                            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                            String state = addresses.get(0).getAdminArea();
+                            String country = addresses.get(0).getCountryName();
+                            addressString = state+ ", "+ country;
+
+                            Log.d("loc",addressString);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        Toast.makeText(getActivity(), "Turn on the Location !", Toast.LENGTH_LONG).show();
+                    }
+            }
+                else{
+                    Toast.makeText(getActivity(), "Turn on the Location !", Toast.LENGTH_LONG).show();
+                }
+
+                final Intent dataGet = data;
+
+                final Dialog dialog = new Dialog(getActivity());
+
+                //tell the Dialog to use the dialog.xml as it's layout description
+                dialog.setContentView(R.layout.post_video_dialog);
+                dialog.setTitle("Update Details");
+                dialog.setCancelable(false);
+
+                final EditText txt = (EditText) dialog.findViewById(R.id.dialog_title);
+                final EditText loc = (EditText) dialog.findViewById(R.id.dialog_location);
+
+                loc.setText(addressString);
+
+                Button dialogButton = (Button) dialog.findViewById(R.id.dialog_update_details);
+
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String dialogTitle = txt.getText().toString();
+                        if (dialogTitle.isEmpty()) {
+                            dialogTitle = " - ";
+                        }
+
+                        String dialogLocation = loc.getText().toString();
+                        if (dialogLocation.isEmpty()) {
+                            dialogLocation = " - ";
+                        }
+
+                        Uri videoUri = dataGet.getData();
+                        Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
+                        serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
+                        serviceIntent.putExtra("title", dialogTitle);
+                        serviceIntent.putExtra("location", dialogLocation);
+                        getActivity().startService(serviceIntent);
+
+
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+
             }
 
             if (requestCode == 2)
@@ -203,4 +330,32 @@ public class QueueFragment extends Fragment {
             }
         });
     }
+
+//    public void showSettingsAlert(String provider) {
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+//                getActivity());
+//
+//        alertDialog.setTitle(provider + " SETTINGS");
+//
+//        alertDialog
+//                .setMessage(provider + " is not enabled! Want to go to settings menu?");
+//
+//        alertDialog.setPositiveButton("Settings",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Intent intent = new Intent(
+//                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                        getActivity().startActivity(intent);
+//                    }
+//                });
+//
+//        alertDialog.setNegativeButton("Cancel",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//
+//        alertDialog.show();
+//    }
 }

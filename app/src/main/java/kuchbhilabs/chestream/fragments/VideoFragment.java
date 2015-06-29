@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -71,7 +72,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
 
         activity = getActivity();
-
         receiver = new CommentsBroadcastReceiver();
 
         mProgressDialog = new ProgressDialog(activity);
@@ -109,7 +109,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
         holder.addCallback(this);
-
 
         isMediaPlayerInitialized = true;
         //TODO: For now only

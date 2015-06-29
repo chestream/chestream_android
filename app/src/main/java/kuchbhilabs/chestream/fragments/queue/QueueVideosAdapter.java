@@ -102,14 +102,18 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     public void onBindViewHolder(final QVHolder holder, final int position) {
         final ParseObject video = videos.get(position);
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
+        Uri uri = Uri.parse("http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
         try {
             holder.username.setText(video.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
                     .getString(ParseTables.Users.USERNAME));
+
+            uri = Uri.parse(video.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
+                    .getString(ParseTables.Users.AVATAR));
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
-        Uri uri = Uri.parse(video.getString(ParseTables.Videos.AVATAR));
         holder.draweeView.setImageURI(uri);
 
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
