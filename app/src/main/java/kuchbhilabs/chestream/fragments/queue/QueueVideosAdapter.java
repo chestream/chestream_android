@@ -14,14 +14,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
+import com.parse.ParseUser;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
@@ -31,9 +40,12 @@ import kuchbhilabs.chestream.helpers.Helper;
 
 public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.QVHolder> {
 
+    private static final String TAG = "QueueVideosAdapter";
 
     private static boolean isSpeakButtonLongPressed = false;
     private List<ParseObject> videos;
+
+    private int[] isVoted;
 
     AlertDialog.Builder builder;
     AlertDialog dialog;
@@ -68,7 +80,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         }
     }
 
-    public QueueVideosAdapter(Context context, List<ParseObject> videos){
+    public QueueVideosAdapter(Context context, List<ParseObject> videos) {
         this.videos = videos;
         this.context = context;
     }
@@ -78,15 +90,13 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_item, parent, false);
         QVHolder qvh = new QVHolder(v);
 
-         builder = new AlertDialog.Builder(context);
-         builder.setMessage("Test for preventing dialog close");
-         dialog = builder.create();
+        builder = new AlertDialog.Builder(context);
+        builder.setMessage("Test for preventing dialog close");
+        dialog = builder.create();
 
         return qvh;
 
     }
-
-
 
     @Override
     public void onBindViewHolder(final QVHolder holder, final int position) {
@@ -187,18 +197,35 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
         video.put(ParseTables.Videos.UPVOTE, currentVotes+1);
         video.saveInBackground();
-        //TODO: Issue a gcm request
+/*
+        ParseCloud.callFunctionInBackground("votes", new HashMap<String, Object>(), new FunctionCallback<String>() {
+            public void done(String result, ParseException e) {
+                if (e == null) {
+                    // result is "Hello world!"
+                    Log.d(TAG, "success");
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        }); */
+
+        notifyVotes();
     }
 
     private void downvote(int position) {
         ParseObject video = videos.get(position);
-        
         int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
         if (currentVotes > 0) {
             video.put(ParseTables.Videos.UPVOTE, currentVotes-1);
             video.saveInBackground();
         }
-        //TODO: Issue a GCM request
+    }
+
+    private void notifyVotes() {
+        ParsePush push = new ParsePush();
+        push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
+        push.sendInBackground();
+        Log.d(TAG, "Sending GCM request to notify others");
     }
 }
 
