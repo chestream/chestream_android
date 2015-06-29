@@ -186,37 +186,28 @@ public class QueueFragment extends Fragment {
                     if (nwLocation != null) {
                         double latitude = nwLocation.getLatitude();
                         double longitude = nwLocation.getLongitude();
-                        Toast.makeText(
-                                getActivity(),
-                                "Mobile Location (NW): \nLatitude: " + latitude
-                                        + "\nLongitude: " + longitude,
-                                Toast.LENGTH_LONG).show();
+
+                        Geocoder geocoder;
+                        List<Address> addresses;
+                        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+
+                        try {
+                            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                            String state = addresses.get(0).getAdminArea();
+                            String country = addresses.get(0).getCountryName();
+                            addressString = state+ ", "+ country;
+
+                            Log.d("loc",addressString);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     } else {
                         showSettingsAlert("NETWORK");
                     }
                 }
-
-
-
-
-//                Geocoder geocoder;
-//                List<Address> addresses;
-//                geocoder = new Geocoder(getActivity(), Locale.getDefault());
-//
-//                try {
-//                    addresses = geocoder.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-//
-//                    String city = addresses.get(0).getLocality();
-//                    String state = addresses.get(0).getAdminArea();
-//                    String country = addresses.get(0).getCountryName();
-//                    addressString = city + ", " +state+ ", "+ country;
-//
-//                    Log.d("loc","LA"+String.valueOf(lastKnownLocation.getLatitude()));
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-
 
                 final Intent dataGet = data;
 
