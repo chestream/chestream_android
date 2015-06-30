@@ -110,12 +110,16 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         video.getParseUser(ParseTables.Videos.USER).fetchIfNeededInBackground(new GetCallback<ParseUser>() {
             @Override
             public void done(ParseUser user, ParseException e) {
-                holder.username.setText(user.getString(ParseTables.Users.USERNAME));
-                String url = user.getString(ParseTables.Users.AVATAR);
-                if (url == null) {
-                    url = BLANK_AVATAR;
+                if (user != null) {
+                    holder.username.setText(user.getString(ParseTables.Users.USERNAME));
+                    String url = user.getString(ParseTables.Users.AVATAR);
+                    if (url == null) {
+                        url = BLANK_AVATAR;
+                    }
+                    holder.draweeView.setImageURI(Uri.parse(url));
+                } else {
+                    holder.username.setText("ERROR USER IS NULL");
                 }
-                holder.draweeView.setImageURI(Uri.parse(url));
             }
         });
 
