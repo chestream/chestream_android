@@ -109,10 +109,8 @@ public class QueueFragment extends Fragment {
                                 switch (which) {
                                     case 0:
                                         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-
                                         Intent chooser = Intent.createChooser(intent, "Choose a Video");
                                         startActivityForResult(chooser, 2);
-
                                         break;
 
                                     case 1:

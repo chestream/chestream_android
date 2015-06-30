@@ -21,6 +21,7 @@ public class ParseTables {
         public static final String URL = "url";
         public static final String LOCATION = "user_location";
         public static final String GIF = "video_gif";
+        public static final String URL_M3U8 = "video_m3u8";
     }
 
     public static final class Comments {

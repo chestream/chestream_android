@@ -97,11 +97,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         ttotalVotes = (TextView)rootView.findViewById(R.id.video_score);
         tdraweeView=(SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
 
-
         mProgressDialog = new ProgressDialog(activity);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Initializing the stream...");
-//        mProgressDialog.show();
+        mProgressDialog.show();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Videos");
         query.orderByDescending("upvotes");
@@ -115,7 +114,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
                     currentVideoObject = videos;
 
-                    url = videos.getString(ParseTables.Videos.URL);
+                    url = videos.getString(ParseTables.Videos.URL_M3U8);
                     upvotes = videos.getString(ParseTables.Videos.UPVOTE);
                     location = videos.getString(ParseTables.Videos.LOCATION);
                     title = videos.getString(ParseTables.Videos.TITLE);
@@ -238,7 +237,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
                                                         currentVideoObject = videos;
 
-                                                        url = videos.getString(ParseTables.Videos.URL);
+                                                        url = videos.getString(ParseTables.Videos.URL_M3U8);
                                                         upvotes = videos.getString(ParseTables.Videos.UPVOTE);
                                                         location = videos.getString(ParseTables.Videos.LOCATION);
                                                         title = videos.getString(ParseTables.Videos.TITLE);
