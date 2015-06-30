@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mPagerAdapter);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -53,15 +52,11 @@ public class MainActivity extends AppCompatActivity {
 
     public class PagerAdapter extends FragmentPagerAdapter {
 
-
         private final String[] TITLES = { "Video","Feed" };
-
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
-
 
         @Override
         public CharSequence getPageTitle(int position) {
@@ -75,25 +70,17 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-
-
             Fragment fragment=null;
-
             switch (position) {
-
-
                 case 0:
                     fragment = new VideoFragment();
                     break;
-
                 case 1:
                     fragment = new QueueFragment();
                     break;
-
             }
             return fragment;
         }
-
     }
 
     @Override
