@@ -194,6 +194,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     @Override
     public int getItemCount() {
+        if (videos == null) {
+            Log.e(TAG, "video list is null. setting the size to 0");
+            return 0;
+        }
+
         return videos.size();
     }
 
