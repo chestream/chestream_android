@@ -16,10 +16,10 @@ import kuchbhilabs.chestream.fragments.VideoFragment;
 public class NotificationReceiver extends ParsePushBroadcastReceiver {
 
     private static final String TAG = "NotificationReceiver";
+    public static final String ACTION_VOTE = "kuchbhilabs.chestream.votes";
 
     @Override
     protected void onPushReceive(Context context, Intent intent) {
-//        Bundle extras = intent.getExtras();
         JSONObject pushData = null;
 
         try {
@@ -34,7 +34,10 @@ public class NotificationReceiver extends ParsePushBroadcastReceiver {
                 object = new JSONObject(message);
                 if (object.getString("messageType").equals("votes")) {
                     Log.d(TAG, "Voting change notification received");
-                    //TODO: notify Queue fragment about change of notification
+                    Intent broadcast = new Intent();
+                    broadcast.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                    broadcast.setAction(ACTION_VOTE);
+                    context.sendBroadcast(broadcast);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
