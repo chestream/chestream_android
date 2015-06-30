@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.fragments.VideoFragment;
 
 /**
  * Created by naman on 20/06/15.
@@ -48,6 +49,8 @@ public class CommentsFragment extends Fragment {
 
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setHasFixedSize(true);
+
+        VideoFragment.slidingUpPanelLayout.setScrollView(recyclerView);
 
         commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<ParseObject>());
         recyclerView.setAdapter(commentsAdapter);

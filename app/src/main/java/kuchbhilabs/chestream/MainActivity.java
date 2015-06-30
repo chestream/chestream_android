@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (VideoFragment.slidingUpPanelLayout.isPanelExpanded()){
               VideoFragment.slidingUpPanelLayout.collapsePanel();
 
+        } else if (VideoFragment.slidingUpPanelLayout2.isPanelExpanded()) {
+              VideoFragment.slidingUpPanelLayout2.collapsePanel();
         } else {
             super.onBackPressed();
         }
