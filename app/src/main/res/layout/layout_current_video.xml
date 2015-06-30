@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:id="@+id/currentVideo"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:background="#95000000"
+    >
+    <LinearLayout
+        android:id="@+id/current_video_details"
+        android:background="#25000000"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                fresco:roundAsCircle="true"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="7dp"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/profile_picture"
+                />
+
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="17"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:textSize="18sp"
+                    android:textColor="#ffffff"
+                    android:id="@+id/video_title"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="normal"
+                    android:textSize="16sp"
+                    android:textColor="#ffffff"
+                    android:id="@+id/username"
+                    android:paddingLeft="10dp"
+                    />
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/video_location"
+                    android:paddingLeft="10dp"
+                    android:textSize="16sp"
+                    android:textColor="#ffffff"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/video_score"
+                android:textColor="#ffffff"
+                android:textSize="24sp"
+                android:layout_weight="1"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="right|center_vertical"
+                android:gravity="center_vertical|right"
+                android:paddingLeft="27dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
