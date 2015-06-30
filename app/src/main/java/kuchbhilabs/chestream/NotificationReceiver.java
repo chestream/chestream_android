@@ -29,14 +29,18 @@ public class NotificationReceiver extends ParsePushBroadcastReceiver {
                 e.printStackTrace();
             }
             String message = pushData.getString("alert");
+            JSONObject object;
+            try {
+                object = new JSONObject(message);
+                if (object.getString("messageType").equals("votes")) {
+                    Log.d(TAG, "Voting change notification received");
+                    //TODO: notify Queue fragment about change of notification
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            Log.d(TAG, "PUSH = " + message);
-            Intent broadcast = new Intent();
-            intent.setAction("intent.omerjerk");
-            intent.putExtra("comment", message);
-            context.sendBroadcast(broadcast);
-
-            VideoFragment.commentReceived(message);
+//            VideoFragment.commentReceived(message);
 
         } catch (JSONException e) {
             e.printStackTrace();
