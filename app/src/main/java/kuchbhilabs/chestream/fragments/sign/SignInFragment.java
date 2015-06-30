@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,6 +49,9 @@ public class SignInFragment extends Fragment {
 
         fbLogin = (Button) rootView.findViewById(R.id.btn_fb);
         skip = (Button) rootView.findViewById(R.id.btn_skip);
+
+       Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/HelveticaNeue-UltraLight.ttf");
+       skip.setTypeface(typeface);
 
         skip.setOnClickListener(new View.OnClickListener() {
             @Override

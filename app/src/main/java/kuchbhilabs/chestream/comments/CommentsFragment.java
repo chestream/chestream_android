@@ -90,7 +90,7 @@ public class CommentsFragment extends Fragment {
                 Log.d(TAG, "Updating comments dataset");
                 commentsAdapter.updateDataSet(list);
                 commentsAdapter.notifyDataSetChanged();
-                commentsCount.setText(commentsList.size()+ " Comments");
+                commentsCount.setText(list.size()+ " Comments");
             }
         });
     }
