@@ -47,6 +47,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     String title="";
     String username = "";
     String avatar= "";
+    ParseObject currentVideoObject=null;
 
     TextView tvideoTitle;
     TextView tlocation;
@@ -111,6 +112,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
                     Log.d("vid", "The getFirst request failed.");
                 } else {
                     Log.d("vid", "Retrieved the object.");
+
+                    currentVideoObject = videos;
 
                     url = videos.getString(ParseTables.Videos.URL);
                     upvotes = videos.getString(ParseTables.Videos.UPVOTE);
@@ -217,6 +220,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
                                     @Override
                                     public void onCompletion(MediaPlayer mp) {
 
+                                        currentVideoObject.put("played",true);
+                                        currentVideoObject.saveInBackground();
+
                                         Log.d(TAG, "COMPLETION");
                                         mediaPlayer.reset();
 
@@ -229,6 +235,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
                                                         Log.d("vid", "The getFirst request failed.");
                                                     } else {
                                                         Log.d("vid", "Retrieved the object.");
+
+                                                        currentVideoObject = videos;
 
                                                         url = videos.getString(ParseTables.Videos.URL);
                                                         upvotes = videos.getString(ParseTables.Videos.UPVOTE);
