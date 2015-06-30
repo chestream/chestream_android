@@ -1,75 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/transparent"
-    android:layout_marginBottom="60dp">
-
-    <ImageView
-        android:id="@+id/secondPanelDragIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_gravity="center_horizontal"
-        android:scaleType="centerInside"
-        android:src="@drawable/drag_indicator" />
-
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:background="@android:color/transparent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="75dp"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/secondPanelDragIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerInside"
+            android:src="@drawable/drag_indicator" />
 
 
         <TextView
+            android:id="@+id/commentsCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:paddingTop="15dp"
             android:text="Comments"
-            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:textSize="23sp"
+            android:paddingBottom="10dp"/>
+
+
+        <android.support.v7.widget.RecyclerView
+
+            android:id="@+id/comments_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:textColor="@android:color/white" />
+            android:background="@android:color/transparent"
+            android:clipToPadding="false"
+            android:paddingBottom="50dp"
+            android:paddingTop="10dp" />
 
     </LinearLayout>
 
-
-    <android.support.v7.widget.RecyclerView
-
-        android:id="@+id/comments_recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:layout_marginLeft="20dp"
-        android:paddingBottom="50dp"
-        android:background="@android:color/transparent" />
-
-</LinearLayout>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:hint="Enter a comment"
-        android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
-        android:id="@+id/commentEditText"
-        android:gravity="bottom"
-        android:singleLine="true"
-        android:paddingBottom="10dp"
         android:layout_gravity="bottom"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="6dp"
+        android:background="@android:color/transparent"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp">
 
+        <ImageView
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:src="@drawable/zombie_icon" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:paddingLeft="15dp">
+
+
+        <EditText
+            android:id="@+id/commentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Add a comment"
+            android:layout_gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/send"
+            android:paddingRight="15dp"
+            android:singleLine="false"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white" />
+
+        <ImageView
+            android:id="@+id/send"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_send" />
+
+
+        </RelativeLayout>
+    </LinearLayout>
 
 
 </FrameLayout>

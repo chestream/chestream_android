@@ -55,7 +55,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     SimpleDraweeView tdraweeView;
 
     Activity activity;
-    SlidingUpPanelLayout slidingUpPanelLayout;
+    public static SlidingUpPanelLayout slidingUpPanelLayout;
 
     SurfaceView surfaceView;
     SurfaceHolder holder;

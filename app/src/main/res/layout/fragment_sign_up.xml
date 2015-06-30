@@ -18,10 +18,9 @@
         <Button
             android:id="@+id/button_sign_up"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Set username"/>
 
     </LinearLayout>
-
-
 
 </RelativeLayout>

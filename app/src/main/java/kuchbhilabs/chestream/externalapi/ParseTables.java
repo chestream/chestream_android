@@ -22,4 +22,10 @@ public class ParseTables {
         public static final String LOCATION = "user_location";
         public static final String GIF = "video_gif";
     }
+
+    public static final class Comments {
+        public static final String _NAME = "Comments";
+        public static final String TEXT = "comment";
+        public static final String USER = "user";
+    }
 }

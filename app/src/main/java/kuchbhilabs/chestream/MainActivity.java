@@ -96,5 +96,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if(mViewPager.getCurrentItem()!=0) {
+            mViewPager.setCurrentItem(0, true);
+
+        } else if (VideoFragment.slidingUpPanelLayout.isPanelExpanded()){
+              VideoFragment.slidingUpPanelLayout.collapsePanel();
+
+        } else {
+            super.onBackPressed();
+        }
+    }
+
 
 }

@@ -9,22 +9,31 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.externalapi.ParseTables;
 
 /**
  * Created by naman on 20/06/15.
  */
 public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.CommentsRowHolder> {
 
-    private List<Comments> commentsList;
+    private List<ParseObject> commentsList;
     private Context mContext;
 
-    public CommentsAdapter(Context context, List<Comments> commentsList) {
+    public CommentsAdapter(Context context, List<ParseObject> commentsList) {
         this.commentsList = commentsList;
         this.mContext = context;
+    }
+
+    public void updateDataSet (List<ParseObject> commentsList) {
+        this.commentsList = commentsList;
     }
 
     @Override
@@ -35,16 +44,18 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
     }
 
     @Override
-    public void onBindViewHolder(CommentsRowHolder commentsRowHolder, int i) {
-        Comments commentItem = commentsList.get(i);
 
-       // commentsRowHolder.avatar.setImageResource(commentItem.getAvatar());
-        commentsRowHolder.username.setText(commentItem.getUsername());
-        commentsRowHolder.comment.setText(commentItem.getComment());
-            Uri uri = Uri.parse(commentItem.getAvatar());
-        commentsRowHolder.avatar.setImageURI(uri);
-
-
+    public void onBindViewHolder(final CommentsRowHolder commentsRowHolder, int i) {
+        ParseObject comment = commentsList.get(i);
+        comment.getParseUser(ParseTables.Comments.USER).fetchIfNeededInBackground(new GetCallback<ParseUser>() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                commentsRowHolder.username.setText(user.getString(ParseTables.Users.USERNAME));
+                Uri uri = Uri.parse(user.getString(ParseTables.Users.AVATAR));
+                commentsRowHolder.avatar.setImageURI(uri);
+            }
+        });
+        commentsRowHolder.comment.setText(comment.getString(ParseTables.Comments.TEXT));
     }
 
     @Override
@@ -70,9 +81,6 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
         public void onClick(View v) {
 
         }
-
     }
-
-
 }
 
