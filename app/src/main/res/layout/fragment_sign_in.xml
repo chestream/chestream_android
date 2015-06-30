@@ -29,6 +29,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:layout_marginTop="50dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
         android:id="@+id/text"
         android:layout_below="@id/chestream"
         android:layout_gravity="center_horizontal"

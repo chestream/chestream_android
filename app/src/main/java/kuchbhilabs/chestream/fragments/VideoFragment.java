@@ -110,11 +110,12 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         mProgressDialog = new ProgressDialog(activity);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Initializing the stream...");
-        mProgressDialog.show();
+//        mProgressDialog.show();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Videos");
-        query.orderByDescending("upvotes");
-        query.whereEqualTo("played", false);
+        query.orderByDescending(ParseTables.Videos.UPVOTE);
+        query.whereEqualTo(ParseTables.Videos.PLAYED, false);
+        query.whereEqualTo(ParseTables.Videos.COMPILED, true);
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject videos, ParseException e) {
                 if (videos == null) {
@@ -147,8 +148,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                         }
                     });
                 }
-//                startMediaPlayer();
-
             }
         });
 
@@ -231,7 +230,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     }
 
                     Log.d(TAG, "STARTING MEDIA PLAYER");
-
                     //TODO: Add a check if there is no stream availablech
 
                     String urlSet = url;
