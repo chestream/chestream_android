@@ -3,9 +3,11 @@ package kuchbhilabs.chestream.fragments.queue;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -40,11 +42,13 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.CompressionUploadService;
+import kuchbhilabs.chestream.NotificationReceiver;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.AppLocationService;
@@ -57,6 +61,8 @@ import kuchbhilabs.chestream.helpers.Helper;
 public class QueueFragment extends Fragment {
 
     public static SimpleDraweeView gifView;
+
+    private QueueVideosAdapter queueVideosAdapter;
 
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
@@ -72,6 +78,9 @@ public class QueueFragment extends Fragment {
     Toolbar toolbar;
     SmoothProgressBar progressBar;
 
+    private BroadcastReceiver receiver;
+    private Activity activity;
+
     public QueueFragment() {
         // Required empty public constructor
     }
@@ -79,14 +88,14 @@ public class QueueFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
         View rootView = inflater.inflate(R.layout.fragment_queue, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-
         revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
         progressBar=(SmoothProgressBar) rootView.findViewById(R.id.progress);
-
         gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
 
+        activity = getActivity();
 
         toolbar=(Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -94,6 +103,15 @@ public class QueueFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Stream");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(5);
 
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(NotificationReceiver.ACTION_VOTE);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "received");
+            }
+        };
+        activity.registerReceiver(receiver, intentFilter);
 
         upload = (FloatingActionButton) rootView.findViewById(R.id.upload);
         upload.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +121,6 @@ public class QueueFragment extends Fragment {
                 builder.setTitle("Choose Image Source");
                 builder.setItems(new CharSequence[] {"Gallery", "Camera"},
                         new DialogInterface.OnClickListener() {
-
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
@@ -112,9 +129,7 @@ public class QueueFragment extends Fragment {
                                         Intent chooser = Intent.createChooser(intent, "Choose a Video");
                                         startActivityForResult(chooser, 2);
                                         break;
-
                                     case 1:
-
                                         final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                                         if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                                             final int color = Color.parseColor("#00bcd4");
@@ -141,9 +156,7 @@ public class QueueFragment extends Fragment {
                                             }, 500);
 
                                         }
-
                                         break;
-
                                     default:
                                         break;
                                 }
@@ -153,12 +166,20 @@ public class QueueFragment extends Fragment {
             }
         });
         recyclerView.setHasFixedSize(true);
+        queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseObject>());
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(queueVideosAdapter);
 
         loadFromParse();
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        activity.unregisterReceiver(receiver);
+        super.onDestroy();
     }
 
     @Override
@@ -321,39 +342,10 @@ public class QueueFragment extends Fragment {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-                QueueVideosAdapter queueVideosAdapter = new QueueVideosAdapter(getActivity(), parseObjects);
                 progressBar.setVisibility(View.GONE);
-                recyclerView.setAdapter(queueVideosAdapter);
+                queueVideosAdapter.updateDataSet(parseObjects);
                 queueVideosAdapter.notifyDataSetChanged();
             }
         });
     }
-
-//    public void showSettingsAlert(String provider) {
-//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-//                getActivity());
-//
-//        alertDialog.setTitle(provider + " SETTINGS");
-//
-//        alertDialog
-//                .setMessage(provider + " is not enabled! Want to go to settings menu?");
-//
-//        alertDialog.setPositiveButton("Settings",
-//                new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Intent intent = new Intent(
-//                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                        getActivity().startActivity(intent);
-//                    }
-//                });
-//
-//        alertDialog.setNegativeButton("Cancel",
-//                new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.cancel();
-//                    }
-//                });
-//
-//        alertDialog.show();
-//    }
 }

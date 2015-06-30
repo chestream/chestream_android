@@ -92,6 +92,10 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         this.context = context;
     }
 
+    public void updateDataSet(List<ParseObject> list) {
+        this.videos = list;
+    }
+
     @Override
     public QVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_item, parent, false);
