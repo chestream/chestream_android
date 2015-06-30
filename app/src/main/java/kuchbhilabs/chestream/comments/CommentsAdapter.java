@@ -41,7 +41,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
        // commentsRowHolder.avatar.setImageResource(commentItem.getAvatar());
         commentsRowHolder.username.setText(commentItem.getUsername());
         commentsRowHolder.comment.setText(commentItem.getComment());
-        Uri uri = Uri.parse(commentItem.getAvatar());
+            Uri uri = Uri.parse(commentItem.getAvatar());
         commentsRowHolder.avatar.setImageURI(uri);
 
 
@@ -59,7 +59,6 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
         public CommentsRowHolder(View view) {
             super(view);
             this.avatar = (SimpleDraweeView) view.findViewById(R.id.profile_picture);
-
             this.username = (TextView) view.findViewById(R.id.username);
             this.comment = (TextView) view.findViewById(R.id.comment);
 

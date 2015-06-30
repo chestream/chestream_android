@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +20,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -32,12 +33,26 @@ import java.util.List;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
+import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
 /**
  * Created by naman on 20/06/15.
  */
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
+
+    String url="";
+    String upvotes="";
+    String location="";
+    String title="";
+    String username = "";
+    String avatar= "";
+
+    TextView tvideoTitle;
+    TextView tlocation;
+    TextView tusername;
+    TextView ttotalVotes;
+    SimpleDraweeView tdraweeView;
 
     Activity activity;
     SlidingUpPanelLayout slidingUpPanelLayout;
@@ -59,7 +74,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
     private CommentsBroadcastReceiver receiver;
 
-    private ArrayList<String> urls = new ArrayList<>();
+
     private int i = 0;
 
     ProgressDialog mProgressDialog;
@@ -74,26 +89,48 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         activity = getActivity();
         receiver = new CommentsBroadcastReceiver();
 
+
+        tvideoTitle = (TextView)rootView.findViewById(R.id.video_title);
+        tlocation = (TextView)rootView.findViewById(R.id.video_location);
+        tusername = (TextView)rootView.findViewById(R.id.username);
+        ttotalVotes = (TextView)rootView.findViewById(R.id.video_score);
+        tdraweeView=(SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
+
+
         mProgressDialog = new ProgressDialog(activity);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Initializing the stream...");
 //        mProgressDialog.show();
 
-        ParseQuery<ParseObject> query = new ParseQuery<>(
-                "Videos");
-
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Videos");
         query.orderByDescending("upvotes");
-//        query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                for (ParseObject videos : parseObjects) {
-                    urls.add(videos.getString("url"));
+        query.whereEqualTo("played", false);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            public void done(ParseObject videos, ParseException e) {
+                if (videos == null) {
+                    Log.d("vid", "The getFirst request failed.");
+                } else {
+                    Log.d("vid", "Retrieved the object.");
+
+                    url = videos.getString(ParseTables.Videos.URL);
+                    upvotes = videos.getString(ParseTables.Videos.UPVOTE);
+                    location = videos.getString(ParseTables.Videos.LOCATION);
+                    title = videos.getString(ParseTables.Videos.TITLE);
+                    try {
+                        username = videos.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
+                                .getString(ParseTables.Users.USERNAME);
+                        avatar = videos.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
+                                .getString(ParseTables.Users.AVATAR);
+
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
                 }
                 isUrlFetched = true;
-//                startMediaPlayer();
+                startMediaPlayer();
             }
         });
+
         mediaPlayer = new MediaPlayer();
 
 
@@ -143,15 +180,25 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
                         if (mediaPlayer == null) {
                             mediaPlayer = new MediaPlayer();
                         }
-                        if (urls.size() == 0) {
-                            Toast.makeText(activity, "Stream is empty.", Toast.LENGTH_SHORT).show();
-                            if (mProgressDialog != null) {
-                                mProgressDialog.dismiss();
-                            }
-                            return;
-                        }
-                        String url = urls.get(0);
-                        mediaPlayer.setDataSource(activity, Uri.parse(url));
+
+
+//                        if (urlList.size() == 0) {
+//                            Toast.makeText(activity, "Stream is empty.", Toast.LENGTH_SHORT).show();
+//                            if (mProgressDialog != null) {
+//                                mProgressDialog.dismiss();
+//                            }
+//                            return;
+//                        }
+
+                        String urlSet = url;
+                        tvideoTitle.setText(title);
+                        tusername.setText(username);
+                        tlocation.setText(location);
+                        ttotalVotes.setText(upvotes);
+                        Uri uri = Uri.parse(avatar);
+                        tdraweeView.setImageURI(uri);
+
+                        mediaPlayer.setDataSource(activity, Uri.parse(urlSet));
                         mediaPlayer.setLooping(false);
 //                        mediaPlayer.setVolume(0, 0);
 
@@ -172,13 +219,51 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
                                         Log.d(TAG, "COMPLETION");
                                         mediaPlayer.reset();
-                                        try {
-                                            mediaPlayer.setDataSource(activity, Uri.parse(urls.get(++i)));
-                                            mediaPlayer.prepare();
-                                            mediaPlayer.start();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
+
+                                            ParseQuery<ParseObject> query = ParseQuery.getQuery("Videos");
+                                            query.orderByDescending("upvotes");
+                                            query.whereEqualTo("played", false);
+                                            query.getFirstInBackground(new GetCallback<ParseObject>() {
+                                                public void done(ParseObject videos, ParseException e) {
+                                                    if (videos == null) {
+                                                        Log.d("vid", "The getFirst request failed.");
+                                                    } else {
+                                                        Log.d("vid", "Retrieved the object.");
+
+                                                        url = videos.getString(ParseTables.Videos.URL);
+                                                        upvotes = videos.getString(ParseTables.Videos.UPVOTE);
+                                                        location = videos.getString(ParseTables.Videos.LOCATION);
+                                                        title = videos.getString(ParseTables.Videos.TITLE);
+                                                        try {
+                                                            username = videos.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
+                                                                    .getString(ParseTables.Users.USERNAME);
+                                                            avatar = videos.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
+                                                                    .getString(ParseTables.Users.AVATAR);
+
+                                                        } catch (ParseException e1) {
+                                                            e1.printStackTrace();
+                                                        }
+
+
+                                                        String urlSet = url;
+                                                        tvideoTitle.setText(title);
+                                                        tusername.setText(username);
+                                                        tlocation.setText(location);
+                                                        ttotalVotes.setText(upvotes);
+                                                        Uri uri = Uri.parse(avatar);
+                                                        tdraweeView.setImageURI(uri);
+
+
+                                                        try {
+                                                            mediaPlayer.setDataSource(activity, Uri.parse(urlSet));
+                                                            mediaPlayer.prepare();
+                                                            mediaPlayer.start();
+                                                        } catch (IOException e1) {
+                                                            e1.printStackTrace();
+                                                        }
+                                                    }
+                                                }
+                                            });
                                     }
                                 });
                                 videoStarted = true;
