@@ -29,6 +29,9 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -239,7 +242,13 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     private void notifyVotes() {
         ParsePush push = new ParsePush();
-        push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
+        JSONObject message = new JSONObject();
+        try {
+            message.put("messageType", "votes");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        push.setMessage(message.toString());
         push.sendInBackground();
         Log.d(TAG, "Sending GCM request to notify others");
     }
