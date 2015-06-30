@@ -141,6 +141,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         slidingUpPanelLayout2.setOverlayed(true);
         slidingUpPanelLayout2.setEnableDragViewTouchEvents(true);
 
+        setPanelSlideListeners();
+
         commentFloating=(TextView) rootView.findViewById(R.id.commentText);
 
         CommentsFragment commentsFragment = new CommentsFragment();
@@ -353,6 +355,37 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
         public void onTick(long millisUntilFinished) {
 
         }
+    }
+
+    private void setPanelSlideListeners(){
+        slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelCollapsed(View panel) {
+
+            }
+
+            @Override
+            public void onPanelExpanded(View panel) {
+                if (slidingUpPanelLayout2.isPanelExpanded()){
+                    slidingUpPanelLayout2.collapsePanel();
+                }
+            }
+
+            @Override
+            public void onPanelAnchored(View panel) {
+
+            }
+
+            @Override
+            public void onPanelHidden(View panel) {
+
+            }
+        });
     }
 
 }
