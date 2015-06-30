@@ -15,15 +15,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
-
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.parse.FunctionCallback;
 import com.parse.GetCallback;
-import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
@@ -32,10 +28,7 @@ import com.parse.ParseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
@@ -166,23 +159,33 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             }
         });
 
+        final android.os.Handler handler = new android.os.Handler();
+        final Runnable mLongPressed = new Runnable() {
+            public void run() {
+                Log.i("", "Long press!");
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setUri(Uri.parse(video.getString(ParseTables.Videos.GIF)))
+                        .setAutoPlayAnimations(true)
+                        .build();
+                QueueFragment.gifView.setController(controller);
+                QueueFragment.gifView.setVisibility(View.VISIBLE);
+            }
+        };
+
         holder.rootLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.setSelected(true);
+                    handler.postDelayed(mLongPressed, 500);
                     Log.d("press", "pressed");
-                    DraweeController controller = Fresco.newDraweeControllerBuilder()
-                            .setUri(Uri.parse(video.getString(ParseTables.Videos.GIF)))
-                            .setAutoPlayAnimations(true)
-                            .build();
-                    QueueFragment.gifView.setController(controller);
-                    QueueFragment.gifView.setVisibility(View.VISIBLE);
+
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.setSelected(false);
                     Log.d("press", "release");
 //                    dialog.dismiss();
+                    handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
                     return true;
 
@@ -190,6 +193,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     v.setSelected(false);
                     Log.d("press", "release");
 //                    dialog.dismiss();
+                    handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
                     return true;
 
@@ -197,6 +201,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     v.setSelected(false);
                     Log.d("press", "release");
 //                    dialog.dismiss();
+                    handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
                     return true;
                 } else
