@@ -1,83 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/tools"
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/currentVideo"
+    android:id="@+id/current_video_details"
     android:layout_width="match_parent"
     android:layout_height="300dp"
-    android:background="#95000000">
-
-    <LinearLayout
-        android:id="@+id/current_video_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:background="#009688"
-        android:orientation="vertical">
+    android:layout_gravity="top"
+    android:background="#95000000"
+    android:gravity="top"
+    android:orientation="vertical">
 
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            fresco:roundAsCircle="true"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center_vertical"
-            android:id="@+id/profile_picture"
-            android:paddingTop="15dp"
-            />
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/profile_picture"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:paddingTop="25dp"
+        fresco:roundAsCircle="true" />
 
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
 
         <kuchbhilabs.chestream.helpers.TypefaceTextView
-            android:id="@+id/video_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Video"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:textColor="#ffffff"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            typeface:typeface="HelveticaNeue-UltraLight" />
-
-        <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:text="Username"
+            android:layout_gravity="center"
             android:textColor="#ffffff"
             android:textSize="16sp"
-            android:textStyle="normal" />
+            android:paddingRight="10dp"
+            android:textStyle="normal"
+            typeface:typeface="HelveticaNeue-UltraLight"/>
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/video_location"
+            <kuchbhilabs.chestream.helpers.TypefaceTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:paddingLeft="20dp"
-                android:textColor="#ffffff"
-                android:text="location"
-                android:textSize="16sp" />
+                android:text="-"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:layout_gravity="center"
+                typeface:typeface="HelveticaNeue-UltraLight"/>
 
 
-            <TextView
-                android:id="@+id/video_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="20dp"
-                android:text="200 upvotes"
-                android:textColor="#ffffff"
-                android:textSize="24sp" />
+        <kuchbhilabs.chestream.helpers.TypefaceTextView
+            android:id="@+id/video_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            typeface:typeface="HelveticaNeue-UltraLight"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
 
-    </LinearLayout>
 
-</FrameLayout>
+
+
+
+    <kuchbhilabs.chestream.helpers.TypefaceTextView
+        android:id="@+id/video_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        typeface:typeface="HelveticaNeue-UltraLight" />
+
+
+
+    <TextView
+        android:id="@+id/video_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:paddingBottom="40dp"/>
+
+
+</LinearLayout>
+
