@@ -338,6 +338,8 @@ public class QueueFragment extends Fragment {
                 "Videos");
 
         query.orderByDescending(ParseTables.Videos.UPVOTE);
+        query.whereEqualTo(ParseTables.Videos.PLAYED, false);
+        query.whereEqualTo(ParseTables.Videos.COMPILED, true);
         query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
