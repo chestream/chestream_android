@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    sothree:panelHeight="30dp"
+    sothree:panelHeight="35dp"
     sothree:shadowHeight="0dp"
     sothree:dragViewClickable="true">
 
@@ -130,29 +130,14 @@
 
 
 
-            <FrameLayout
-                android:background="#95000000"
-                android:id="@+id/comments"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom">
+    <FrameLayout
+        android:id="@+id/comments"
+        android:background="#95000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom">
 
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-                    </LinearLayout>
-
-                </ScrollView>
-
-            </FrameLayout>
-
-
-
+    </FrameLayout>
 
 
 </kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout>
