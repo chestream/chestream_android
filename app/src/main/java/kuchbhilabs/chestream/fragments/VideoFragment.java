@@ -21,15 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
@@ -56,7 +53,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
     SimpleDraweeView tdraweeView;
 
     Activity activity;
-    public static SlidingUpPanelLayout slidingUpPanelLayout;
+    public static SlidingUpPanelLayout slidingUpPanelLayout,slidingUpPanelLayout2;
 
     SurfaceView surfaceView;
     SurfaceHolder holder;
@@ -137,13 +134,18 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
 
 
         slidingUpPanelLayout=(SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
+        slidingUpPanelLayout2=(SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout2);
         slidingUpPanelLayout.setOverlayed(true);
         slidingUpPanelLayout.setEnableDragViewTouchEvents(true);
+
+        slidingUpPanelLayout2.setOverlayed(true);
+        slidingUpPanelLayout2.setEnableDragViewTouchEvents(true);
 
         commentFloating=(TextView) rootView.findViewById(R.id.commentText);
 
         CommentsFragment commentsFragment = new CommentsFragment();
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
+
 
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
@@ -278,6 +280,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback{
                         });
                     } catch (IOException e) {
                         e.printStackTrace();
+                        mProgressDialog.dismiss();
                     }
                 }
             }
