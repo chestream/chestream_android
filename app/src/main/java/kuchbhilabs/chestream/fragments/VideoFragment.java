@@ -110,7 +110,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         mProgressDialog = new ProgressDialog(activity);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Initializing the stream...");
-//        mProgressDialog.show();
+        mProgressDialog.show();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Videos");
         query.orderByDescending(ParseTables.Videos.UPVOTE);
