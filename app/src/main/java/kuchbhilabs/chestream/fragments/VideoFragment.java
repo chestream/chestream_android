@@ -80,6 +80,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     private int i = 0;
 
     ProgressDialog mProgressDialog;
+    View loadinglyout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -106,11 +107,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         tusername = (TextView) rootView.findViewById(R.id.username);
         ttotalVotes = (TextView) rootView.findViewById(R.id.video_score);
         tdraweeView = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
+        loadinglyout=(View) rootView.findViewById(R.id.loading_layout);
 
-        mProgressDialog = new ProgressDialog(activity);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setMessage("Initializing the stream...");
-        mProgressDialog.show();
+//        mProgressDialog = new ProgressDialog(activity);
+//        mProgressDialog.setCancelable(false);
+//        mProgressDialog.setMessage("Initializing the stream...");
+//        mProgressDialog.show();
+
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Videos");
         query.orderByDescending(ParseTables.Videos.UPVOTE);
@@ -255,10 +258,12 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (mProgressDialog != null) {
-                                mProgressDialog.cancel();
-                                mProgressDialog = null;
-                            }
+//                            if (mProgressDialog != null) {
+//                                mProgressDialog.cancel();
+//                                mProgressDialog = null;
+//                            }
+                            loadinglyout.setVisibility(View.GONE);
+
                         }
                     });
                     mediaPlayer.start();
@@ -336,6 +341,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
+//                    mProgressDialog.dismiss();
+                    loadinglyout.setVisibility(View.GONE);
                 }
             }
         } else {
