@@ -22,6 +22,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.parse.FunctionCallback;
+import com.parse.GetCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -52,6 +53,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     AlertDialog dialog;
     Context context;
 
+    private static final String BLANK_AVATAR = "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
+
     public static class QVHolder extends RecyclerView.ViewHolder {
         ImageView uploaderImage;
         TextView videoTitle;
@@ -69,15 +72,15 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             super(itemView);
 
 
-            videoTitle = (TextView)itemView.findViewById(R.id.video_title);
-            location = (TextView)itemView.findViewById(R.id.video_location);
-            username = (TextView)itemView.findViewById(R.id.username);
-            totalVotes = (TextView)itemView.findViewById(R.id.video_score);
-            upVote = (ImageButton)itemView.findViewById(R.id.up_vote);
-            downVote = (ImageButton)itemView.findViewById(R.id.down_vote);
-            rootLayout = (CardView)itemView.findViewById(R.id.root_layout);
-            revealView=(CircularRevealView) itemView.findViewById(R.id.reveal);
-            draweeView=(SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
+            videoTitle = (TextView) itemView.findViewById(R.id.video_title);
+            location = (TextView) itemView.findViewById(R.id.video_location);
+            username = (TextView) itemView.findViewById(R.id.username);
+            totalVotes = (TextView) itemView.findViewById(R.id.video_score);
+            upVote = (ImageButton) itemView.findViewById(R.id.up_vote);
+            downVote = (ImageButton) itemView.findViewById(R.id.down_vote);
+            rootLayout = (CardView) itemView.findViewById(R.id.root_layout);
+            revealView = (CircularRevealView) itemView.findViewById(R.id.reveal);
+            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
         }
     }
 
@@ -103,22 +106,21 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     public void onBindViewHolder(final QVHolder holder, final int position) {
         final ParseObject video = videos.get(position);
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
-        Uri uri = Uri.parse("http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
-        try {
-            holder.username.setText(video.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
-                    .getString(ParseTables.Users.USERNAME));
 
-            uri = Uri.parse(video.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
-                    .getString(ParseTables.Users.AVATAR));
+        video.getParseUser(ParseTables.Videos.USER).fetchIfNeededInBackground(new GetCallback<ParseUser>() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                holder.username.setText(user.getString(ParseTables.Users.USERNAME));
+                String url = user.getString(ParseTables.Users.AVATAR);
+                if (url == null) {
+                    url = BLANK_AVATAR;
+                }
+                holder.draweeView.setImageURI(Uri.parse(url));
+            }
+        });
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
-        holder.draweeView.setImageURI(uri);
-
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
-//        holder.uploaderImage.
         final int[] total_votes = {Integer.parseInt(holder.totalVotes.getText().toString())};
 
         holder.upVote.setOnClickListener(new View.OnClickListener() {
@@ -127,8 +129,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 int votes = total_votes[0] + 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
                     holder.totalVotes.setText(votes + "");
-                  //  holder.upVote.getBackground().setAlpha(165);
-                  //  holder.downVote.getBackground().setAlpha(65);
+                    //  holder.upVote.getBackground().setAlpha(165);
+                    //  holder.downVote.getBackground().setAlpha(65);
                     final int color = Color.parseColor("#00bcd4");
                     final Point p = Helper.getLocationInView(holder.revealView, v);
 
@@ -202,10 +204,10 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         return videos.size();
     }
 
-    private void upvote (int position) {
+    private void upvote(int position) {
         ParseObject video = videos.get(position);
         int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
-        video.put(ParseTables.Videos.UPVOTE, currentVotes+1);
+        video.put(ParseTables.Videos.UPVOTE, currentVotes + 1);
         video.saveInBackground();
 /*
         ParseCloud.callFunctionInBackground("votes", new HashMap<String, Object>(), new FunctionCallback<String>() {
@@ -226,7 +228,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         ParseObject video = videos.get(position);
         int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
         if (currentVotes > 0) {
-            video.put(ParseTables.Videos.UPVOTE, currentVotes-1);
+            video.put(ParseTables.Videos.UPVOTE, currentVotes - 1);
             video.saveInBackground();
         }
     }

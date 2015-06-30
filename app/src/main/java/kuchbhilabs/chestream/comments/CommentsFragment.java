@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ public class CommentsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private CommentsAdapter adapter;
-    private List<Comments> commentsList=new ArrayList<>();
+    private List<ParseObject> commentsList = new ArrayList<>();
     EditText editText;
     private TextView commentsCount;
     static CommentsAdapter commentsAdapter;
@@ -48,9 +49,8 @@ public class CommentsFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setHasFixedSize(true);
 
-        commentsAdapter = new CommentsAdapter(getActivity(),commentsList);
+        commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<ParseObject>());
         recyclerView.setAdapter(commentsAdapter);
-
 
         setUpComments();
 
@@ -59,25 +59,7 @@ public class CommentsFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE){
-
-
-                    if (commentsList == null) {
-                        commentsList = new ArrayList<Comments>();
-                    }
-
-
-                        Comments comments = new Comments();
-
-                        comments.setAvatar("url");
-                        comments.setUsername("@naman14");
-                        comments.setComment(editText.getText().toString());
-
-                        commentsList.add(comments);
-
-
-                        commentsAdapter.notifyDataSetChanged();
-                        commentsCount.setText(commentsList.size()+ " Comments");
-
+                    //TODO: Add a new comment to the current video
                     }
 
                 return false;
@@ -105,23 +87,11 @@ public class CommentsFragment extends Fragment {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
-                for(int i=0;i<list.size();i++){
-                    Comments comments = new Comments();
-                    comments.setAvatar(list.get(i).getString("user_avatar"));
-                    comments.setUsername(list.get(i).getString("username"));
-                    comments.setComment(list.get(i).getString("comment"));
-                    commentsList.add(comments);
-
-
-                }
-
-
+                Log.d(TAG, "Updating comments dataset");
+                commentsAdapter.updateDataSet(list);
                 commentsAdapter.notifyDataSetChanged();
                 commentsCount.setText(commentsList.size()+ " Comments");
-
             }
         });
-
     }
-
 }
