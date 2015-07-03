@@ -121,6 +121,7 @@ public class CommentsFragment extends Fragment {
 
     private void setUpComments(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
+        query.orderByDescending("createdAt");
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
