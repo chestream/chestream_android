@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -75,8 +76,8 @@ public class CommentsFragment extends Fragment {
                 commentsArrray.add(postComment);
                 currentVideoObjectComment.put("comments", commentsArrray);
                 currentVideoObjectComment.saveInBackground();
-
-                Log.d("yell", currentVideoObjectComment.getString(ParseTables.Videos.TITLE));
+                Toast.makeText(getActivity(), "Comment Added" , Toast.LENGTH_SHORT).show();
+                setUpComments();
             }
         });
 
@@ -94,8 +95,8 @@ public class CommentsFragment extends Fragment {
                     commentsArrray.add(postComment);
                     currentVideoObjectComment.put("comments", commentsArrray);
                     currentVideoObjectComment.saveInBackground();
-
-                    Log.d("yell", currentVideoObjectComment.getString(ParseTables.Videos.TITLE));
+                    Toast.makeText(getActivity(), "Comment Added" , Toast.LENGTH_SHORT).show();
+                    setUpComments();
                 }
 
                 return false;
