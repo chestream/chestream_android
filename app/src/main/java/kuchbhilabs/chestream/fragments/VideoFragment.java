@@ -48,7 +48,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     String title = "";
     String username = "";
     String avatar = "";
-    ParseObject currentVideoObject = null;
+    public static ParseObject currentVideoObject = null;
 
     TextView tvideoTitle;
     TextView tlocation;
@@ -147,7 +147,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            startMediaPlayer();
+//                            startMediaPlayer();
                         }
                     });
                 }

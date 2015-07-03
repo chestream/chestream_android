@@ -11,17 +11,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.VideoFragment;
 
 /**
@@ -35,6 +39,7 @@ public class CommentsFragment extends Fragment {
     EditText editText;
     private TextView commentsCount;
     static CommentsAdapter commentsAdapter;
+    ImageView sendComment;
 
     private static final String TAG = "CommentsFragment";
 
@@ -46,6 +51,7 @@ public class CommentsFragment extends Fragment {
         recyclerView=(RecyclerView) v.findViewById(R.id.comments_recycler_view);
         editText=(EditText) v.findViewById(R.id.commentEditText);
         commentsCount=(TextView) v.findViewById(R.id.commentsCount);
+        sendComment  =(ImageView) v.findViewById(R.id.send);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setHasFixedSize(true);
@@ -57,13 +63,40 @@ public class CommentsFragment extends Fragment {
 
         setUpComments();
 
+        sendComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
+                ArrayList<ParseObject> commentsArrray = (ArrayList<ParseObject>) currentVideoObjectComment.get("comments");
+                ParseObject postComment = new ParseObject("Comments");
+                postComment.put("user", ParseUser.getCurrentUser());
+                postComment.put("comment", editText.getText().toString());
+                postComment.put("video_object", currentVideoObjectComment);
+                commentsArrray.add(postComment);
+                currentVideoObjectComment.put("comments", commentsArrray);
+                currentVideoObjectComment.saveInBackground();
+
+                Log.d("yell", currentVideoObjectComment.getString(ParseTables.Videos.TITLE));
+            }
+        });
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE){
                     //TODO: Add a new comment to the current video
-                    }
+                    ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
+                    ArrayList<ParseObject> commentsArrray = (ArrayList<ParseObject>) currentVideoObjectComment.get("comments");
+                    ParseObject postComment = new ParseObject("Comments");
+                    postComment.put("user", ParseUser.getCurrentUser());
+                    postComment.put("comment", editText.getText().toString());
+                    postComment.put("video_object", currentVideoObjectComment);
+                    commentsArrray.add(postComment);
+                    currentVideoObjectComment.put("comments", commentsArrray);
+                    currentVideoObjectComment.saveInBackground();
+
+                    Log.d("yell", currentVideoObjectComment.getString(ParseTables.Videos.TITLE));
+                }
 
                 return false;
             }
