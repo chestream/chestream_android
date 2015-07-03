@@ -9,6 +9,8 @@ public class ParseTables {
         public static final String USERNAME = "username";
         public static final String FULLY_REGISTERED = "fully_registered";
         public static final String AVATAR = "avatar";
+        public static final String NAME = "name";
+        public static final String EMAIL = "email";
     }
 
     public static class Videos {

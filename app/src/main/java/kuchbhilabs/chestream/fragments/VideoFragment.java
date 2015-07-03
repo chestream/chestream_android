@@ -292,7 +292,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                     upvotes = videos.getString(ParseTables.Videos.UPVOTE);
                                     location = videos.getString(ParseTables.Videos.LOCATION);
                                     title = videos.getString(ParseTables.Videos.TITLE);
-//                                        try {
                                     videos.getParseUser(ParseTables.Videos.USER).fetchIfNeededInBackground(
                                             new GetCallback<ParseUser>() {
                                                 @Override
@@ -310,12 +309,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                                 }
                                             }
                                     );
-
-
-//                                        } catch (ParseException e1) {
-//                                            e1.printStackTrace();
-//                                        }
-
                                     String urlSet = url;
                                     activity.runOnUiThread(new Runnable() {
                                         @Override
