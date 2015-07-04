@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -23,14 +24,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.List;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
@@ -48,7 +63,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     String title = "";
     String username = "";
     String avatar = "";
-    ParseObject currentVideoObject = null;
+    ParseObject currentVideo;
 
     TextView tvideoTitle;
     TextView tlocation;
@@ -57,7 +72,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     SimpleDraweeView tdraweeView;
 
     Activity activity;
-    public static SlidingUpPanelLayout slidingUpPanelLayout,slidingUpPanelLayout2;
+    public static SlidingUpPanelLayout slidingUpPanelLayout, slidingUpPanelLayout2;
 
     SurfaceView surfaceView;
     SurfaceHolder holder;
@@ -68,6 +83,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     private static final String TAG = "VideoFragment";
 
     private static final String TEST_URL = "http://128.199.128.227/chestream_raw/video_1434859043/video_1434859043.mp4";
+    private static final String NEXT_URL = "http://128.199.128.227:8800/";
 
     private boolean isMediaPlayerInitialized = false;
     private boolean isSurfaceCreated = false;
@@ -84,7 +100,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         super.onCreateView(inflater, container, savedInstanceState);
 
         new Thread(new Runnable() {
@@ -92,6 +107,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
             public void run() {
                 Looper.prepare();
                 handler = new MediaHandler();
+                mediaPlayer = new MediaPlayer();
+                isMediaPlayerInitialized = true;
                 startMediaPlayer();
                 Looper.loop();
             }
@@ -109,59 +126,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         tdraweeView = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
         loadingLayout = rootView.findViewById(R.id.loading_layout);
 
-//        mProgressDialog = new ProgressDialog(activity);
-//        mProgressDialog.setCancelable(false);
-//        mProgressDialog.setMessage("Initializing the stream...");
-//        mProgressDialog.show();
+        sendNextRequest();
 
-
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Videos");
-        query.orderByDescending(ParseTables.Videos.UPVOTE);
-        query.whereEqualTo(ParseTables.Videos.PLAYED, false);
-        query.whereEqualTo(ParseTables.Videos.COMPILED, true);
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            public void done(ParseObject videos, ParseException e) {
-                if (videos == null) {
-                    Log.d("vid", "The getFirst request failed.");
-                } else {
-                    Log.d("vid", "Retrieved the object.");
-
-                    currentVideoObject = videos;
-
-                    url = videos.getString(ParseTables.Videos.URL_M3U8);
-                    upvotes = videos.getString(ParseTables.Videos.UPVOTE);
-                    location = videos.getString(ParseTables.Videos.LOCATION);
-                    title = videos.getString(ParseTables.Videos.TITLE);
-                    try {
-                        username = videos.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
-                                .getString(ParseTables.Users.USERNAME);
-                        avatar = videos.getParseUser(ParseTables.Videos.USER).fetchIfNeeded()
-                                .getString(ParseTables.Users.AVATAR);
-
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-                isUrlFetched = true;
-                if (handler != null) {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            startMediaPlayer();
-                        }
-                    });
-                }
-            }
-        });
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                mediaPlayer = new MediaPlayer();
-            }
-        });
-        slidingUpPanelLayout=(SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
-        slidingUpPanelLayout2=(SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout2);
+        slidingUpPanelLayout = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
+        slidingUpPanelLayout2 = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout2);
         slidingUpPanelLayout.setOverlayed(true);
         slidingUpPanelLayout.setEnableDragViewTouchEvents(true);
 
@@ -170,7 +138,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
         setPanelSlideListeners();
 
-        commentFloating=(TextView) rootView.findViewById(R.id.commentText);
+        commentFloating = (TextView) rootView.findViewById(R.id.commentText);
 
         CommentsFragment commentsFragment = new CommentsFragment();
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
@@ -180,19 +148,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         holder = surfaceView.getHolder();
         holder.addCallback(this);
 
-        isMediaPlayerInitialized = true;
-        //TODO: For now only
-        startMediaPlayer();
-        Log.d(TAG, "Starting the new thread");
-        if (handler != null) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    startMediaPlayer();
-                }
-            });
-        }
-
         return rootView;
     }
 
@@ -200,14 +155,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         isSurfaceCreated = true;
         if (handler != null) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    startMediaPlayer();
-                }
-            });
+            handler.sendMessage(handler.obtainMessage(MediaHandler.MSG_START));
         }
-        startMediaPlayer();
     }
 
     @Override
@@ -222,6 +171,77 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         }
     }
 
+    private void sendNextRequest() {
+        RequestQueue queue = Volley.newRequestQueue(activity);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, NEXT_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "Response = " + response);
+                        try {
+                            JSONObject responseObject = new JSONObject(response);
+                            responseObject = responseObject.getJSONObject("data");
+                            String videoId = responseObject.getString("video_id");
+                            ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseTables.Videos._NAME);
+                            query.whereEqualTo("objectId", videoId);
+                            query.findInBackground(new FindCallback<ParseObject>() {
+                                @Override
+                                public void done(List<ParseObject> list, ParseException e) {
+                                    if (list != null) {
+                                        currentVideo = list.get(0);
+                                        url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
+                                        upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
+                                        location = currentVideo.getString(ParseTables.Videos.LOCATION);
+                                        title = currentVideo.getString(ParseTables.Videos.TITLE);
+                                        currentVideo.getParseUser(ParseTables.Videos.USER)
+                                                .fetchIfNeededInBackground(new GetCallback<ParseUser>() {
+                                                    @Override
+                                                    public void done(ParseUser parseObject, ParseException e) {
+                                                        username = parseObject.getUsername();
+                                                        avatar = parseObject.getString(ParseTables.Users.AVATAR);
+                                                        isUrlFetched = true;
+                                                        setVideoDetails();
+                                                        if (!videoStarted) {
+                                                            handler.sendMessage(handler.obtainMessage(MediaHandler.MSG_START));
+                                                        } else {
+                                                            handler.sendMessage(handler.obtainMessage(
+                                                                    MediaHandler.MSG_CHANGE_SOURCE, url));
+                                                        }
+
+                                                    }
+                                                });
+                                    } else {
+                                        Toast.makeText(activity, "Shit Happened!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        queue.add(stringRequest);
+    }
+
+    private void setVideoDetails() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvideoTitle.setText(title);
+                tusername.setText(username);
+                tlocation.setText(location);
+                ttotalVotes.setText(upvotes);
+                Uri uri = Uri.parse(avatar);
+                tdraweeView.setImageURI(uri);
+            }
+        });
+    }
+
     private void startMediaPlayer() {
         Log.d(TAG, "Initial call");
         if (isMediaPlayerInitialized && isSurfaceCreated && isUrlFetched && !videoStarted) {
@@ -233,24 +253,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     }
 
                     Log.d(TAG, "STARTING MEDIA PLAYER");
-                    //TODO: Add a check if there is no stream availablech
+                    //TODO: Add a check if there is no stream available
 
                     String urlSet = url;
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvideoTitle.setText(title);
-                            tusername.setText(username);
-                            tlocation.setText(location);
-                            ttotalVotes.setText(upvotes);
-                            Uri uri = Uri.parse(avatar);
-                            tdraweeView.setImageURI(uri);
-                        }
-                    });
 
                     mediaPlayer.setDataSource(activity, Uri.parse(urlSet));
                     mediaPlayer.setLooping(false);
-//                        mediaPlayer.setVolume(0, 0);
+                    mediaPlayer.setVolume(0, 0);
 
                     mediaPlayer.setDisplay(holder);
                     mediaPlayer.prepare();
@@ -258,89 +267,27 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            if (mProgressDialog != null) {
-//                                mProgressDialog.cancel();
-//                                mProgressDialog = null;
-//                            }
                             loadingLayout.setVisibility(View.GONE);
-
                         }
                     });
                     mediaPlayer.start();
-
                     mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mp) {
-
-                            currentVideoObject.put("played", true);
-                            currentVideoObject.saveInBackground();
-
+                            currentVideo.put(ParseTables.Videos.PLAYED, true);
+                            currentVideo.saveInBackground();
                             Log.d(TAG, "COMPLETION");
-                            mediaPlayer.reset();
-
-                            ParseQuery<ParseObject> query = ParseQuery.getQuery("Videos");
-                            query.orderByDescending("upvotes");
-                            query.whereEqualTo("played", false);
-                            try {
-                                ParseObject videos = query.getFirst();
-                                if (videos == null) {
-                                    Log.e(TAG, "SHIT HAPPENED");
-                                } else {
-                                    currentVideoObject = videos;
-
-                                    url = videos.getString(ParseTables.Videos.URL_M3U8);
-                                    upvotes = videos.getString(ParseTables.Videos.UPVOTE);
-                                    location = videos.getString(ParseTables.Videos.LOCATION);
-                                    title = videos.getString(ParseTables.Videos.TITLE);
-                                    videos.getParseUser(ParseTables.Videos.USER).fetchIfNeededInBackground(
-                                            new GetCallback<ParseUser>() {
-                                                @Override
-                                                public void done(ParseUser user, ParseException e) {
-                                                    username = user.getString(ParseTables.Users.USERNAME);
-                                                    avatar = user.getString(ParseTables.Users.AVATAR);
-                                                    activity.runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            tusername.setText(username);
-                                                            Uri uri = Uri.parse(avatar);
-                                                            tdraweeView.setImageURI(uri);
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                    );
-                                    String urlSet = url;
-                                    activity.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            tvideoTitle.setText(title);
-                                            tlocation.setText(location);
-                                            ttotalVotes.setText(upvotes);
-
-                                        }
-                                    });
-                                    try {
-                                        mediaPlayer.setDataSource(activity, Uri.parse(urlSet));
-                                        mediaPlayer.prepare();
-                                        mediaPlayer.start();
-                                    } catch (IOException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
+                            sendNextRequest();
                         }
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
-//                    mProgressDialog.dismiss();
                     loadingLayout.setVisibility(View.GONE);
                 }
             }
         } else {
             Log.d(TAG, "Returning");
-            Log.d(TAG, "isMediaPlayerInitialized = " + isMediaPlayerInitialized );
+            Log.d(TAG, "isMediaPlayerInitialized = " + isMediaPlayerInitialized);
             Log.d(TAG, "isSurfaceCreated = " + isSurfaceCreated);
             Log.d(TAG, "isUrlFetched = " + isUrlFetched);
             Log.d(TAG, "videoStarted = " + videoStarted);
@@ -373,12 +320,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         if (timerCommentText != null) {
             timerCommentText.cancel();
         }
-
         timerCommentText = new TimerCommentText(7 * 1000, 1000);
-
         timerCommentText.start();
-
-
     }
 
     private class CommentsBroadcastReceiver extends BroadcastReceiver {
@@ -420,6 +363,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     private class MediaHandler extends Handler {
 
         public static final int MSG_START = 1;
+        public static final int MSG_CHANGE_SOURCE = 2;
 
         @Override
         public void handleMessage(Message what) {
@@ -430,13 +374,24 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     Log.d(TAG, "STARTING the media player");
                     startMediaPlayer();
                     break;
+                case MSG_CHANGE_SOURCE:
+                    String source = (String) what.obj;
+                    try {
+                        mediaPlayer.reset();
+                        mediaPlayer.setDataSource(activity, Uri.parse(source));
+                        mediaPlayer.prepare();
+                        mediaPlayer.start();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 default:
                     throw new IllegalArgumentException();
             }
         }
     }
 
-    private void setPanelSlideListeners(){
+    private void setPanelSlideListeners() {
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -450,7 +405,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
             @Override
             public void onPanelExpanded(View panel) {
-                if (slidingUpPanelLayout2.isPanelExpanded()){
+                if (slidingUpPanelLayout2.isPanelExpanded()) {
                     slidingUpPanelLayout2.collapsePanel();
                 }
             }
