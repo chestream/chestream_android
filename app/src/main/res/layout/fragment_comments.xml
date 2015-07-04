@@ -82,6 +82,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/send"
             android:paddingRight="15dp"
+            android:imeOptions="actionDone"
             android:singleLine="false"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white" />
