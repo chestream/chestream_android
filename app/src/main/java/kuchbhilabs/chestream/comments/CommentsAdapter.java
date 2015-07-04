@@ -54,8 +54,12 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
             public void done(ParseUser user, ParseException e) {
                 commentsRowHolder.username.setText(user.get(ParseTables.Users.USERNAME).toString());
                 Log.d("aas",user.getString(ParseTables.Users.USERNAME) + "  "+ user.getString(ParseTables.Users.AVATAR));
-                Uri uri = Uri.parse(user.getString(ParseTables.Users.AVATAR));
-
+                Uri uri = Uri.parse("https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png");
+                try {
+                     uri = Uri.parse(user.getString(ParseTables.Users.AVATAR));
+                }catch (NullPointerException e1){
+                    e1.printStackTrace();
+                }
                 commentsRowHolder.avatar.setImageURI(uri);
             }
         });
