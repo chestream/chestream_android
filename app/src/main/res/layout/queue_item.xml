@@ -5,18 +5,38 @@
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="170dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:layout_marginTop="10dp"
     android:background="#70ffffff"
     android:elevation="2dp">
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/background_image"
+        android:src="@drawable/zombie_icon"
+        android:scaleType="centerCrop"
+        />
+
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ffffff"
+        android:layout_height="90dp"
+        android:layout_gravity="bottom"
        >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:alpha="0.65"
+
+            />
+
+
+
 
         <kuchbhilabs.chestream.helpers.CircularRevealView
             android:id="@+id/reveal"
@@ -27,7 +47,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <com.facebook.drawee.view.SimpleDraweeView
@@ -58,7 +78,8 @@
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:paddingLeft="10dp"
                     android:text="Username"
                     android:textColor="#000000"
@@ -70,12 +91,12 @@
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
                     android:id="@+id/video_title"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
                     android:paddingLeft="10dp"
-                    android:paddingTop="5dp"
                     android:text="Video Title"
                     android:textColor="#000000"
-                    android:textSize="16sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     typeface:typeface="HelveticaNeue-Medium"
              />
@@ -83,8 +104,8 @@
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
                     android:id="@+id/video_location"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:paddingLeft="10dp"
                     android:text="Location"
                     android:textColor="#000000"
@@ -108,8 +129,8 @@
 
                 <ImageButton
                     android:id="@+id/up_vote"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="?selectableItemBackgroundBorderless"
@@ -122,15 +143,15 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:text="1000"
-                    android:textSize="19sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
                     typeface:typeface="HelveticaNeue-Medium"
                     />
 
                 <ImageButton
                     android:id="@+id/down_vote"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="?selectableItemBackgroundBorderless"
@@ -140,7 +161,5 @@
 
         </RelativeLayout>
 
-
     </FrameLayout>
-
 </android.support.v7.widget.CardView>
