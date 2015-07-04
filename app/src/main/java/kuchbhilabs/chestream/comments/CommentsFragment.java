@@ -1,5 +1,6 @@
 package kuchbhilabs.chestream.comments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,6 +28,7 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.VideoFragment;
@@ -69,21 +71,35 @@ public class CommentsFragment extends Fragment {
         sendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
-                List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
-                ParseObject postComment = new ParseObject("Comments");
-                postComment.put("user", ParseUser.getCurrentUser());
-                postComment.put("comment", editText.getText().toString());
-                postComment.put("video_object", currentVideoObjectComment);
-                commentsArrray.add(postComment);
-                currentVideoObjectComment.put("comments", commentsArrray);
-                currentVideoObjectComment.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
-                        setUpComments();
-                    }
-                });
+                ParseUser pUser = ParseUser.getCurrentUser();
+                if ((pUser != null)
+                        && (pUser.isNew())
+                        && (pUser.isAuthenticated())
+                        && (pUser.getSessionToken() != null)
+                /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
+                    Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
+
+                    ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
+                    List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
+                    ParseObject postComment = new ParseObject("Comments");
+                    postComment.put("user", pUser);
+                    postComment.put("comment", editText.getText().toString());
+                    postComment.put("video_object", currentVideoObjectComment);
+                    commentsArrray.add(postComment);
+                    currentVideoObjectComment.put("comments", commentsArrray);
+                    editText.setText("");
+                    currentVideoObjectComment.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
+                            setUpComments();
+                        }
+                    });
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -92,21 +108,35 @@ public class CommentsFragment extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE){
                     //TODO: Add a new comment to the current video
-                    ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
-                    List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
-                    ParseObject postComment = new ParseObject("Comments");
-                    postComment.put("user", ParseUser.getCurrentUser());
-                    postComment.put("comment", editText.getText().toString());
-                    postComment.put("video_object", currentVideoObjectComment);
-                    commentsArrray.add(postComment);
-                    currentVideoObjectComment.put("comments", commentsArrray);
-                    currentVideoObjectComment.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            Toast.makeText(getActivity(), "Comment Added" , Toast.LENGTH_SHORT).show();
-                            setUpComments();
-                        }
-                    });
+                    ParseUser pUser = ParseUser.getCurrentUser();
+                    if ((pUser != null)
+                            && (pUser.isAuthenticated())
+                            && (pUser.isNew())
+                            && (pUser.getSessionToken() != null)
+                /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
+                        Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
+
+                        ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
+                        List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
+                        ParseObject postComment = new ParseObject("Comments");
+                        postComment.put("user", pUser);
+                        postComment.put("comment", editText.getText().toString());
+                        postComment.put("video_object", currentVideoObjectComment);
+                        commentsArrray.add(postComment);
+                        currentVideoObjectComment.put("comments", commentsArrray);
+                        editText.setText("");
+                        currentVideoObjectComment.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
+                                setUpComments();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
 
