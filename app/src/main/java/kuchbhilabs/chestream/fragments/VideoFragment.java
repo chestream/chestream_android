@@ -332,6 +332,14 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                             tvideoTitle.setText(title);
                                             tlocation.setText(location);
                                             ttotalVotes.setText(upvotes);
+                                            slidingUpPanelLayout2.expandPanel();
+                                            Handler handlerCollapse=new Handler();
+                                            handlerCollapse.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    slidingUpPanelLayout2.collapsePanel();
+                                                }
+                                            },5000);
 
                                         }
                                     });
