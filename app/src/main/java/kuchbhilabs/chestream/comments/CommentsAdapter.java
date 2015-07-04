@@ -3,6 +3,7 @@ package kuchbhilabs.chestream.comments;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+
 
 import java.util.List;
 
@@ -50,8 +52,10 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
         comment.getParseUser(ParseTables.Comments.USER).fetchIfNeededInBackground(new GetCallback<ParseUser>() {
             @Override
             public void done(ParseUser user, ParseException e) {
-                commentsRowHolder.username.setText(user.getString(ParseTables.Users.USERNAME));
+                commentsRowHolder.username.setText(user.get(ParseTables.Users.USERNAME).toString());
+                Log.d("aas",user.getString(ParseTables.Users.USERNAME) + "  "+ user.getString(ParseTables.Users.AVATAR));
                 Uri uri = Uri.parse(user.getString(ParseTables.Users.AVATAR));
+
                 commentsRowHolder.avatar.setImageURI(uri);
             }
         });

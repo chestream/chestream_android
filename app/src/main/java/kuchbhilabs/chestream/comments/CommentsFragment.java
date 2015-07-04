@@ -16,11 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class CommentsFragment extends Fragment {
     private CommentsAdapter adapter;
     private List<ParseObject> commentsList = new ArrayList<>();
     EditText editText;
-    private TextView commentsCount;
+    private static TextView commentsCount;
     static CommentsAdapter commentsAdapter;
     ImageView sendComment;
 
@@ -62,22 +64,26 @@ public class CommentsFragment extends Fragment {
         commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<ParseObject>());
         recyclerView.setAdapter(commentsAdapter);
 
-        setUpComments();
+//        setUpComments();
 
         sendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
-                ArrayList<ParseObject> commentsArrray = (ArrayList<ParseObject>) currentVideoObjectComment.get("comments");
+                List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
                 ParseObject postComment = new ParseObject("Comments");
                 postComment.put("user", ParseUser.getCurrentUser());
                 postComment.put("comment", editText.getText().toString());
                 postComment.put("video_object", currentVideoObjectComment);
                 commentsArrray.add(postComment);
                 currentVideoObjectComment.put("comments", commentsArrray);
-                currentVideoObjectComment.saveInBackground();
-                Toast.makeText(getActivity(), "Comment Added" , Toast.LENGTH_SHORT).show();
-                setUpComments();
+                currentVideoObjectComment.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
+                        setUpComments();
+                    }
+                });
             }
         });
 
@@ -87,16 +93,21 @@ public class CommentsFragment extends Fragment {
                 if(actionId== EditorInfo.IME_ACTION_DONE){
                     //TODO: Add a new comment to the current video
                     ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
-                    ArrayList<ParseObject> commentsArrray = (ArrayList<ParseObject>) currentVideoObjectComment.get("comments");
+                    List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
                     ParseObject postComment = new ParseObject("Comments");
                     postComment.put("user", ParseUser.getCurrentUser());
                     postComment.put("comment", editText.getText().toString());
                     postComment.put("video_object", currentVideoObjectComment);
                     commentsArrray.add(postComment);
                     currentVideoObjectComment.put("comments", commentsArrray);
-                    currentVideoObjectComment.saveInBackground();
-                    Toast.makeText(getActivity(), "Comment Added" , Toast.LENGTH_SHORT).show();
-                    setUpComments();
+                    currentVideoObjectComment.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            Toast.makeText(getActivity(), "Comment Added" , Toast.LENGTH_SHORT).show();
+                            setUpComments();
+                        }
+                    });
+
                 }
 
                 return false;
@@ -119,9 +130,35 @@ public class CommentsFragment extends Fragment {
         return v;
     }
 
-    private void setUpComments(){
+    public static void setUpComments(){
+
+        ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
+
+
+//        List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
+//        Log.d("ttt",commentsArrray.toString());
+//        commentsAdapter.updateDataSet(commentsArrray);
+//        commentsAdapter.notifyDataSetChanged();
+//        commentsCount.setText(commentsArrray.size()+ " Comments");
+
+
+
+//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
+//        query.orderByDescending("createdAt");
+//        query.findInBackground(new FindCallback<ParseObject>() {
+//            @Override
+//            public void done(List<ParseObject> list, ParseException e) {
+//                Log.d(TAG, "Updating comments dataset");
+//                commentsAdapter.updateDataSet(list);
+//                commentsAdapter.notifyDataSetChanged();
+//                commentsCount.setText(list.size()+ " Comments");
+//            }
+//        });
+
+
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
-        query.orderByDescending("createdAt");
+        query.whereEqualTo("video_object", currentVideoObjectComment);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
@@ -131,5 +168,7 @@ public class CommentsFragment extends Fragment {
                 commentsCount.setText(list.size()+ " Comments");
             }
         });
+
+
     }
 }

@@ -127,8 +127,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     Log.d("vid", "Retrieved the object.");
 
                     currentVideoObject = videos;
+                    CommentsFragment.setUpComments();
 
-                    url = videos.getString(ParseTables.Videos.URL_M3U8);
+                    url = videos.getString(ParseTables.Videos.URL);
                     upvotes = videos.getString(ParseTables.Videos.UPVOTE);
                     location = videos.getString(ParseTables.Videos.LOCATION);
                     title = videos.getString(ParseTables.Videos.TITLE);
@@ -147,7 +148,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-//                            startMediaPlayer();
+                            startMediaPlayer();
                         }
                     });
                 }
@@ -207,7 +208,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                 }
             });
         }
-//        startMediaPlayer();
+        startMediaPlayer();
     }
 
     @Override
@@ -287,8 +288,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                     Log.e(TAG, "SHIT HAPPENED");
                                 } else {
                                     currentVideoObject = videos;
+                                    CommentsFragment.setUpComments();
 
-                                    url = videos.getString(ParseTables.Videos.URL_M3U8);
+                                    url = videos.getString(ParseTables.Videos.URL);
                                     upvotes = videos.getString(ParseTables.Videos.UPVOTE);
                                     location = videos.getString(ParseTables.Videos.LOCATION);
                                     title = videos.getString(ParseTables.Videos.TITLE);
