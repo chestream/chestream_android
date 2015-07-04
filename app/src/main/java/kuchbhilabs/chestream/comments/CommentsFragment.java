@@ -79,7 +79,7 @@ public class CommentsFragment extends Fragment {
                 /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
                     Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
 
-                    ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
+                    ParseObject currentVideoObjectComment = VideoFragment.currentVideo ;
                     List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
                     ParseObject postComment = new ParseObject("Comments");
                     postComment.put("user", pUser);
@@ -116,7 +116,7 @@ public class CommentsFragment extends Fragment {
                 /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
                         Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
 
-                        ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
+                        ParseObject currentVideoObjectComment = VideoFragment.currentVideo ;
                         List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
                         ParseObject postComment = new ParseObject("Comments");
                         postComment.put("user", pUser);
@@ -162,7 +162,7 @@ public class CommentsFragment extends Fragment {
 
     public static void setUpComments(){
 
-        ParseObject currentVideoObjectComment = VideoFragment.currentVideoObject ;
+        ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
 
 
 //        List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");

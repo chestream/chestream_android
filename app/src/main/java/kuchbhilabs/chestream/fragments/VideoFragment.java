@@ -38,9 +38,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,7 +60,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     String title = "";
     String username = "";
     String avatar = "";
-    ParseObject currentVideo;
+    public static ParseObject currentVideo;
 
     TextView tvideoTitle;
     TextView tlocation;
@@ -76,7 +73,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
     SurfaceView surfaceView;
     SurfaceHolder holder;
-    static MediaPlayer mediaPlayer;
+    MediaPlayer mediaPlayer;
     private static TextView commentFloating;
     private static TimerCommentText timerCommentText;
 
@@ -189,6 +186,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                 public void done(List<ParseObject> list, ParseException e) {
                                     if (list != null) {
                                         currentVideo = list.get(0);
+                                        CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
                                         location = currentVideo.getString(ParseTables.Videos.LOCATION);
@@ -207,7 +205,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                                             handler.sendMessage(handler.obtainMessage(
                                                                     MediaHandler.MSG_CHANGE_SOURCE, url));
                                                         }
-
                                                     }
                                                 });
                                     } else {
@@ -255,9 +252,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     Log.d(TAG, "STARTING MEDIA PLAYER");
                     //TODO: Add a check if there is no stream available
 
-                    String urlSet = url;
-
-                    mediaPlayer.setDataSource(activity, Uri.parse(urlSet));
+                    mediaPlayer.setDataSource(activity, Uri.parse(url));
                     mediaPlayer.setLooping(false);
                     mediaPlayer.setVolume(0, 0);
 
@@ -421,5 +416,4 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
             }
         });
     }
-
 }

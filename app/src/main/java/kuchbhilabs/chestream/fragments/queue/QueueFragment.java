@@ -108,6 +108,7 @@ public class QueueFragment extends Fragment {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                loadFromParse();
                 Log.d(TAG, "received");
             }
         };
