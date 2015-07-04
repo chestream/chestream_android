@@ -80,7 +80,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     private int i = 0;
 
     ProgressDialog mProgressDialog;
-    View loadinglyout;
+    View loadingLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -107,7 +107,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         tusername = (TextView) rootView.findViewById(R.id.username);
         ttotalVotes = (TextView) rootView.findViewById(R.id.video_score);
         tdraweeView = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
-        loadinglyout=(View) rootView.findViewById(R.id.loading_layout);
+        loadingLayout = rootView.findViewById(R.id.loading_layout);
 
 //        mProgressDialog = new ProgressDialog(activity);
 //        mProgressDialog.setCancelable(false);
@@ -183,7 +183,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
         isMediaPlayerInitialized = true;
         //TODO: For now only
-//        startMediaPlayer();
+        startMediaPlayer();
         Log.d(TAG, "Starting the new thread");
         if (handler != null) {
             handler.post(new Runnable() {
@@ -263,7 +263,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 //                                mProgressDialog.cancel();
 //                                mProgressDialog = null;
 //                            }
-                            loadinglyout.setVisibility(View.GONE);
+                            loadingLayout.setVisibility(View.GONE);
 
                         }
                     });
@@ -337,7 +337,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                 } catch (IOException e) {
                     e.printStackTrace();
 //                    mProgressDialog.dismiss();
-                    loadinglyout.setVisibility(View.GONE);
+                    loadingLayout.setVisibility(View.GONE);
                 }
             }
         } else {
