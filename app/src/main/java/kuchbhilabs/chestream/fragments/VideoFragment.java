@@ -254,7 +254,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
                     mediaPlayer.setDataSource(activity, Uri.parse(url));
                     mediaPlayer.setLooping(false);
-                    mediaPlayer.setVolume(0, 0);
 
                     mediaPlayer.setDisplay(holder);
                     mediaPlayer.prepare();
