@@ -6,24 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    sothree:panelHeight="35dp"
-    sothree:shadowHeight="0dp"
-    sothree:dragViewClickable="true">
+    sothree:dragViewClickable="true"
+    sothree:panelHeight="300dp"
+    sothree:shadowHeight="0dp">
 
-    <kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout
-        android:id="@+id/sliding_layout2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="top"
-        sothree:panelHeight="0dp"
-        sothree:shadowHeight="0dp"
-        sothree:dragViewClickable="true">
 
     <FrameLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#009688">
+        android:background="#009688"
+        android:orientation="vertical">
 
         <SurfaceView
             android:id="@+id/main_surface_view"
@@ -31,16 +23,16 @@
             android:layout_height="match_parent" />
 
         <TextView
+            android:id="@+id/commentText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/commentText"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="50dp"
+            android:gravity="center_horizontal|top"
             android:text="Great Video"
-            android:visibility="gone"
             android:textColor="#ffffff"
             android:textSize="25sp"
-            android:layout_gravity="center_horizontal|top"
-            android:gravity="center_horizontal|top"
-            android:layout_marginTop="50dp"/>
+            android:visibility="gone" />
 
         <!--
         <VideoView
@@ -49,26 +41,11 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|center_vertical" />
 -->
-        <include layout="@layout/loading_layout"
-            android:id="@+id/loading_layout"/>
 
     </FrameLayout>
 
-        <include layout="@layout/layout_current_video"/>
 
-    </kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout>
-
-
-
-    <FrameLayout
-        android:id="@+id/comments"
-        android:background="#95000000"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom">
-
-    </FrameLayout>
-
+    <include layout="@layout/layout_panel_bottom" />
 
 
 </kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout>

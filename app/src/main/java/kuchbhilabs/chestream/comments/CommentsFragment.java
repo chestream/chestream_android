@@ -1,6 +1,5 @@
 package kuchbhilabs.chestream.comments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,8 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -28,9 +25,7 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.VideoFragment;
 
 /**
@@ -42,7 +37,7 @@ public class CommentsFragment extends Fragment {
     private CommentsAdapter adapter;
     private List<ParseObject> commentsList = new ArrayList<>();
     EditText editText;
-    private static TextView commentsCount;
+
     static CommentsAdapter commentsAdapter;
     ImageView sendComment;
 
@@ -55,7 +50,7 @@ public class CommentsFragment extends Fragment {
 
         recyclerView=(RecyclerView) v.findViewById(R.id.comments_recycler_view);
         editText=(EditText) v.findViewById(R.id.commentEditText);
-        commentsCount=(TextView) v.findViewById(R.id.commentsCount);
+
         sendComment  =(ImageView) v.findViewById(R.id.send);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
@@ -195,7 +190,7 @@ public class CommentsFragment extends Fragment {
                 Log.d(TAG, "Updating comments dataset");
                 commentsAdapter.updateDataSet(list);
                 commentsAdapter.notifyDataSetChanged();
-                commentsCount.setText(list.size()+ " Comments");
+                VideoFragment.setCommentsCount(list.size()+ " Comments");
             }
         });
 

@@ -13,27 +13,6 @@
         android:background="@android:color/transparent"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/secondPanelDragIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
-            android:scaleType="centerInside"
-            android:src="@drawable/drag_indicator" />
-
-
-        <kuchbhilabs.chestream.helpers.TypefaceTextView
-            android:id="@+id/commentsCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:paddingTop="15dp"
-            android:text="Comments"
-            android:textColor="@android:color/white"
-            android:textSize="26sp"
-            android:paddingBottom="10dp"
-            typeface:typeface="HelveticaNeue-UltraLight"/>
 
 
         <android.support.v7.widget.RecyclerView
