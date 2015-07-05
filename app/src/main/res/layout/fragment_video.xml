@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     sothree:dragViewClickable="true"
-    sothree:panelHeight="300dp"
+    sothree:panelHeight="236dp"
     sothree:shadowHeight="0dp">
 
 

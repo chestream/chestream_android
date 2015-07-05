@@ -40,7 +40,8 @@ public class CommentsFragment extends Fragment {
 
     static CommentsAdapter commentsAdapter;
     ImageView sendComment;
-
+    static TextView commentsLoading;
+    View addCommentsFooter;
     private static final String TAG = "CommentsFragment";
 
     @Override
@@ -50,6 +51,8 @@ public class CommentsFragment extends Fragment {
 
         recyclerView=(RecyclerView) v.findViewById(R.id.comments_recycler_view);
         editText=(EditText) v.findViewById(R.id.commentEditText);
+        commentsLoading=(TextView) v.findViewById(R.id.commentsLoading);
+        addCommentsFooter=v.findViewById(R.id.addCommentFooter);
 
         sendComment  =(ImageView) v.findViewById(R.id.send);
 
@@ -60,6 +63,15 @@ public class CommentsFragment extends Fragment {
 
         commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<ParseObject>());
         recyclerView.setAdapter(commentsAdapter);
+
+//        int footerHeight = 30;
+//
+//        QuickReturnRecyclerViewOnScrollListener scrollListener = new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.FOOTER)
+//                .footer(addCommentsFooter)
+//                .minFooterTranslation(footerHeight)
+//                .isSnappable(true)
+//                .build();
+//        recyclerView.setOnScrollListener(scrollListener);
 
 //        setUpComments();
 
@@ -190,7 +202,13 @@ public class CommentsFragment extends Fragment {
                 Log.d(TAG, "Updating comments dataset");
                 commentsAdapter.updateDataSet(list);
                 commentsAdapter.notifyDataSetChanged();
-                VideoFragment.setCommentsCount(list.size()+ " Comments");
+                commentsLoading.setVisibility(View.GONE);
+
+                VideoFragment.setCommentsCount(list.size() + " Comments");
+                if (list.size()==0){
+                    commentsLoading.setVisibility(View.VISIBLE);
+                    commentsLoading.setText("Be the first to comment.");
+                }
             }
         });
 

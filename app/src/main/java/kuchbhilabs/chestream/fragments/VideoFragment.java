@@ -46,7 +46,6 @@ import java.util.List;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.helpers.LoadingProgress;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
@@ -96,7 +95,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     ProgressDialog mProgressDialog;
     View loadingLayout;
     LoadingProgress loadingProgress;
-    View loadingFrame;
+   static View loadingFrame,dividerView;
     public static TextView commentsCount;
 
     @Override
@@ -133,10 +132,11 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
         loadingFrame=(View) rootView.findViewById(R.id.loading_frame);
+        dividerView=rootView.findViewById(R.id.dividerView);
 
 //        loadingProgress.show();
 
-        loadingFrame.setBackground(Helper.createBlurredImage(getResources().getDrawable(R.drawable.zombie_icon), activity));
+//        loadingFrame.setBackground(Helper.createBlurredImage(getResources().getDrawable(R.drawable.zombie_icon), activity));
 
         sendNextRequest();
 
@@ -448,6 +448,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     }
     public static void setCommentsCount(String count){
         commentsCount.setText(count);
+        dividerView.setVisibility(View.VISIBLE);
+
     }
 
 }

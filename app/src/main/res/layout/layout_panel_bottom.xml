@@ -10,7 +10,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="236dp"
         android:background="@android:color/transparent">
 
     <include
@@ -23,7 +23,8 @@
          android:orientation="vertical"
          android:padding="15dp"
          android:gravity="bottom|left"
-         android:layout_gravity="bottom|left">
+         android:layout_gravity="bottom|left"
+         android:background="@android:color/transparent">
 
          <kuchbhilabs.chestream.helpers.TypefaceTextView
              android:id="@+id/video_title"
@@ -55,7 +56,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/bottomLayout">
+        android:id="@+id/bottomLayout"
+        android:background="#ffffff">
 
         <!--<include layout="@layout/layout_uploader_video"-->
             <!--android:background="#95000000"/>-->
@@ -63,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#95000000"
+            android:background="#ffffff"
             android:layout_marginTop="10dp"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical">
@@ -83,14 +85,19 @@
                 android:orientation="vertical"
                 android:layout_toRightOf="@+id/profile_picture"
                 android:paddingLeft="15dp"
-               android:layout_centerVertical="true">
+                android:layout_centerVertical="true">
 
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#ffffff"
-                    android:textSize="16sp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:textColor="#000000"
+                    android:maxLines="1"
+                    android:paddingRight="50dp"
+                    android:ellipsize="end"
+                    android:textSize="17sp"
                     android:textStyle="normal"
                     typeface:typeface="HelveticaNeue-Light"/>
 
@@ -98,9 +105,8 @@
                     android:id="@+id/video_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:textColor="#ffffff"
-                    android:textSize="16sp"/>
+                    android:textColor="#000000"
+                    android:textSize="15sp"/>
                 </LinearLayout>
 
             <kuchbhilabs.chestream.helpers.TypefaceTextView
@@ -108,15 +114,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:textColor="@android:color/white"
+                android:textColor="#000000"
                 android:textSize="17sp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 typeface:typeface="HelveticaNeue-Light"/>
             </RelativeLayout>
 
+        <View
+            android:id="@+id/dividerView"
+            android:paddingTop="9dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#dce4e6"
+            android:visibility="gone"/>
+
     <FrameLayout
         android:id="@+id/comments"
-        android:background="#95000000"
+        android:background="#ffffff"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom">
