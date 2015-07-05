@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -42,6 +43,7 @@ public class CommentsFragment extends Fragment {
     ImageView sendComment;
     static TextView commentsLoading;
     View addCommentsFooter;
+    FloatingActionButton addCommentFab;
     private static final String TAG = "CommentsFragment";
 
     @Override
@@ -53,6 +55,7 @@ public class CommentsFragment extends Fragment {
         editText=(EditText) v.findViewById(R.id.commentEditText);
         commentsLoading=(TextView) v.findViewById(R.id.commentsLoading);
         addCommentsFooter=v.findViewById(R.id.addCommentFooter);
+        addCommentFab=(FloatingActionButton) v.findViewById(R.id.addCommentFab);
 
         sendComment  =(ImageView) v.findViewById(R.id.send);
 
@@ -63,6 +66,8 @@ public class CommentsFragment extends Fragment {
 
         commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<ParseObject>());
         recyclerView.setAdapter(commentsAdapter);
+
+        addCommentFab.attachToRecyclerView(recyclerView);
 
 //        int footerHeight = 30;
 //

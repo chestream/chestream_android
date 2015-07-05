@@ -2,6 +2,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
@@ -9,7 +10,6 @@
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="75dp"
         android:background="@android:color/transparent"
         android:orientation="vertical">
 
@@ -42,6 +42,21 @@
             android:textSize="20sp"
             typeface:typeface="HelveticaNeue-Light" />
 
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/addCommentFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
+            fab:fab_colorRipple="@color/colorAccent"
+            fab:fab_type="mini"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_comment"
+            android:scaleType="centerInside"/>
+
 
     </FrameLayout>
 
@@ -54,7 +69,8 @@
         android:background="@android:color/transparent"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="6dp">
+        android:paddingBottom="6dp"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="52dp"
@@ -92,7 +108,9 @@
             android:paddingRight="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_send_black" />
+            android:src="@drawable/ic_send_black"
+
+            />
 
 
         </RelativeLayout>
