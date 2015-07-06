@@ -28,14 +28,13 @@ import com.parse.ParseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
-import kuchbhilabs.chestream.parse.AwsParseObject;
+import kuchbhilabs.chestream.parse.ParseVideo;
 
 
 public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.QVHolder> {
@@ -43,7 +42,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     private static final String TAG = "QueueVideosAdapter";
 
     private static boolean isSpeakButtonLongPressed = false;
-    private List<AwsParseObject> videos;
+    private List<ParseVideo> videos;
 
     private int[] isVoted;
 
@@ -82,16 +81,16 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         }
     }
 
-    public QueueVideosAdapter(Context context, List<AwsParseObject> videos) {
+    public QueueVideosAdapter(Context context, List<ParseVideo> videos) {
         this.videos = videos;
         this.context = context;
     }
 
-    public void updateDataSet(List<AwsParseObject> list) {
+    public void updateDataSet(List<ParseVideo> list) {
         this.videos = list;
     }
 
-    public List<AwsParseObject> getDataSet() {
+    public List<ParseVideo> getDataSet() {
         return this.videos;
     }
 
