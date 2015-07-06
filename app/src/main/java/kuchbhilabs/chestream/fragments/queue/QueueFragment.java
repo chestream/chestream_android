@@ -37,12 +37,16 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,6 +58,7 @@ import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.AppLocationService;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
+import kuchbhilabs.chestream.parse.AwsParseObject;
 
 /**
  * Created by naman on 20/06/15.
@@ -109,6 +114,21 @@ public class QueueFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 loadFromParse();
+                String videoId = intent.getStringExtra(NotificationReceiver.EXTRA_VIDEO_ID);
+                ParseQuery<AwsParseObject> query = new ParseQuery<>(ParseTables.Videos._NAME);
+                query.whereEqualTo("objectId", videoId);
+                query.findInBackground(new FindCallback<AwsParseObject>() {
+                    @Override
+                    public void done(List<AwsParseObject> list, ParseException e) {
+                        AwsParseObject updatedVideo = list.get(0);
+                        List<AwsParseObject> derp = queueVideosAdapter.getDataSet();
+                        if (derp.contains(updatedVideo)) {
+                            Toast.makeText(activity, "AWESOME", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(activity, "NO SHIT", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 Log.d(TAG, "received");
             }
         };
@@ -143,9 +163,7 @@ public class QueueFragment extends Fragment {
                                             handler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-
                                                     startActivityForResult(takeVideoIntent, 1);
-
                                                     handler.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
@@ -155,7 +173,6 @@ public class QueueFragment extends Fragment {
 
                                                 }
                                             }, 500);
-
                                         }
                                         break;
                                     default:
@@ -167,7 +184,7 @@ public class QueueFragment extends Fragment {
             }
         });
         recyclerView.setHasFixedSize(true);
-        queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseObject>());
+        queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<AwsParseObject>());
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(queueVideosAdapter);
@@ -187,9 +204,7 @@ public class QueueFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (resultCode == Activity.RESULT_OK) {
 
-            if (requestCode == 1)
-            {
-
+            if (requestCode == 1) {
                 LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
                 boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -335,16 +350,16 @@ public class QueueFragment extends Fragment {
     }
 
     public  void loadFromParse() {
-        ParseQuery<ParseObject> query = new ParseQuery<>(
+        ParseQuery<AwsParseObject> query = new ParseQuery<>(
                 "Videos");
 
         query.orderByDescending(ParseTables.Videos.UPVOTE);
         query.whereEqualTo(ParseTables.Videos.PLAYED, false);
         query.whereEqualTo(ParseTables.Videos.COMPILED, true);
         query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
-        query.findInBackground(new FindCallback<ParseObject>() {
+        query.findInBackground(new FindCallback<AwsParseObject>() {
             @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
+            public void done(List<AwsParseObject> parseObjects, ParseException e) {
                 progressBar.setVisibility(View.GONE);
                 queueVideosAdapter.updateDataSet(parseObjects);
                 queueVideosAdapter.notifyDataSetChanged();

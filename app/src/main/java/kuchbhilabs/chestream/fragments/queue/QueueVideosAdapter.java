@@ -28,12 +28,14 @@ import com.parse.ParseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
+import kuchbhilabs.chestream.parse.AwsParseObject;
 
 
 public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.QVHolder> {
@@ -41,7 +43,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     private static final String TAG = "QueueVideosAdapter";
 
     private static boolean isSpeakButtonLongPressed = false;
-    private List<ParseObject> videos;
+    private List<AwsParseObject> videos;
 
     private int[] isVoted;
 
@@ -80,13 +82,17 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         }
     }
 
-    public QueueVideosAdapter(Context context, List<ParseObject> videos) {
+    public QueueVideosAdapter(Context context, List<AwsParseObject> videos) {
         this.videos = videos;
         this.context = context;
     }
 
-    public void updateDataSet(List<ParseObject> list) {
+    public void updateDataSet(List<AwsParseObject> list) {
         this.videos = list;
+    }
+
+    public List<AwsParseObject> getDataSet() {
+        return this.videos;
     }
 
     @Override
@@ -223,21 +229,10 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     private void upvote(int position) {
         ParseObject video = videos.get(position);
         int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
+        String objectId = video.getObjectId();
         video.put(ParseTables.Videos.UPVOTE, currentVotes + 1);
         video.saveInBackground();
-/*
-        ParseCloud.callFunctionInBackground("votes", new HashMap<String, Object>(), new FunctionCallback<String>() {
-            public void done(String result, ParseException e) {
-                if (e == null) {
-                    // result is "Hello world!"
-                    Log.d(TAG, "success");
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        }); */
-
-        notifyVotes();
+        notifyVotes(objectId);
     }
 
     private void downvote(int position) {
@@ -249,11 +244,13 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         }
     }
 
-    private void notifyVotes() {
+    private void notifyVotes(String videoId) {
         ParsePush push = new ParsePush();
         JSONObject message = new JSONObject();
         try {
             message.put("messageType", "votes");
+            message.put("videoId", videoId);
+            Log.d(TAG, "sending message = " + message.toString() + " videoId = " + videoId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
