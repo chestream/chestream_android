@@ -53,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:textSize="18sp"
+            android:id="@+id/title_static"
             android:layout_weight="1"
             android:text="Title  :" />
 
@@ -76,6 +77,7 @@
             android:layout_height="fill_parent"
             android:layout_marginLeft="20dp"
             android:layout_weight="1"
+            android:id="@+id/location_static"
             android:textSize="18sp"
             android:text="Location  : " />
 

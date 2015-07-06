@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -272,6 +273,8 @@ public class QueueFragment extends Fragment {
 
                 final EditText txt = (EditText) dialog.findViewById(R.id.dialog_title);
                 final EditText loc = (EditText) dialog.findViewById(R.id.dialog_location);
+                final TextView locStatic = (TextView) dialog.findViewById(R.id.location_static);
+                final TextView titleStatic = (TextView) dialog.findViewById(R.id.title_static);
 
                 loc.setText(addressString);
 
@@ -281,25 +284,31 @@ public class QueueFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
 
+
                         String dialogTitle = txt.getText().toString();
-                        if (dialogTitle.isEmpty()) {
-                            dialogTitle = " - ";
-                        }
-
                         String dialogLocation = loc.getText().toString();
-                        if (dialogLocation.isEmpty()) {
-                            dialogLocation = " - ";
+
+                         if (dialogTitle.isEmpty() ) {
+                            Toast.makeText(getActivity(), "Please enter the title",Toast.LENGTH_LONG).show();
+                            titleStatic.setTextColor(Color.RED);
                         }
 
-                        Uri videoUri = dataGet.getData();
-                        Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
-                        serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
-                        serviceIntent.putExtra("title", dialogTitle);
-                        serviceIntent.putExtra("location", dialogLocation);
-                        getActivity().startService(serviceIntent);
+                        else if ( dialogLocation.isEmpty()) {
+                            Toast.makeText(getActivity(), "Please enter the location",Toast.LENGTH_LONG).show();
+                            locStatic.setTextColor(Color.RED);
+                        }
 
+                        else
+                        {
+                            Uri videoUri = dataGet.getData();
+                            Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
+                            serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
+                            serviceIntent.putExtra("title", dialogTitle);
+                            serviceIntent.putExtra("location", dialogLocation);
+                            getActivity().startService(serviceIntent);
 
-                        dialog.dismiss();
+                            dialog.dismiss();
+                        }
                     }
                 });
 
