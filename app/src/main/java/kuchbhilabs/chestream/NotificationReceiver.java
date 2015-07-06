@@ -17,6 +17,7 @@ public class NotificationReceiver extends ParsePushBroadcastReceiver {
 
     private static final String TAG = "NotificationReceiver";
     public static final String ACTION_VOTE = "kuchbhilabs.chestream.votes";
+    public static final String EXTRA_VIDEO_ID = "video_id";
 
     @Override
     protected void onPushReceive(Context context, Intent intent) {
@@ -35,12 +36,14 @@ public class NotificationReceiver extends ParsePushBroadcastReceiver {
                 if (object.getString("messageType").equals("votes")) {
                     Log.d(TAG, "Voting change notification received");
                     Intent broadcast = new Intent();
+                    broadcast.putExtra(EXTRA_VIDEO_ID, object.getString("videoId"));
                     broadcast.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     broadcast.setAction(ACTION_VOTE);
                     context.sendBroadcast(broadcast);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.d(TAG, "Message was = " + message);
             }
 
 //            VideoFragment.commentReceived(message);
