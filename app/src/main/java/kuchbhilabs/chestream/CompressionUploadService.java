@@ -34,6 +34,7 @@ import com.parse.SaveCallback;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 
 import kuchbhilabs.chestream.externalapi.ParseTables;
 
@@ -195,6 +196,7 @@ public class CompressionUploadService extends Service {
                                     videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
                                     videos.put("upvotes",0);
                                     videos.put("played", false);
+                                    videos.put("comments", new ArrayList<>());
                                     videos.put("compiled", false);
                                     ParseUser currentUser = ParseUser.getCurrentUser();
                                     if (currentUser != null) {
