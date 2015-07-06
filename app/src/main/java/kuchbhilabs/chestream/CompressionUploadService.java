@@ -193,7 +193,7 @@ public class CompressionUploadService extends Service {
                                     videos.put("title", title);
                                     videos.put("user_location", location);
                                     videos.put("url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
-                                    videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
+//                                    videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
                                     videos.put("upvotes",0);
                                     videos.put("played", false);
                                     videos.put("comments", new ArrayList<>());
