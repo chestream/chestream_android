@@ -117,8 +117,7 @@ public class QueueFragment extends Fragment {
                         List<ParseVideo> derp = queueVideosAdapter.getDataSet();
                         if (derp.contains(updatedVideo)) {
                             int location = derp.indexOf(updatedVideo);
-                            derp.set(location, updatedVideo);
-                            queueVideosAdapter.notifyDataSetChanged();
+                            queueVideosAdapter.updateItem(location, updatedVideo);
                             //NOTE: the above code is untested
                             Toast.makeText(activity, "AWESOME", Toast.LENGTH_SHORT).show();
                         } else {

@@ -90,6 +90,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         this.videos = list;
     }
 
+    public void updateItem (int location, ParseVideo video) {
+        this.videos.set(location, video);
+        notifyItemChanged(location);
+    }
+
     public List<ParseVideo> getDataSet() {
         return this.videos;
     }
