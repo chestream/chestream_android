@@ -133,6 +133,8 @@ public class QueueFragment extends Fragment {
                                         break;
                                     case 1:
                                         final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                                        takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+
                                         if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                                             final int color = Color.parseColor("#00bcd4");
                                             final Point p = Helper.getLocationInView(revealView, view);
@@ -188,7 +190,7 @@ public class QueueFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (resultCode == Activity.RESULT_OK) {
 
-            if (requestCode == 1)
+            if (requestCode == 1 || requestCode == 2)
             {
 
                 LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -315,15 +317,6 @@ public class QueueFragment extends Fragment {
                 dialog.show();
 
             }
-
-            if (requestCode == 2)
-            {
-                Uri videoUri = data.getData();
-                Intent serviceIntent = new Intent(getActivity(), CompressionUploadService.class);
-                serviceIntent.putExtra("path", getRealPathFromUri(getActivity(), videoUri));
-                getActivity().startService(serviceIntent);
-            }
-
         }
     }
 
