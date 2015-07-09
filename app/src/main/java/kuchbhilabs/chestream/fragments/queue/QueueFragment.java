@@ -14,13 +14,11 @@ import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,7 +37,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.io.IOException;
@@ -55,6 +52,7 @@ import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.AppLocationService;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
+import kuchbhilabs.chestream.parse.ParseVideo;
 
 /**
  * Created by naman on 20/06/15.
@@ -110,6 +108,24 @@ public class QueueFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 loadFromParse();
+                String videoId = intent.getStringExtra(NotificationReceiver.EXTRA_VIDEO_ID);
+                ParseQuery<ParseVideo> query = ParseQuery.getQuery(ParseVideo.class);
+                query.whereEqualTo("objectId", videoId);
+                query.findInBackground(new FindCallback<ParseVideo>() {
+                    @Override
+                    public void done(List<ParseVideo> list, ParseException e) {
+                        ParseVideo updatedVideo = list.get(0);
+                        List<ParseVideo> derp = queueVideosAdapter.getDataSet();
+                        if (derp.contains(updatedVideo)) {
+                            int location = derp.indexOf(updatedVideo);
+                            queueVideosAdapter.updateItem(location, updatedVideo);
+                            //NOTE: the above code is untested
+                            Toast.makeText(activity, "AWESOME", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(activity, "NO SHIT", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 Log.d(TAG, "received");
             }
         };
@@ -146,9 +162,7 @@ public class QueueFragment extends Fragment {
                                             handler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-
                                                     startActivityForResult(takeVideoIntent, 1);
-
                                                     handler.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
@@ -158,7 +172,6 @@ public class QueueFragment extends Fragment {
 
                                                 }
                                             }, 500);
-
                                         }
                                         break;
                                     default:
@@ -170,7 +183,7 @@ public class QueueFragment extends Fragment {
             }
         });
         recyclerView.setHasFixedSize(true);
-        queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseObject>());
+        queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseVideo>());
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(queueVideosAdapter);
@@ -192,7 +205,6 @@ public class QueueFragment extends Fragment {
 
             if (requestCode == 1 || requestCode == 2)
             {
-
                 LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
                 boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -337,16 +349,15 @@ public class QueueFragment extends Fragment {
     }
 
     public  void loadFromParse() {
-        ParseQuery<ParseObject> query = new ParseQuery<>(
-                "Videos");
+        ParseQuery<ParseVideo> query = ParseQuery.getQuery(ParseVideo.class);
 
         query.orderByDescending(ParseTables.Videos.UPVOTE);
         query.whereEqualTo(ParseTables.Videos.PLAYED, false);
         query.whereEqualTo(ParseTables.Videos.COMPILED, true);
         query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
-        query.findInBackground(new FindCallback<ParseObject>() {
+        query.findInBackground(new FindCallback<ParseVideo>() {
             @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
+            public void done(List<ParseVideo> parseObjects, ParseException e) {
                 progressBar.setVisibility(View.GONE);
                 queueVideosAdapter.updateDataSet(parseObjects);
                 queueVideosAdapter.notifyDataSetChanged();

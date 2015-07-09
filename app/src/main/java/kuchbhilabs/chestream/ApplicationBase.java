@@ -10,9 +10,12 @@ import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import kuchbhilabs.chestream.parse.ParseVideo;
 
 /**
  * Created by root on 20/6/15.
@@ -28,6 +31,7 @@ public class ApplicationBase extends Application {
         super.onCreate();
         FacebookSdk.sdkInitialize(getApplicationContext());
 
+        ParseObject.registerSubclass(ParseVideo.class);
         Parse.initialize(this, "M5tnZk2K6PdF82Ra8485bG2VQwPjpeZLeL96VLPj",
                 "0Sg7WlkNmt0jkC6dOQ91qkOUbGBoyiCqIG8xqU7z");
 
