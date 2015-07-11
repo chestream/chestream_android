@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaCodec;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.exoplayer.ExoPlayer;
+import com.google.android.exoplayer.audio.AudioCapabilities;
+import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
+import com.google.android.exoplayer.util.Util;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -46,6 +51,9 @@ import java.util.List;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
+import kuchbhilabs.chestream.exoplayer.DemoPlayer;
+import kuchbhilabs.chestream.exoplayer.EventLogger;
+import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.LoadingProgress;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
@@ -53,7 +61,8 @@ import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 /**
  * Created by naman on 20/06/15.
  */
-public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
+public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
+        DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener{
 
     String url = "";
     String upvotes = "";
@@ -75,7 +84,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
     SurfaceView surfaceView;
     SurfaceHolder holder;
-    MediaPlayer mediaPlayer;
+//    MediaPlayer mediaPlayer;
     private static TextView commentFloating;
     private static TimerCommentText timerCommentText;
 
@@ -90,7 +99,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     private boolean videoStarted = false;
 
     private CommentsBroadcastReceiver receiver;
-    private MediaHandler handler;
+//    private MediaHandler handler;
 
     private int i = 0;
 
@@ -103,12 +112,20 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     private static final long MIN_BUFFER_TIME_MILLIS = 5000;
     private long bufferStartTime;
 
+    private static final int RENDERER_COUNT = 1;
+    private DemoPlayer player;
+    private AudioCapabilities audioCapabilities;
+    private AudioCapabilitiesReceiver audioCapabilitiesReceiver;
+    long playerPosition = 0;
+    boolean playerNeedsPrepare = true;
+    private EventLogger eventLogger;
+    private HlsRendererBuilder hlsRenderer;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-
-
+        /*
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -119,14 +136,14 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                 startMediaPlayer();
                 Looper.loop();
             }
-        }).start();
+        }).start();*/
 
         View rootView = inflater.inflate(R.layout.fragment_video, null);
 
         activity = getActivity();
         receiver = new CommentsBroadcastReceiver();
 
-
+        audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(activity, this);
 
         tvideoTitle = (TextView) rootView.findViewById(R.id.video_title);
         tlocation = (TextView) rootView.findViewById(R.id.video_location);
@@ -162,7 +179,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         CommentsFragment commentsFragment = new CommentsFragment();
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
 
-
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
         holder.addCallback(this);
@@ -173,9 +189,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         isSurfaceCreated = true;
+        if (player != null) {
+            player.setSurface(holder.getSurface());
+        }
+        /*
         if (handler != null) {
             handler.sendMessage(handler.obtainMessage(MediaHandler.MSG_START));
-        }
+        }*/
     }
 
     @Override
@@ -184,10 +204,14 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        if (player != null) {
+            player.blockingClearSurface();
+        }
+        /*
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
-        }
+        } */
     }
 
     private void sendNextRequest() {
@@ -215,6 +239,14 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                         currentVideo = list.get(0);
                                         CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
+//                                        player.release();
+//                                        releasePlayer();
+                                        if (player != null) {
+                                            player.updateRendererBuilder(getRendererBuilder());
+                                            player.seekTo(0);
+                                        }
+                                        playerNeedsPrepare = true;
+                                        preparePlayer();
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
                                         location = currentVideo.getString(ParseTables.Videos.LOCATION);
                                         title = currentVideo.getString(ParseTables.Videos.TITLE);
@@ -226,12 +258,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                                         avatar = parseObject.getString(ParseTables.Users.AVATAR);
                                                         isUrlFetched = true;
                                                         setVideoDetails();
+                                                        /*
                                                         if (!videoStarted) {
                                                             handler.sendMessage(handler.obtainMessage(MediaHandler.MSG_START));
                                                         } else {
                                                             handler.sendMessage(handler.obtainMessage(
                                                                     MediaHandler.MSG_CHANGE_SOURCE, url));
-                                                        }
+                                                        }*/
                                                     }
                                                 });
                                     } else {
@@ -278,6 +311,120 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         });
     }
 
+    @Override
+    public void onAudioCapabilitiesChanged(AudioCapabilities audioCapabilities) {
+        boolean audioCapabilitiesChanged = !audioCapabilities.equals(this.audioCapabilities);
+        if (player == null || audioCapabilitiesChanged) {
+            this.audioCapabilities = audioCapabilities;
+            releasePlayer();
+            preparePlayer();
+            Log.d(TAG, "AUDIO CAPABILITIES");
+        } else if (player != null) {
+            player.setBackgrounded(false);
+        }
+    }
+
+    @Override
+    public void onError(Exception e) {
+        /*
+        if (e instanceof UnsupportedDrmException) {
+            // Special case DRM failures.
+            UnsupportedDrmException unsupportedDrmException = (UnsupportedDrmException) e;
+            int stringId = unsupportedDrmException.reason == UnsupportedDrmException.REASON_NO_DRM
+                    ? R.string.drm_error_not_supported
+                    : unsupportedDrmException.reason == UnsupportedDrmException.REASON_UNSUPPORTED_SCHEME
+                    ? R.string.drm_error_unsupported_scheme
+                    : R.string.drm_error_unknown;
+            Toast.makeText(activity, stringId, Toast.LENGTH_LONG).show();
+        }*/
+        e.printStackTrace();
+        playerNeedsPrepare = true;
+    }
+
+    @Override
+    public void onStateChanged(boolean playWhenReady, int playbackState) {
+        if (playbackState == ExoPlayer.STATE_ENDED) {
+            currentVideo.put(ParseTables.Videos.PLAYED, true);
+            currentVideo.saveInBackground();
+            sendNextRequest();
+        }
+        String text = "playWhenReady=" + playWhenReady + ", playbackState=";
+        switch(playbackState) {
+            case ExoPlayer.STATE_BUFFERING:
+                text += "buffering";
+                break;
+            case ExoPlayer.STATE_ENDED:
+                text += "ended";
+                break;
+            case ExoPlayer.STATE_IDLE:
+                text += "idle";
+                break;
+            case ExoPlayer.STATE_PREPARING:
+                text += "preparing";
+                break;
+            case ExoPlayer.STATE_READY:
+                removeBufferScreen();
+                text += "ready";
+                break;
+            default:
+                text += "unknown";
+                break;
+        }
+        Log.d(TAG, "text = " + text);
+    }
+
+    @Override
+    public void onVideoSizeChanged(int width, int height, float pixelWidthAspectRatio) {
+//        shutterView.setVisibility(View.GONE);
+//        surfaceView.setVideoWidthHeightRatio(
+//                height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
+        Log.d(TAG, "width = " + width + " height = " + height);
+    }
+
+    public DemoPlayer.RendererBuilder getRendererBuilder() {
+        String userAgent = Util.getUserAgent(activity, "ExoPlayerDemo");
+        return new HlsRendererBuilder(activity, userAgent, url, null, audioCapabilities);
+    }
+
+    private void preparePlayer() {
+        if (url.equals(""))
+            return;
+        if (player == null) {
+            player = new DemoPlayer(getRendererBuilder());
+            player.addListener(this);
+            player.setTextListener(null);
+            player.setMetadataListener(null);
+            player.seekTo(playerPosition);
+            playerNeedsPrepare = true;
+            /*
+            mediaController.setMediaPlayer(player.getPlayerControl());
+            mediaController.setEnabled(true); */
+            eventLogger = new EventLogger();
+            eventLogger.startSession();
+            player.addListener(eventLogger);
+            player.setInfoListener(eventLogger);
+            player.setInternalErrorListener(eventLogger);
+        }
+        if (playerNeedsPrepare) {
+            player.prepare();
+            playerNeedsPrepare = false;
+//            updateButtonVisibilities();
+        }
+        player.setSurface(surfaceView.getHolder().getSurface());
+        player.setPlayWhenReady(false);
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            playerPosition = player.getCurrentPosition();
+            player.release();
+            player = null;
+            eventLogger.endSession();
+            eventLogger = null;
+        }
+    }
+
+/*
     private void startMediaPlayer() {
         Log.d(TAG, "Initial call");
         if (isMediaPlayerInitialized && isSurfaceCreated && isUrlFetched && !videoStarted) {
@@ -334,38 +481,53 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
             e.printStackTrace();
         }
     }
-
-    private void removeBufferScreen() throws InterruptedException{
-        Log.d(TAG, "Going to sleep");
-        while (System.currentTimeMillis() - bufferStartTime < MIN_BUFFER_TIME_MILLIS) {
-            Thread.sleep(100);
-        }
-        Log.d(TAG, "Waking up");
-
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                bufferScreen.setVisibility(View.GONE);
+*/
+    private void removeBufferScreen() {
+        try {
+            Log.d(TAG, "Going to sleep");
+            while (System.currentTimeMillis() - bufferStartTime < MIN_BUFFER_TIME_MILLIS) {
+                Thread.sleep(100);
             }
-        });
+            Log.d(TAG, "Waking up");
+
+            player.setPlayWhenReady(true);
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    bufferScreen.setVisibility(View.GONE);
+                }
+            });
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onPause() {
+        /*
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
-        }
+        } */
         activity.unregisterReceiver(receiver);
         super.onPause();
+        releasePlayer();
+        audioCapabilitiesReceiver.unregister();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mediaPlayer = new MediaPlayer();
+//        mediaPlayer = new MediaPlayer();
         IntentFilter filter = new IntentFilter("intent.omerjerk");
         activity.registerReceiver(receiver, filter);
+        audioCapabilitiesReceiver.register();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
     }
 
     public static void commentReceived(String message) {
@@ -428,10 +590,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
             switch (code) {
                 case MSG_START:
                     Log.d(TAG, "STARTING the media player");
-                    startMediaPlayer();
+//                    startMediaPlayer();
                     break;
                 case MSG_CHANGE_SOURCE:
-                    updateMediaPlayerSource((String) what.obj);
+//                    updateMediaPlayerSource((String) what.obj);
                     break;
                 default:
                     throw new IllegalArgumentException();
@@ -458,8 +620,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 //                if (slidingUpPanelLayout2.isPanelExpanded()) {
 //                    slidingUpPanelLayout2.collapsePanel();
 //                }
-                tvideoTitle.setAlpha(255);
-                tlocation.setAlpha(255);
+                tvideoTitle.setAlpha(1);
+                tlocation.setAlpha(1);
             }
 
             @Override
