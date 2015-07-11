@@ -96,6 +96,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     ProgressDialog mProgressDialog;
     View loadingLayout;
 
+    private static final long MIN_BUFFER_TIME_MILLIS = 5000;
+    private long bufferStartTime;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -192,6 +195,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                         //TODO: Fetch the bufferscreen
                                         loadingLayout.setVisibility(View.GONE);
                                         bufferScreen.setVisibility(View.VISIBLE);
+                                        bufferStartTime = System.currentTimeMillis();
 
                                         currentVideo = list.get(0);
                                         CommentsFragment.setUpComments();
@@ -275,12 +279,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     mediaPlayer.setDisplay(holder);
                     mediaPlayer.prepare();
 
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            bufferScreen.setVisibility(View.GONE);
-                        }
-                    });
+                    removeBufferScreen(); //This is a blocking call
                     mediaPlayer.start();
                     mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
@@ -291,7 +290,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                             sendNextRequest();
                         }
                     });
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     loadingLayout.setVisibility(View.GONE);
                     bufferScreen.setVisibility(View.GONE);
@@ -304,6 +303,33 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
             Log.d(TAG, "isUrlFetched = " + isUrlFetched);
             Log.d(TAG, "videoStarted = " + videoStarted);
         }
+    }
+
+    private void updateMediaPlayerSource(String source) {
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(activity, Uri.parse(source));
+            mediaPlayer.prepare();
+            removeBufferScreen(); //This is a blocking call
+            mediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeBufferScreen() throws InterruptedException{
+        Log.d(TAG, "Going to sleep");
+        while (System.currentTimeMillis() - bufferStartTime < MIN_BUFFER_TIME_MILLIS) {
+            Thread.sleep(100);
+        }
+        Log.d(TAG, "Waking up");
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                bufferScreen.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -387,15 +413,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     startMediaPlayer();
                     break;
                 case MSG_CHANGE_SOURCE:
-                    String source = (String) what.obj;
-                    try {
-                        mediaPlayer.reset();
-                        mediaPlayer.setDataSource(activity, Uri.parse(source));
-                        mediaPlayer.prepare();
-                        mediaPlayer.start();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    updateMediaPlayerSource((String) what.obj);
                     break;
                 default:
                     throw new IllegalArgumentException();
