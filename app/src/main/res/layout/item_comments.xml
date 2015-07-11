@@ -22,7 +22,7 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/profile_picture"
-            android:layout_width="45dp"
+            android:layout_width="35dp"
             android:layout_height="45dp"
             android:layout_gravity="center_horizontal"
             fresco:roundAsCircle="true" />
@@ -37,9 +37,9 @@
             android:maxLength="10"
             android:maxLines="1"
             android:text="naman14"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            typeface:typeface="HelveticaNeue-UltraLight" />
+            android:textColor="@android:color/black"
+            android:textSize="10sp"
+            typeface:typeface="HelveticaNeue-Light" />
 
     </LinearLayout>
 
@@ -50,7 +50,7 @@
         android:layout_gravity="center_vertical"
         android:paddingLeft="15dp"
         android:text="Great Video!"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="17sp"
         typeface:typeface="HelveticaNeue-Light"/>
 

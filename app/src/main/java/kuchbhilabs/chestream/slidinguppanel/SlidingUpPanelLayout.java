@@ -898,7 +898,7 @@ public class SlidingUpPanelLayout extends ViewGroup {
 
             return wantTouchEvents;
         } catch (Exception ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
             return false;
         }
 

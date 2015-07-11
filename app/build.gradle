@@ -10,6 +10,8 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        renderscriptTargetApi 22
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
@@ -29,7 +31,7 @@ dependencies {
     compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
     compile 'com.parse.bolts:bolts-android:1.2.0'
     compile 'com.android.support:cardview-v7:22.+'
-    compile 'com.getbase:floatingactionbutton:1.9.1'
+    compile 'com.melnykov:floatingactionbutton:1.3.0'
     compile 'com.facebook.fresco:fresco:0.+'
     compile 'com.github.castorflex.smoothprogressbar:library:1.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'

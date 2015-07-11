@@ -34,7 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.melnykov.fab.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -187,6 +187,8 @@ public class QueueFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(queueVideosAdapter);
+
+        upload.attachToRecyclerView(recyclerView);
 
         loadFromParse();
 

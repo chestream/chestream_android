@@ -10,8 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.fragments.VideoFragment;
+import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,11 +21,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
+
     }
 
     @Override
@@ -92,12 +94,13 @@ public class MainActivity extends AppCompatActivity {
         } else if (VideoFragment.slidingUpPanelLayout.isPanelExpanded()){
               VideoFragment.slidingUpPanelLayout.collapsePanel();
 
-        } else if (VideoFragment.slidingUpPanelLayout2.isPanelExpanded()) {
-              VideoFragment.slidingUpPanelLayout2.collapsePanel();
-        } else {
+//        } else if (VideoFragment.slidingUpPanelLayout2.isPanelExpanded()) {
+//              VideoFragment.slidingUpPanelLayout2.collapsePanel();
+    } else {
             super.onBackPressed();
         }
     }
+
 
 
 }
