@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.parse.FindCallback;
@@ -126,6 +128,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         ParseUser user = video.getParseUser(ParseTables.Videos.USER);
         holder.username.setText("");
         holder.draweeView.setImageURI(null);
+
         user.fetchIfNeededInBackground(new GetCallback<ParseUser>() {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
@@ -134,7 +137,14 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 if (url == null) {
                     url = BLANK_AVATAR;
                 }
-                holder.draweeView.setImageURI(Uri.parse(url));
+
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setUri(Uri.parse(url))
+                        .setOldController(holder.draweeView.getController())
+//                        .setControllerListener(listener)
+                        .build();
+
+                holder.draweeView.setController(controller);
             }
         });
 
