@@ -67,6 +67,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     TextView tusername;
     TextView ttotalVotes;
     SimpleDraweeView tdraweeView;
+    private SimpleDraweeView bufferScreen;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout, slidingUpPanelLayout2;
@@ -122,6 +123,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         ttotalVotes = (TextView) rootView.findViewById(R.id.video_score);
         tdraweeView = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
         loadingLayout = rootView.findViewById(R.id.loading_layout);
+        bufferScreen = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen);
+        bufferScreen.setImageURI(
+                Uri.parse("https://pbs.twimg.com/profile_images/378800000451012500/4628fbb9dc70514d389ed9491243866f_400x400.png"));
 
         sendNextRequest();
 
@@ -185,6 +189,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                 @Override
                                 public void done(List<ParseObject> list, ParseException e) {
                                     if (list != null) {
+                                        //TODO: Fetch the bufferscreen
+                                        loadingLayout.setVisibility(View.GONE);
+                                        bufferScreen.setVisibility(View.VISIBLE);
+
                                         currentVideo = list.get(0);
                                         CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
@@ -270,7 +278,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            loadingLayout.setVisibility(View.GONE);
+                            bufferScreen.setVisibility(View.GONE);
                         }
                     });
                     mediaPlayer.start();
@@ -286,6 +294,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                 } catch (IOException e) {
                     e.printStackTrace();
                     loadingLayout.setVisibility(View.GONE);
+                    bufferScreen.setVisibility(View.GONE);
                 }
             }
         } else {

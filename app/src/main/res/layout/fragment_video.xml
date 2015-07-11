@@ -52,6 +52,13 @@
         <include layout="@layout/loading_layout"
             android:id="@+id/loading_layout"/>
 
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/buffer_screen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
+
     </FrameLayout>
 
         <include layout="@layout/layout_current_video"/>

@@ -53,7 +53,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     private static final String BLANK_AVATAR = "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
 
     public static class QVHolder extends RecyclerView.ViewHolder {
-        ImageView uploaderImage;
         TextView videoTitle;
         TextView location;
         TextView username;
