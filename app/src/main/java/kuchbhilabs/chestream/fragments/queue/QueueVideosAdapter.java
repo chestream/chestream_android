@@ -126,27 +126,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
 
         ParseUser user = video.getParseUser(ParseTables.Videos.USER);
-        holder.username.setText("");
-        holder.draweeView.setImageURI(null);
-
-        user.fetchIfNeededInBackground(new GetCallback<ParseUser>() {
-            @Override
-            public void done(ParseUser parseUser, ParseException e) {
-                holder.username.setText(parseUser.getString(ParseTables.Users.USERNAME));
-                String url = parseUser.getString(ParseTables.Users.AVATAR);
-                if (url == null) {
-                    url = BLANK_AVATAR;
-                }
-
-                DraweeController controller = Fresco.newDraweeControllerBuilder()
-                        .setUri(Uri.parse(url))
-                        .setOldController(holder.draweeView.getController())
-//                        .setControllerListener(listener)
-                        .build();
-
-                holder.draweeView.setController(controller);
-            }
-        });
+        holder.username.setText(video.getString(ParseTables.Videos.USER_USERNAME));
+        holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
 
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
