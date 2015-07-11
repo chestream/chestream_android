@@ -41,7 +41,6 @@ import com.parse.ParseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
@@ -65,9 +64,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
     TextView tvideoTitle;
     TextView tlocation;
-    TextView tusername;
-    TextView ttotalVotes;
-    SimpleDraweeView tdraweeView;
+    TextView tusername,tusernameComments;
+    TextView ttotalVotes,ttotalVotesComments;
+    SimpleDraweeView tdraweeView,tdraweeViewComments;
     private SimpleDraweeView bufferScreen;
 
     Activity activity;
@@ -131,8 +130,11 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         tvideoTitle = (TextView) rootView.findViewById(R.id.video_title);
         tlocation = (TextView) rootView.findViewById(R.id.video_location);
         tusername = (TextView) rootView.findViewById(R.id.username);
+        tusernameComments = (TextView) rootView.findViewById(R.id.username_comments);
         ttotalVotes = (TextView) rootView.findViewById(R.id.video_score);
+        ttotalVotesComments = (TextView) rootView.findViewById(R.id.video_score_comments);
         tdraweeView = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
+        tdraweeViewComments = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture_comments);
         loadingLayout = rootView.findViewById(R.id.loading_layout);
         bufferScreen = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen);
         bufferScreen.setImageURI(
@@ -151,6 +153,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         slidingUpPanelLayout.setEnableDragViewTouchEvents(true);
 
         slidingUpPanelLayout.expandPanel();
+        slidingUpPanelLayout.setSlidingEnabled(false);
 
 //        slidingUpPanelLayout2.setOverlayed(true);
 //        slidingUpPanelLayout2.setEnableDragViewTouchEvents(true);
@@ -210,6 +213,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                         //TODO: Fetch the bufferscreen
                                         loadingLayout.setVisibility(View.GONE);
                                         bufferScreen.setVisibility(View.VISIBLE);
+                                        slidingUpPanelLayout.setSlidingEnabled(true);
+
                                         bufferStartTime = System.currentTimeMillis();
 
                                         currentVideo = list.get(0);
@@ -261,10 +266,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
             public void run() {
                 tvideoTitle.setText(title);
                 tusername.setText(username);
+                tusernameComments.setText(username);
                 tlocation.setText(location);
                 ttotalVotes.setText(upvotes);
+                ttotalVotesComments.setText(upvotes);
                 Uri uri = Uri.parse(avatar);
                 tdraweeView.setImageURI(uri);
+                tdraweeViewComments.setImageURI(uri);
 //                slidingUpPanelLayout2.expandPanel();
 //                slidingUpPanelLayout2.setPanelHeight(75);
 //                Handler handlerCollapse=new Handler();
@@ -298,6 +306,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     mediaPlayer.prepare();
 
                     removeBufferScreen(); //This is a blocking call
+                    slidingUpPanelLayout.collapsePanel();
                     mediaPlayer.start();
                     mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
@@ -443,14 +452,18 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                tvideoTitle.setAlpha(slideOffset);
-                tlocation.setAlpha(slideOffset);
+                tvideoTitle.setAlpha(1-slideOffset);
+                tusername.setAlpha(1-slideOffset);
+                tlocation.setAlpha(1-slideOffset);
+                tdraweeView.setAlpha(1-slideOffset);
             }
 
             @Override
             public void onPanelCollapsed(View panel) {
-                tvideoTitle.setAlpha(0);
-                tlocation.setAlpha(0);
+                tvideoTitle.setAlpha(1);
+                tusername.setAlpha(1);
+                tlocation.setAlpha(1);
+                tdraweeView.setAlpha(255);
             }
 
             @Override
@@ -458,8 +471,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 //                if (slidingUpPanelLayout2.isPanelExpanded()) {
 //                    slidingUpPanelLayout2.collapsePanel();
 //                }
-                tvideoTitle.setAlpha(255);
-                tlocation.setAlpha(255);
+                tvideoTitle.setAlpha(0);
+                tusername.setAlpha(0);
+                tlocation.setAlpha(0);
+                tdraweeView.setAlpha(0);
             }
 
             @Override

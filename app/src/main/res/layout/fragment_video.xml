@@ -2,6 +2,8 @@
 
 <kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:typeface="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,6 +43,83 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|center_vertical" />
 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="top|left"
+            android:layout_gravity="top|left"
+            android:background="@drawable/bg_gradient_down_overlay">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/profile_picture"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center_vertical"
+                    fresco:roundAsCircle="true"
+                    android:alpha="0"/>
+
+                <kuchbhilabs.chestream.helpers.TypefaceTextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="#ffffff"
+                    android:maxLines="1"
+                    android:maxLength="8"
+                    android:ellipsize="end"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:alpha="0"
+                    typeface:typeface="HelveticaNeue-Light"/>
+
+                <kuchbhilabs.chestream.helpers.TypefaceTextView
+                    android:id="@+id/video_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    android:alpha="0"
+                    typeface:typeface="HelveticaNeue-Light"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/video_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp"
+                    android:paddingBottom="40dp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+
+
+            <kuchbhilabs.chestream.helpers.TypefaceTextView
+                android:id="@+id/video_title"
+                android:layout_width="wrap_content"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="#ffffff"
+                android:textSize="22sp"
+                android:alpha="0"
+                typeface:typeface="HelveticaNeue-Light" />
+
+        </LinearLayout>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/buffer_screen"
