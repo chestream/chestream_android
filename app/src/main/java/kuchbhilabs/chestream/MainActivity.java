@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import kuchbhilabs.chestream.fragments.ProfileFragment;
 import kuchbhilabs.chestream.fragments.VideoFragment;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.setCurrentItem(1);
+        mViewPager.setOffscreenPageLimit(2);
 
     }
 
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     public class PagerAdapter extends FragmentPagerAdapter {
 
-        private final String[] TITLES = { "Video","Feed" };
+        private final String[] TITLES = { "Profile","Video","Feed" };
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -74,10 +77,14 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             Fragment fragment=null;
             switch (position) {
+
                 case 0:
-                    fragment = new VideoFragment();
+                    fragment = new ProfileFragment();
                     break;
                 case 1:
+                    fragment = new VideoFragment();
+                    break;
+                case 2:
                     fragment = new QueueFragment();
                     break;
             }
@@ -88,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        if(mViewPager.getCurrentItem()!=0) {
-            mViewPager.setCurrentItem(0, true);
+        if(mViewPager.getCurrentItem()!=1) {
+            mViewPager.setCurrentItem(1, true);
 
         } else if (VideoFragment.slidingUpPanelLayout.isPanelExpanded()){
               VideoFragment.slidingUpPanelLayout.collapsePanel();
