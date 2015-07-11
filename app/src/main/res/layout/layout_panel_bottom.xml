@@ -40,7 +40,7 @@
             android:gravity="center_vertical">
 
             <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/profile_picture"
+                android:id="@+id/profile_picture_comments"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_alignParentLeft="true"
@@ -57,7 +57,7 @@
                 android:layout_centerVertical="true">
 
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
-                    android:id="@+id/username"
+                    android:id="@+id/username_comments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -71,7 +71,7 @@
                     typeface:typeface="HelveticaNeue-Light"/>
 
                 <TextView
-                    android:id="@+id/video_score"
+                    android:id="@+id/video_score_comments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"

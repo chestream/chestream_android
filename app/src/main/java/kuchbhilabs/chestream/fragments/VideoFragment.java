@@ -64,9 +64,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
     TextView tvideoTitle;
     TextView tlocation;
-    TextView tusername;
-    TextView ttotalVotes;
-    SimpleDraweeView tdraweeView;
+    TextView tusername,tusernameComments;
+    TextView ttotalVotes,ttotalVotesComments;
+    SimpleDraweeView tdraweeView,tdraweeViewComments;
     private SimpleDraweeView bufferScreen;
 
     Activity activity;
@@ -130,8 +130,11 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         tvideoTitle = (TextView) rootView.findViewById(R.id.video_title);
         tlocation = (TextView) rootView.findViewById(R.id.video_location);
         tusername = (TextView) rootView.findViewById(R.id.username);
+        tusernameComments = (TextView) rootView.findViewById(R.id.username_comments);
         ttotalVotes = (TextView) rootView.findViewById(R.id.video_score);
+        ttotalVotesComments = (TextView) rootView.findViewById(R.id.video_score_comments);
         tdraweeView = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
+        tdraweeViewComments = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture_comments);
         loadingLayout = rootView.findViewById(R.id.loading_layout);
         bufferScreen = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen);
         bufferScreen.setImageURI(
@@ -260,10 +263,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
             public void run() {
                 tvideoTitle.setText(title);
                 tusername.setText(username);
+                tusernameComments.setText(username);
                 tlocation.setText(location);
                 ttotalVotes.setText(upvotes);
+                ttotalVotesComments.setText(upvotes);
                 Uri uri = Uri.parse(avatar);
                 tdraweeView.setImageURI(uri);
+                tdraweeViewComments.setImageURI(uri);
 //                slidingUpPanelLayout2.expandPanel();
 //                slidingUpPanelLayout2.setPanelHeight(75);
 //                Handler handlerCollapse=new Handler();
