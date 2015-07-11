@@ -1,6 +1,5 @@
 package kuchbhilabs.chestream.comments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,9 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -28,9 +26,7 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.VideoFragment;
 
 /**
@@ -42,10 +38,12 @@ public class CommentsFragment extends Fragment {
     private CommentsAdapter adapter;
     private List<ParseObject> commentsList = new ArrayList<>();
     EditText editText;
-    private static TextView commentsCount;
+
     static CommentsAdapter commentsAdapter;
     ImageView sendComment;
-
+    static TextView commentsLoading;
+    View addCommentsFooter;
+    FloatingActionButton addCommentFab;
     private static final String TAG = "CommentsFragment";
 
     @Override
@@ -55,7 +53,10 @@ public class CommentsFragment extends Fragment {
 
         recyclerView=(RecyclerView) v.findViewById(R.id.comments_recycler_view);
         editText=(EditText) v.findViewById(R.id.commentEditText);
-        commentsCount=(TextView) v.findViewById(R.id.commentsCount);
+        commentsLoading=(TextView) v.findViewById(R.id.commentsLoading);
+        addCommentsFooter=v.findViewById(R.id.addCommentFooter);
+        addCommentFab=(FloatingActionButton) v.findViewById(R.id.addCommentFab);
+
         sendComment  =(ImageView) v.findViewById(R.id.send);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
@@ -65,6 +66,17 @@ public class CommentsFragment extends Fragment {
 
         commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<ParseObject>());
         recyclerView.setAdapter(commentsAdapter);
+
+        addCommentFab.attachToRecyclerView(recyclerView);
+
+//        int footerHeight = 30;
+//
+//        QuickReturnRecyclerViewOnScrollListener scrollListener = new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.FOOTER)
+//                .footer(addCommentsFooter)
+//                .minFooterTranslation(footerHeight)
+//                .isSnappable(true)
+//                .build();
+//        recyclerView.setOnScrollListener(scrollListener);
 
 //        setUpComments();
 
@@ -195,7 +207,13 @@ public class CommentsFragment extends Fragment {
                 Log.d(TAG, "Updating comments dataset");
                 commentsAdapter.updateDataSet(list);
                 commentsAdapter.notifyDataSetChanged();
-                commentsCount.setText(list.size()+ " Comments");
+                commentsLoading.setVisibility(View.GONE);
+
+                VideoFragment.setCommentsCount(list.size() + " Comments");
+                if (list.size()==0){
+                    commentsLoading.setVisibility(View.VISIBLE);
+                    commentsLoading.setText("Be the first to comment.");
+                }
             }
         });
 

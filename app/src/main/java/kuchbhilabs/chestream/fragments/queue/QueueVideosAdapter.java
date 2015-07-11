@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.parse.FindCallback;
@@ -64,7 +67,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         CircularRevealView revealView;
         SimpleDraweeView draweeView;
 
-
         QVHolder(final View itemView) {
             super(itemView);
 
@@ -81,7 +83,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         }
     }
 
-    public QueueVideosAdapter(Context context, List<ParseVideo> videos) {
+    public QueueVideosAdapter(Context context, final List<ParseVideo> videos) {
         this.videos = videos;
         this.context = context;
     }
@@ -92,7 +94,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     public void updateItem (final int location) {
         ParseObject video = this.videos.get(location);
-        video.fetchIfNeededInBackground(new GetCallback<ParseVideo>(){
+        video.fetchInBackground(new GetCallback<ParseVideo>() {
             @Override
             public void done(ParseVideo parseVideo, ParseException e) {
                 Log.d(TAG, "notifying about the change");
@@ -123,21 +125,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         final ParseObject video = videos.get(position);
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
 
-        video.getParseUser(ParseTables.Videos.USER).fetchIfNeededInBackground(new GetCallback<ParseUser>() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if (user != null) {
-                    holder.username.setText(user.getString(ParseTables.Users.USERNAME));
-                    String url = user.getString(ParseTables.Users.AVATAR);
-                    if (url == null) {
-                        url = BLANK_AVATAR;
-                    }
-                    holder.draweeView.setImageURI(Uri.parse(url));
-                } else {
-                    holder.username.setText("ERROR USER IS NULL");
-                }
-            }
-        });
+        ParseUser user = video.getParseUser(ParseTables.Videos.USER);
+        holder.username.setText(video.getString(ParseTables.Videos.USER_USERNAME));
+        holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
 
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));

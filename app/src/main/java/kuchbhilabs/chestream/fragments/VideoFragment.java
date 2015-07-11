@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -48,6 +47,7 @@ import java.util.List;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.helpers.LoadingProgress;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
 /**
@@ -71,7 +71,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     private SimpleDraweeView bufferScreen;
 
     Activity activity;
-    public static SlidingUpPanelLayout slidingUpPanelLayout, slidingUpPanelLayout2;
+    public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
 
     SurfaceView surfaceView;
     SurfaceHolder holder;
@@ -96,6 +96,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 
     ProgressDialog mProgressDialog;
     View loadingLayout;
+    LoadingProgress loadingProgress;
+   static View loadingFrame,dividerView;
+    public static TextView commentsCount;
 
     private static final long MIN_BUFFER_TIME_MILLIS = 5000;
     private long bufferStartTime;
@@ -103,6 +106,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+
 
         new Thread(new Runnable() {
             @Override
@@ -121,6 +126,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         activity = getActivity();
         receiver = new CommentsBroadcastReceiver();
 
+
+
         tvideoTitle = (TextView) rootView.findViewById(R.id.video_title);
         tlocation = (TextView) rootView.findViewById(R.id.video_location);
         tusername = (TextView) rootView.findViewById(R.id.username);
@@ -131,15 +138,22 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         bufferScreen.setImageURI(
                 Uri.parse("https://pbs.twimg.com/profile_images/378800000451012500/4628fbb9dc70514d389ed9491243866f_400x400.png"));
 
+        commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
+//        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
+        loadingFrame=(View) rootView.findViewById(R.id.loading_frame);
+        dividerView=rootView.findViewById(R.id.dividerView);
+
         sendNextRequest();
 
         slidingUpPanelLayout = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
-        slidingUpPanelLayout2 = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout2);
+       // slidingUpPanelLayout2 = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout2);
         slidingUpPanelLayout.setOverlayed(true);
         slidingUpPanelLayout.setEnableDragViewTouchEvents(true);
 
-        slidingUpPanelLayout2.setOverlayed(true);
-        slidingUpPanelLayout2.setEnableDragViewTouchEvents(true);
+        slidingUpPanelLayout.expandPanel();
+
+//        slidingUpPanelLayout2.setOverlayed(true);
+//        slidingUpPanelLayout2.setEnableDragViewTouchEvents(true);
 
         setPanelSlideListeners();
 
@@ -251,15 +265,15 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                 ttotalVotes.setText(upvotes);
                 Uri uri = Uri.parse(avatar);
                 tdraweeView.setImageURI(uri);
-                slidingUpPanelLayout2.expandPanel();
-                slidingUpPanelLayout2.setPanelHeight(75);
-                Handler handlerCollapse=new Handler();
-                handlerCollapse.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        slidingUpPanelLayout2.collapsePanel();
-                    }
-                },5000);
+//                slidingUpPanelLayout2.expandPanel();
+//                slidingUpPanelLayout2.setPanelHeight(75);
+//                Handler handlerCollapse=new Handler();
+//                handlerCollapse.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        slidingUpPanelLayout2.collapsePanel();
+//                    }
+//                },5000);
             }
         });
     }
@@ -429,19 +443,23 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-
+                tvideoTitle.setAlpha(slideOffset);
+                tlocation.setAlpha(slideOffset);
             }
 
             @Override
             public void onPanelCollapsed(View panel) {
-
+                tvideoTitle.setAlpha(0);
+                tlocation.setAlpha(0);
             }
 
             @Override
             public void onPanelExpanded(View panel) {
-                if (slidingUpPanelLayout2.isPanelExpanded()) {
-                    slidingUpPanelLayout2.collapsePanel();
-                }
+//                if (slidingUpPanelLayout2.isPanelExpanded()) {
+//                    slidingUpPanelLayout2.collapsePanel();
+//                }
+                tvideoTitle.setAlpha(255);
+                tlocation.setAlpha(255);
             }
 
             @Override
@@ -455,4 +473,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
             }
         });
     }
+    public static void setCommentsCount(String count){
+        commentsCount.setText(count);
+        dividerView.setVisibility(View.VISIBLE);
+
+    }
+
 }

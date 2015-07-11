@@ -2,38 +2,17 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="75dp"
         android:background="@android:color/transparent"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/secondPanelDragIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
-            android:scaleType="centerInside"
-            android:src="@drawable/drag_indicator" />
-
-
-        <kuchbhilabs.chestream.helpers.TypefaceTextView
-            android:id="@+id/commentsCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:paddingTop="15dp"
-            android:text="Comments"
-            android:textColor="@android:color/white"
-            android:textSize="26sp"
-            android:paddingBottom="10dp"
-            typeface:typeface="HelveticaNeue-UltraLight"/>
 
 
         <android.support.v7.widget.RecyclerView
@@ -45,19 +24,53 @@
             android:background="@android:color/transparent"
             android:clipToPadding="false"
             android:paddingBottom="50dp"
-            android:paddingTop="10dp" />
+            android:paddingTop="10dp"
+            android:overScrollMode="never"
+         />
 
-    </LinearLayout>
+        <kuchbhilabs.chestream.helpers.TypefaceTextView
+            android:id="@+id/commentsLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            android:text="Loading Comments..."
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            typeface:typeface="HelveticaNeue-Light" />
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/addCommentFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
+            fab:fab_colorRipple="@color/colorAccent"
+            fab:fab_type="mini"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_comment"
+            android:scaleType="centerInside"/>
+
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="6dp"
+        android:id="@+id/addCommentFooter"
         android:background="@android:color/transparent"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="6dp">
+        android:paddingBottom="6dp"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="52dp"
@@ -84,8 +97,8 @@
             android:paddingRight="15dp"
             android:imeOptions="actionDone"
             android:singleLine="false"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white" />
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black" />
 
         <ImageView
             android:id="@+id/send"
@@ -95,7 +108,9 @@
             android:paddingRight="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_send" />
+            android:src="@drawable/ic_send_black"
+
+            />
 
 
         </RelativeLayout>
