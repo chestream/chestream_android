@@ -17,37 +17,6 @@
         android:id="@+id/loading_layout"
         layout="@layout/loading_layout" />
 
-     <LinearLayout
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:orientation="vertical"
-         android:padding="15dp"
-         android:gravity="bottom|left"
-         android:layout_gravity="bottom|left"
-         android:background="@android:color/transparent">
-
-         <kuchbhilabs.chestream.helpers.TypefaceTextView
-             android:id="@+id/video_title"
-             android:layout_width="wrap_content"
-             android:paddingRight="70dp"
-             android:layout_height="wrap_content"
-             android:maxLines="2"
-             android:ellipsize="end"
-             android:textColor="#ffffff"
-             android:textSize="22sp"
-             typeface:typeface="HelveticaNeue-Light" />
-
-         <kuchbhilabs.chestream.helpers.TypefaceTextView
-             android:id="@+id/video_location"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:textColor="#ffffff"
-             android:textSize="14sp"
-             typeface:typeface="HelveticaNeue-Light"/>
-
-
-         </LinearLayout>
-
 
 
     </FrameLayout>

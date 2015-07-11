@@ -41,7 +41,6 @@ import com.parse.ParseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
@@ -443,14 +442,18 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                tvideoTitle.setAlpha(slideOffset);
-                tlocation.setAlpha(slideOffset);
+                tvideoTitle.setAlpha(1-slideOffset);
+                tusername.setAlpha(1-slideOffset);
+                tlocation.setAlpha(1-slideOffset);
+                tdraweeView.setAlpha(1-slideOffset);
             }
 
             @Override
             public void onPanelCollapsed(View panel) {
-                tvideoTitle.setAlpha(0);
-                tlocation.setAlpha(0);
+                tvideoTitle.setAlpha(1);
+                tusername.setAlpha(1);
+                tlocation.setAlpha(1);
+                tdraweeView.setAlpha(255);
             }
 
             @Override
@@ -458,8 +461,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
 //                if (slidingUpPanelLayout2.isPanelExpanded()) {
 //                    slidingUpPanelLayout2.collapsePanel();
 //                }
-                tvideoTitle.setAlpha(255);
-                tlocation.setAlpha(255);
+                tvideoTitle.setAlpha(0);
+                tusername.setAlpha(0);
+                tlocation.setAlpha(0);
+                tdraweeView.setAlpha(0);
             }
 
             @Override
