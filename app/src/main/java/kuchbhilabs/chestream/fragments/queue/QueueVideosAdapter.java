@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -89,9 +90,15 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         this.videos = list;
     }
 
-    public void updateItem (int location, ParseVideo video) {
-        this.videos.set(location, video);
-        notifyItemChanged(location);
+    public void updateItem (final int location) {
+        ParseObject video = this.videos.get(location);
+        video.fetchIfNeededInBackground(new GetCallback<ParseVideo>(){
+            @Override
+            public void done(ParseVideo parseVideo, ParseException e) {
+                Log.d(TAG, "notifying about the change");
+                notifyItemChanged(location);
+            }
+        });
     }
 
     public List<ParseVideo> getDataSet() {
