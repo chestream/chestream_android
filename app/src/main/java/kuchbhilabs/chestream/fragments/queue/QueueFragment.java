@@ -119,7 +119,6 @@ public class QueueFragment extends Fragment {
                         if (derp.contains(updatedVideo)) {
                             int location = derp.indexOf(updatedVideo);
                             queueVideosAdapter.updateItem(location);
-                            //NOTE: the above code is untested
                             Toast.makeText(activity, "AWESOME", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(activity, "NO SHIT", Toast.LENGTH_SHORT).show();
@@ -185,6 +184,7 @@ public class QueueFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseVideo>());
         llm = new LinearLayoutManager(getActivity());
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(queueVideosAdapter);
 
