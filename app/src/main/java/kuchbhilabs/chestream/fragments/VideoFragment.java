@@ -235,6 +235,15 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                 ttotalVotes.setText(upvotes);
                 Uri uri = Uri.parse(avatar);
                 tdraweeView.setImageURI(uri);
+                slidingUpPanelLayout2.expandPanel();
+                slidingUpPanelLayout2.setPanelHeight(75);
+                Handler handlerCollapse=new Handler();
+                handlerCollapse.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        slidingUpPanelLayout2.collapsePanel();
+                    }
+                },5000);
             }
         });
     }

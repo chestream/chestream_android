@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="top"
-        sothree:panelHeight="35dp"
+        sothree:panelHeight="0dp"
         sothree:shadowHeight="0dp"
         sothree:dragViewClickable="true">
 
