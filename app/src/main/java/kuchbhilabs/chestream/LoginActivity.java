@@ -10,6 +10,9 @@ import android.content.pm.Signature;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -33,7 +36,12 @@ import java.util.List;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.sign.SignInFragment;
 
-public class LoginActivity extends Activity implements SurfaceHolder.Callback {
+public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+
+    public static final boolean DEBUG = ApplicationBase.LOG_DEBUG;
+    public static final boolean INFO = ApplicationBase.LOG_INFO;
+    private static final String TAG = "LoginActivity";
+
 
     public static final String KEY_PREF_SIGNED_IN = "signed_in";
 
@@ -46,8 +54,6 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
     private boolean videoStarted = false;
 
     public static String URL;
-
-    private static final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -67,7 +73,6 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
         //TODO: Make it work to load from the assets directory
         mediaPlayer = new MediaPlayer();
         URL = "android.resource://"+getPackageName()+"/"+R.raw.vid4b;
-
 
 
         ParseUser pUser = ParseUser.getCurrentUser();
@@ -148,6 +153,12 @@ public class LoginActivity extends Activity implements SurfaceHolder.Callback {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (DEBUG) Log.d(TAG, "onActivityResult called");
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("SignOnFragment");
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode,data);
+        }
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 }

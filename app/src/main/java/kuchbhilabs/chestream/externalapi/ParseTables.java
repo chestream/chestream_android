@@ -11,6 +11,8 @@ public class ParseTables {
         public static final String AVATAR = "avatar";
         public static final String NAME = "name";
         public static final String EMAIL = "email";
+        public static final String DOB = "DOB";
+        public static final String CITY = "CITY";
     }
 
     public static class Videos {
