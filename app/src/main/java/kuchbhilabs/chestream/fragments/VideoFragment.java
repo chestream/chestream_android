@@ -153,6 +153,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
         slidingUpPanelLayout.setEnableDragViewTouchEvents(true);
 
         slidingUpPanelLayout.expandPanel();
+        slidingUpPanelLayout.setSlidingEnabled(false);
 
 //        slidingUpPanelLayout2.setOverlayed(true);
 //        slidingUpPanelLayout2.setEnableDragViewTouchEvents(true);
@@ -212,6 +213,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                         //TODO: Fetch the bufferscreen
                                         loadingLayout.setVisibility(View.GONE);
                                         bufferScreen.setVisibility(View.VISIBLE);
+                                        slidingUpPanelLayout.setSlidingEnabled(true);
+
                                         bufferStartTime = System.currentTimeMillis();
 
                                         currentVideo = list.get(0);
@@ -303,6 +306,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                     mediaPlayer.prepare();
 
                     removeBufferScreen(); //This is a blocking call
+                    slidingUpPanelLayout.collapsePanel();
                     mediaPlayer.start();
                     mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
