@@ -366,7 +366,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                                         String reverseDate = new StringBuffer(currentPerson.getBirthday()).reverse().toString();
                                                         b.putString(ParseTables.Users.DOB, reverseDate);
                                                     }
-                                                    showSignUpFragment(bundle);
+                                                    showSignUpFragment(b);
 //                                                    new FetchUserPhotos(new FetchUserPhotos.PhotosFetcher() {
 //                                                        @Override
 //                                                        public String downloadCoverPhoto() {
@@ -410,5 +410,22 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
         }.execute();
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.w(TAG, "onActivityResult called");
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode != -1) {
+                mSignInClicked = false;
+            }
+
+            mIntentInProgress = false;
+
+            if (!mGoogleApiClient.isConnecting()) {
+                mGoogleApiClient.connect();
+            }
+        }
+    }
 
 }
