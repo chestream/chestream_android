@@ -46,6 +46,7 @@ import java.util.List;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.helpers.LoadingProgress;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
@@ -231,11 +232,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback {
                                                         avatar = parseObject.getString(ParseTables.Users.AVATAR);
                                                         isUrlFetched = true;
                                                         setVideoDetails();
+
                                                         if (!videoStarted) {
                                                             handler.sendMessage(handler.obtainMessage(MediaHandler.MSG_START));
                                                         } else {
                                                             handler.sendMessage(handler.obtainMessage(
                                                                     MediaHandler.MSG_CHANGE_SOURCE, url));
+                                                            QueueFragment.updateCurrentlyPlaying();
                                                         }
                                                     }
                                                 });

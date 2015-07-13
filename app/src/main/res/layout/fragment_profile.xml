@@ -26,7 +26,7 @@
     </RelativeLayout>
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/preview_gif"
+        android:id="@+id/profile_picture"
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:layout_centerInParent="true"
