@@ -5,18 +5,19 @@
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:layout_height="170dp"
+    android:layout_height="220dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:layout_marginTop="10dp"
     android:background="#70ffffff"
-    android:elevation="2dp">
+    android:elevation="8dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/thumbnail"
         android:scaleType="centerCrop"
+
         />
 
 
@@ -24,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:layout_gravity="bottom"
-       >
+        >
 
         <ImageView
             android:layout_width="match_parent"
@@ -66,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_toLeftOf="@+id/actions"
                 android:layout_toRightOf="@+id/profile_picture"
                 android:orientation="vertical"
@@ -90,15 +91,15 @@
                     android:id="@+id/video_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:paddingLeft="10dp"
                     android:text="Video Title"
                     android:textColor="#000000"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     typeface:typeface="HelveticaNeue-Medium"
-             />
+                    />
 
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
                     android:id="@+id/video_location"

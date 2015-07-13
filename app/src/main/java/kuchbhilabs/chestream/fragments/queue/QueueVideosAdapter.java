@@ -61,7 +61,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         TextView totalVotes;
         CardView rootLayout;
         CircularRevealView revealView;
-        SimpleDraweeView draweeView;
+        SimpleDraweeView draweeView,thumbnail;
 
         QVHolder(final View itemView) {
             super(itemView);
@@ -76,6 +76,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             rootLayout = (CardView) itemView.findViewById(R.id.root_layout);
             revealView = (CircularRevealView) itemView.findViewById(R.id.reveal);
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
+            thumbnail=(SimpleDraweeView) itemView.findViewById(R.id.thumbnail);
         }
     }
 
@@ -109,7 +110,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
         if (viewType == 0) {
 
-            View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_item, parent, false);
+            View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_current_item, parent, false);
             QVHolder cvh = new QVHolder(v1);
             return cvh;
         } else {
@@ -132,6 +133,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.username.setText(video.getString(ParseTables.Videos.USER_USERNAME));
         try {
             holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
+            holder.thumbnail.setImageURI(Uri.parse(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
