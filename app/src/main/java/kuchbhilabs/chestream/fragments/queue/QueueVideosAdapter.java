@@ -49,6 +49,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     AlertDialog dialog;
     Context context;
 
+
     private static final String BLANK_AVATAR = "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
 
     public static class QVHolder extends RecyclerView.ViewHolder {
@@ -78,6 +79,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         }
     }
 
+
     public QueueVideosAdapter(Context context, final List<ParseVideo> videos) {
         this.videos = videos;
         this.context = context;
@@ -87,7 +89,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         this.videos = list;
     }
 
-    public void updateItem (final int location) {
+    public void updateItem(final int location) {
         ParseObject video = this.videos.get(location);
         video.fetchInBackground(new GetCallback<ParseVideo>() {
             @Override
@@ -104,25 +106,36 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     @Override
     public QVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_item, parent, false);
-        QVHolder qvh = new QVHolder(v);
 
-        builder = new AlertDialog.Builder(context);
-        builder.setMessage("Test for preventing dialog close");
-        dialog = builder.create();
+        if (viewType == 0) {
 
-        return qvh;
+            View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_item, parent, false);
+            QVHolder cvh = new QVHolder(v1);
+            return cvh;
+        } else {
+            View v2 = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_item, parent, false);
+            QVHolder qvh = new QVHolder(v2);
+            return qvh;
+        }
+
 
     }
 
     @Override
     public void onBindViewHolder(final QVHolder holder, final int position) {
+
+
         final ParseObject video = videos.get(position);
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
 
         ParseUser user = video.getParseUser(ParseTables.Videos.USER);
         holder.username.setText(video.getString(ParseTables.Videos.USER_USERNAME));
-        holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
+        try {
+            holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
 
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
@@ -209,6 +222,12 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     return false;
             }
         });
+
+        if (getItemViewType(position) == 0) {
+            //do something different for current video layout
+        } else {
+
+        }
     }
 
     @Override
@@ -254,8 +273,20 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         Log.d(TAG, "Sending GCM request to notify others");
     }
 
-    public void removeItem(int i){
+    public void removeItem(int i) {
         videos.remove(i);
+    }
+
+
+    @Override
+    public int getItemViewType(int position) {
+        int viewType;
+        if (position == 0) {
+            viewType = 0;
+        } else {
+            viewType = 1;
+        }
+        return viewType;
     }
 }
 
