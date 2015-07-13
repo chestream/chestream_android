@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#4CAF50</color>
-    <color name="colorPrimaryDark">#188E3C</color>
-    <color name="colorAccent">#03A9F4</color>
+    <color name="colorPrimary">#ffc107</color>
+    <color name="colorPrimaryDark">#ffa000</color>
+    <color name="colorAccent">#ffeb3b</color>
 
     <integer-array name="gplus_colors">
         <item>@color/gplus_color_1</item>
