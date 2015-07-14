@@ -28,7 +28,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.mcxiaoke.volley:library:1.0.+'
     compile 'com.microsoft.azure.android:azure-storage-android:0.5.1@aar'
-    compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
+//    compile 'com.github.hiteshsondhi88.libffmpeg:FFmpegAndroid:0.2.5'
     compile 'com.parse.bolts:bolts-android:1.2.0'
     compile 'com.android.support:cardview-v7:22.+'
     compile 'com.melnykov:floatingactionbutton:1.3.0'
