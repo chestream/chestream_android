@@ -36,13 +36,6 @@
             android:textSize="25sp"
             android:visibility="gone" />
 
-        <!--
-        <VideoView
-            android:id="@+id/main_video_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|center_vertical" />
--->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,15 +113,28 @@
         <include layout="@layout/loading_layout"
             android:id="@+id/loading_layout"/>
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <FrameLayout
             android:id="@+id/buffer_screen"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            />
+            android:visibility="gone" >
 
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/buffer_screen_preview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                fresco:actualImageScaleType="centerInside"
+                />
+
+            <TextView
+                android:id="@+id/buffer_screen_video_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="25sp"/>
+
+        </FrameLayout>
     </FrameLayout>
-
 
     <include layout="@layout/layout_panel_bottom" />
 

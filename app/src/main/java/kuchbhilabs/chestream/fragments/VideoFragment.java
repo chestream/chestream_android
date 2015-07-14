@@ -1,7 +1,6 @@
 package kuchbhilabs.chestream.fragments;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +8,6 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +15,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +50,6 @@ import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
-import kuchbhilabs.chestream.helpers.LoadingProgress;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
 /**
@@ -74,66 +71,44 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     TextView tusername,tusernameComments;
     TextView ttotalVotes,ttotalVotesComments;
     SimpleDraweeView tdraweeView,tdraweeViewComments;
-    private SimpleDraweeView bufferScreen;
+    private SimpleDraweeView bufferScreenPreview;
+    private TextView bufferScreenTitle;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
 
     SurfaceView surfaceView;
     SurfaceHolder holder;
-//    MediaPlayer mediaPlayer;
     private static TextView commentFloating;
     private static TimerCommentText timerCommentText;
+    private FrameLayout bufferScreen;
 
     private static final String TAG = "VideoFragment";
 
     private static final String TEST_URL = "http://128.199.128.227/chestream_raw/video_1434859043/video_1434859043.mp4";
     private static final String NEXT_URL = "http://128.199.128.227:8800/";
 
-    private boolean isMediaPlayerInitialized = false;
-    private boolean isSurfaceCreated = false;
-    private boolean isUrlFetched = false;
-    private boolean videoStarted = false;
-
     private CommentsBroadcastReceiver receiver;
-//    private MediaHandler handler;
 
     private int i = 0;
 
-    ProgressDialog mProgressDialog;
     View loadingLayout;
-    LoadingProgress loadingProgress;
-   static View loadingFrame,dividerView;
+    static View loadingFrame,dividerView;
     public static TextView commentsCount;
 
     private static final long MIN_BUFFER_TIME_MILLIS = 5000;
     private long bufferStartTime;
 
-    private static final int RENDERER_COUNT = 1;
     private DemoPlayer player;
     private AudioCapabilities audioCapabilities;
     private AudioCapabilitiesReceiver audioCapabilitiesReceiver;
     long playerPosition = 0;
     boolean playerNeedsPrepare = true;
     private EventLogger eventLogger;
-    private HlsRendererBuilder hlsRenderer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
-        /*
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                handler = new MediaHandler();
-                mediaPlayer = new MediaPlayer();
-                isMediaPlayerInitialized = true;
-                startMediaPlayer();
-                Looper.loop();
-            }
-        }).start();*/
 
         View rootView = inflater.inflate(R.layout.fragment_video, null);
 
@@ -151,9 +126,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         tdraweeView = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
         tdraweeViewComments = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture_comments);
         loadingLayout = rootView.findViewById(R.id.loading_layout);
-        bufferScreen = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen);
-        bufferScreen.setImageURI(
-                Uri.parse("https://pbs.twimg.com/profile_images/378800000451012500/4628fbb9dc70514d389ed9491243866f_400x400.png"));
+        bufferScreen = (FrameLayout) rootView.findViewById(R.id.buffer_screen);
+        bufferScreenPreview = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_preview);
+        bufferScreenTitle = (TextView) rootView.findViewById(R.id.buffer_screen_video_title);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
@@ -187,14 +162,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        isSurfaceCreated = true;
         if (player != null) {
             player.setSurface(holder.getSurface());
         }
-        /*
-        if (handler != null) {
-            handler.sendMessage(handler.obtainMessage(MediaHandler.MSG_START));
-        }*/
     }
 
     @Override
@@ -206,11 +176,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         if (player != null) {
             player.blockingClearSurface();
         }
-        /*
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        } */
     }
 
     private void sendNextRequest() {
@@ -223,30 +188,33 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                         try {
                             JSONObject responseObject = new JSONObject(response);
                             responseObject = responseObject.getJSONObject("data");
-                            String videoId = responseObject.getString("video_id");
+                            final String videoId = responseObject.getString("video_id");
                             ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseTables.Videos._NAME);
                             query.whereEqualTo("objectId", videoId);
                             query.findInBackground(new FindCallback<ParseObject>() {
                                 @Override
                                 public void done(List<ParseObject> list, ParseException e) {
                                     if (list != null) {
-                                        //TODO: Fetch the bufferscreen
+                                        currentVideo = list.get(0);
+
                                         loadingLayout.setVisibility(View.GONE);
                                         bufferScreen.setVisibility(View.VISIBLE);
-
+                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(
+                                                ParseTables.Videos.VIDEO_THUMBNAIL)));
+                                        bufferScreenTitle.setText(currentVideo.getString(
+                                                ParseTables.Videos.TITLE));
                                         bufferStartTime = System.currentTimeMillis();
 
-                                        currentVideo = list.get(0);
                                         CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
-//                                        player.release();
-//                                        releasePlayer();
+
                                         if (player != null) {
                                             player.updateRendererBuilder(getRendererBuilder());
                                             player.seekTo(0);
                                         }
                                         playerNeedsPrepare = true;
                                         preparePlayer();
+
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
                                         location = currentVideo.getString(ParseTables.Videos.LOCATION);
                                         title = currentVideo.getString(ParseTables.Videos.TITLE);
@@ -256,7 +224,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                     public void done(ParseUser parseObject, ParseException e) {
                                                         username = parseObject.getUsername();
                                                         avatar = parseObject.getString(ParseTables.Users.AVATAR);
-                                                        isUrlFetched = true;
                                                         setVideoDetails();
 
                                                     }
@@ -394,9 +361,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             player.setMetadataListener(null);
             player.seekTo(playerPosition);
             playerNeedsPrepare = true;
-            /*
-            mediaController.setMediaPlayer(player.getPlayerControl());
-            mediaController.setEnabled(true); */
+
             eventLogger = new EventLogger();
             eventLogger.startSession();
             player.addListener(eventLogger);
@@ -422,64 +387,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         }
     }
 
-/*
-    private void startMediaPlayer() {
-        Log.d(TAG, "Initial call");
-        if (isMediaPlayerInitialized && isSurfaceCreated && isUrlFetched && !videoStarted) {
-            synchronized (this) {
-                try {
-                    videoStarted = true;
-                    if (mediaPlayer == null) {
-                        mediaPlayer = new MediaPlayer();
-                    }
-
-                    Log.d(TAG, "STARTING MEDIA PLAYER");
-                    //TODO: Add a check if there is no stream available
-
-                    mediaPlayer.setDataSource(activity, Uri.parse(url));
-                    mediaPlayer.setLooping(false);
-
-                    mediaPlayer.setDisplay(holder);
-                    mediaPlayer.prepare();
-
-                    removeBufferScreen(); //This is a blocking call
-                    mediaPlayer.start();
-                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            currentVideo.put(ParseTables.Videos.PLAYED, true);
-                            currentVideo.saveInBackground();
-                            Log.d(TAG, "COMPLETION");
-                            sendNextRequest();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    loadingLayout.setVisibility(View.GONE);
-                    bufferScreen.setVisibility(View.GONE);
-                }
-            }
-        } else {
-            Log.d(TAG, "Returning");
-            Log.d(TAG, "isMediaPlayerInitialized = " + isMediaPlayerInitialized);
-            Log.d(TAG, "isSurfaceCreated = " + isSurfaceCreated);
-            Log.d(TAG, "isUrlFetched = " + isUrlFetched);
-            Log.d(TAG, "videoStarted = " + videoStarted);
-        }
-    }
-
-    private void updateMediaPlayerSource(String source) {
-        try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(activity, Uri.parse(source));
-            mediaPlayer.prepare();
-            removeBufferScreen(); //This is a blocking call
-            mediaPlayer.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-*/
     private void removeBufferScreen() {
         try {
             Log.d(TAG, "Going to sleep");
@@ -502,11 +409,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     @Override
     public void onPause() {
-        /*
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        } */
         activity.unregisterReceiver(receiver);
         super.onPause();
         releasePlayer();
@@ -516,7 +418,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     @Override
     public void onResume() {
         super.onResume();
-//        mediaPlayer = new MediaPlayer();
         IntentFilter filter = new IntentFilter("intent.omerjerk");
         activity.registerReceiver(receiver, filter);
         audioCapabilitiesReceiver.register();
@@ -572,30 +473,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
         @Override
         public void onTick(long millisUntilFinished) {
-
-        }
-    }
-
-    private class MediaHandler extends Handler {
-
-        public static final int MSG_START = 1;
-        public static final int MSG_CHANGE_SOURCE = 2;
-
-        @Override
-        public void handleMessage(Message what) {
-            int code = what.what;
-            Log.d(TAG, "CODE = " + code);
-            switch (code) {
-                case MSG_START:
-                    Log.d(TAG, "STARTING the media player");
-//                    startMediaPlayer();
-                    break;
-                case MSG_CHANGE_SOURCE:
-//                    updateMediaPlayerSource((String) what.obj);
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
         }
     }
 
@@ -619,18 +496,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
             @Override
             public void onPanelExpanded(View panel) {
-//                if (slidingUpPanelLayout2.isPanelExpanded()) {
-//                    slidingUpPanelLayout2.collapsePanel();
-//                }
-//<<<<<<< HEAD
-//                tvideoTitle.setAlpha(1);
-//                tlocation.setAlpha(1);
-//=======
                 tvideoTitle.setAlpha(0);
                 tusername.setAlpha(0);
                 tlocation.setAlpha(0);
                 tdraweeView.setAlpha(0);
-//>>>>>>> origin/laavanye
             }
 
             @Override
