@@ -23,6 +23,7 @@
             android:layout_marginLeft="20dp"
             android:background="@android:color/transparent"
             android:clipToPadding="false"
+            android:layout_marginBottom="60dp"
             android:paddingTop="10dp"
             android:overScrollMode="never"
          />
@@ -61,9 +62,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="3dp"
         android:id="@+id/addCommentFooter"
         android:background="@android:color/transparent"
         android:gravity="bottom"
@@ -80,6 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:layout_gravity="center_vertical"
             android:paddingLeft="15dp">
 
 
@@ -103,6 +105,7 @@
             android:layout_height="55dp"
             android:paddingLeft="10dp"
             android:paddingRight="20dp"
+            android:layout_gravity="center_vertical"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_send_black"
