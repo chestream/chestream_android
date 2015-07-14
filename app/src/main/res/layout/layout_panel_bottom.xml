@@ -10,7 +10,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="236dp"
+        android:layout_height="200dp"
         android:background="@android:color/transparent">
 
 
@@ -37,8 +37,8 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/profile_picture_comments"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_alignParentLeft="true"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="15dp"
@@ -60,9 +60,10 @@
                     android:gravity="center_vertical"
                     android:textColor="#000000"
                     android:maxLines="1"
+                    android:maxLength="8"
                     android:paddingRight="50dp"
                     android:ellipsize="end"
-                    android:textSize="17sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
                     typeface:typeface="HelveticaNeue-Light"/>
 
@@ -71,7 +72,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
-                    android:textSize="15sp"/>
+                    android:textSize="13sp"
+                    android:visibility="gone"/>
                 </LinearLayout>
 
             <kuchbhilabs.chestream.helpers.TypefaceTextView
@@ -80,7 +82,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:textColor="#000000"
-                android:textSize="17sp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:textSize="15sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 typeface:typeface="HelveticaNeue-Light"/>

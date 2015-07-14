@@ -23,7 +23,7 @@
             android:layout_marginLeft="20dp"
             android:background="@android:color/transparent"
             android:clipToPadding="false"
-            android:paddingBottom="50dp"
+            android:layout_marginBottom="60dp"
             android:paddingTop="10dp"
             android:overScrollMode="never"
          />
@@ -42,35 +42,33 @@
             android:textSize="20sp"
             typeface:typeface="HelveticaNeue-Light" />
 
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/addCommentFab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            fab:fab_colorNormal="@color/colorPrimary"
-            fab:fab_colorPressed="@color/colorPrimaryDark"
-            fab:fab_colorRipple="@color/colorAccent"
-            fab:fab_type="mini"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/ic_comment"
-            android:scaleType="centerInside"/>
+        <!--<com.melnykov.fab.FloatingActionButton-->
+            <!--android:id="@+id/addCommentFab"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="bottom|right"-->
+            <!--fab:fab_colorNormal="@color/colorPrimary"-->
+            <!--fab:fab_colorPressed="@color/colorPrimaryDark"-->
+            <!--fab:fab_colorRipple="@color/colorAccent"-->
+            <!--fab:fab_type="mini"-->
+            <!--android:layout_marginBottom="20dp"-->
+            <!--android:layout_marginRight="16dp"-->
+            <!--android:layout_marginStart="16dp"-->
+            <!--android:src="@drawable/ic_comment"-->
+            <!--android:scaleType="centerInside"/>-->
 
 
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="3dp"
         android:id="@+id/addCommentFooter"
         android:background="@android:color/transparent"
         android:gravity="bottom"
-        android:orientation="horizontal"
-        android:paddingBottom="6dp"
-        android:visibility="gone">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="52dp"
@@ -83,6 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:layout_gravity="center_vertical"
             android:paddingLeft="15dp">
 
 
@@ -106,6 +105,7 @@
             android:layout_height="55dp"
             android:paddingLeft="10dp"
             android:paddingRight="20dp"
+            android:layout_gravity="center_vertical"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_send_black"
