@@ -61,7 +61,8 @@ public class QueueFragment extends Fragment {
 
     public static SimpleDraweeView gifView;
 
-    private QueueVideosAdapter queueVideosAdapter;
+    private static QueueVideosAdapter queueVideosAdapter;
+    private static SimpleSectionedRecyclerViewAdapter mSectionedAdapter;
 
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
@@ -181,12 +182,26 @@ public class QueueFragment extends Fragment {
                 builder.show();
             }
         });
+
+
+
         recyclerView.setHasFixedSize(true);
         queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseVideo>());
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(queueVideosAdapter);
+
+        List<SimpleSectionedRecyclerViewAdapter.Section> sections =
+                new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
+
+        sections.add(new SimpleSectionedRecyclerViewAdapter.Section(0,"Currently Playing"));
+        sections.add(new SimpleSectionedRecyclerViewAdapter.Section(1,"Up Next in Queue"));
+
+
+        SimpleSectionedRecyclerViewAdapter.Section[] dummy = new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
+        mSectionedAdapter = new
+                SimpleSectionedRecyclerViewAdapter(getActivity(),R.layout.queue_section_header,R.id.section_text,queueVideosAdapter);
+        mSectionedAdapter.setSections(sections.toArray(dummy));
 
         upload.attachToRecyclerView(recyclerView);
 
@@ -362,8 +377,15 @@ public class QueueFragment extends Fragment {
             public void done(List<ParseVideo> parseObjects, ParseException e) {
                 progressBar.setVisibility(View.GONE);
                 queueVideosAdapter.updateDataSet(parseObjects);
+                recyclerView.setAdapter(mSectionedAdapter);
                 queueVideosAdapter.notifyDataSetChanged();
+                mSectionedAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    public static void updateCurrentlyPlaying(){
+        queueVideosAdapter.removeItem(0);
+        queueVideosAdapter.notifyItemRemoved(0);
     }
 }

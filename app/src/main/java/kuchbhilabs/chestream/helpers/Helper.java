@@ -11,7 +11,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v8.renderscript.RenderScript;
-import android.util.Log;
 import android.view.View;
 
 import java.io.ByteArrayInputStream;
@@ -48,12 +47,12 @@ public class Helper {
 
         return new Point(l1[0], l1[1]);
     }
-    public static Drawable createBlurredImage(Drawable d,Context context) {
+    public static Drawable createBlurredImageFromDrawable(Drawable d,Context context) {
 
         RenderScript rs=RenderScript.create(context);
         final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 22;
-//        Drawable d = imageView.getDrawable();
+        options.inSampleSize = 12;
+
         BitmapDrawable bitDw = ((BitmapDrawable) d);
         Bitmap bitmap = bitDw.getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -70,7 +69,29 @@ public class Helper {
         script.forEach(output);
         output.copyTo(blurTemplate);
         Drawable dr = new BitmapDrawable(blurTemplate);
-        Log.d("lol","in here3");
+
+        return dr;
+    }
+    public static Drawable createBlurredImageFromBitmap(Bitmap bitmap,Context context) {
+
+        RenderScript rs=RenderScript.create(context);
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 12;
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] imageInByte = stream.toByteArray();
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageInByte);
+        Bitmap blurTemplate = BitmapFactory.decodeStream(bis, null, options);
+
+        final android.support.v8.renderscript.Allocation input = android.support.v8.renderscript.Allocation.createFromBitmap(rs, blurTemplate);
+        final android.support.v8.renderscript.Allocation output = android.support.v8.renderscript.Allocation.createTyped(rs, input.getType());
+        final android.support.v8.renderscript.ScriptIntrinsicBlur script = android.support.v8.renderscript.ScriptIntrinsicBlur.create(rs, android.support.v8.renderscript.Element.U8_4(rs));
+        script.setRadius(8f);
+        script.setInput(input);
+        script.forEach(output);
+        output.copyTo(blurTemplate);
+        Drawable dr = new BitmapDrawable(blurTemplate);
 
         return dr;
     }

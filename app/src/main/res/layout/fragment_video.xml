@@ -62,8 +62,7 @@
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_gravity="center_vertical"
-                    fresco:roundAsCircle="true"
-                    android:alpha="0"/>
+                    fresco:roundAsCircle="true" />
 
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
                     android:id="@+id/username"
@@ -77,7 +76,6 @@
                     android:ellipsize="end"
                     android:textSize="14sp"
                     android:textStyle="normal"
-                    android:alpha="0"
                     typeface:typeface="HelveticaNeue-Light"/>
 
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
@@ -86,7 +84,6 @@
                     android:layout_height="wrap_content"
                     android:textColor="#ffffff"
                     android:textSize="14sp"
-                    android:alpha="0"
                     typeface:typeface="HelveticaNeue-Light"
                     android:visibility="gone"/>
 
@@ -116,10 +113,12 @@
                 android:ellipsize="end"
                 android:textColor="#ffffff"
                 android:textSize="22sp"
-                android:alpha="0"
                 typeface:typeface="HelveticaNeue-Light" />
 
         </LinearLayout>
+
+        <include layout="@layout/loading_layout"
+            android:id="@+id/loading_layout"/>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/buffer_screen"

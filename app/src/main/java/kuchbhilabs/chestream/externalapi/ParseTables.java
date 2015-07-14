@@ -28,6 +28,7 @@ public class ParseTables {
         public static final String URL_M3U8 = "video_m3u8";
         public static final String USER_AVATAR = "user_avatar";
         public static final String USER_USERNAME = "user_username";
+        public static final String VIDEO_THUMBNAIL="video_thumbnail";
     }
 
     public static final class Comments {

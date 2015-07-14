@@ -54,6 +54,7 @@ import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.helpers.LoadingProgress;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
@@ -169,8 +170,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         slidingUpPanelLayout.setOverlayed(true);
         slidingUpPanelLayout.setEnableDragViewTouchEvents(true);
 
-        slidingUpPanelLayout.expandPanel();
-        slidingUpPanelLayout.setSlidingEnabled(false);
 
 //        slidingUpPanelLayout2.setOverlayed(true);
 //        slidingUpPanelLayout2.setEnableDragViewTouchEvents(true);
@@ -237,7 +236,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         //TODO: Fetch the bufferscreen
                                         loadingLayout.setVisibility(View.GONE);
                                         bufferScreen.setVisibility(View.VISIBLE);
-                                        slidingUpPanelLayout.setSlidingEnabled(true);
 
                                         bufferStartTime = System.currentTimeMillis();
 
@@ -263,13 +261,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                         avatar = parseObject.getString(ParseTables.Users.AVATAR);
                                                         isUrlFetched = true;
                                                         setVideoDetails();
-                                                        /*
-                                                        if (!videoStarted) {
-                                                            handler.sendMessage(handler.obtainMessage(MediaHandler.MSG_START));
-                                                        } else {
-                                                            handler.sendMessage(handler.obtainMessage(
-                                                                    MediaHandler.MSG_CHANGE_SOURCE, url));
-                                                        }*/
+                                                        QueueFragment.updateCurrentlyPlaying();
                                                     }
                                                 });
                                     } else {
@@ -453,7 +445,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                     mediaPlayer.prepare();
 
                     removeBufferScreen(); //This is a blocking call
-                    slidingUpPanelLayout.collapsePanel();
                     mediaPlayer.start();
                     mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override

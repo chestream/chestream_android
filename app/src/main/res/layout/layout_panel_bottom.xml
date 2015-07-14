@@ -13,10 +13,6 @@
         android:layout_height="236dp"
         android:background="@android:color/transparent">
 
-    <include
-        android:id="@+id/loading_layout"
-        layout="@layout/loading_layout" />
-
 
 
     </FrameLayout>
