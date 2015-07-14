@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -23,6 +24,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import java.util.List;
 
 import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.R;
@@ -35,6 +38,7 @@ import kuchbhilabs.chestream.helpers.Utilities;
  */
 public class SignUpFragment extends Fragment {
 
+    String email= null;
     private EditText usernameEditText;
     private Button signUpButton;
     private SimpleDraweeView userAvatar;
@@ -74,37 +78,51 @@ public class SignUpFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 username = usernameEditText.getText().toString();
+                email = "twitter";
+                email = b.getString(ParseTables.Users.EMAIL);
                 ParseQuery<ParseUser> query = ParseUser.getQuery();
-                query.whereEqualTo("email", b.getString(ParseTables.Users.EMAIL));
-                query.getFirstInBackground(new GetCallback<ParseUser>() {
-                    public void done(ParseUser object, ParseException e) {
-                        if (object == null) {
+                query.whereEqualTo("email_id", email);
+                query.findInBackground(new FindCallback<ParseUser>() {
+                    public void done(List<ParseUser> object, ParseException e) {
+                        if (object.isEmpty()) {
+                            Toast.makeText(getActivity(), "Sign Up", Toast.LENGTH_SHORT).show();
                             Log.d("score", "The getFirst request failed.");
                             Bundle bundle = b;
                             b.putString(ParseTables.Users.USERNAME, username);
                             new PushUserIntoParse().execute(bundle);
-                        } else {
-
-                            ParseUser.logInInBackground(object.getUsername(), "ChestreamPasswordYo", new LogInCallback() {
-                                public void done(ParseUser user, ParseException e) {
-                                    if (user != null) {
-                                        // Hooray! The user is logged in.
-                                        mProgressDialog.dismiss();
-                                        Intent intent = new Intent(activity, MainActivity.class);
-                                        activity.startActivity(intent);
-                                        activity.finish();
-                                    } else {
-                                        Log.d("login", e.getMessage()+e);
-                                        Toast.makeText(getActivity(), e.getMessage() ,Toast.LENGTH_LONG).show();
-                                        // Signup failed. Look at the ParseException to see what happened.
+                    } else {
+                            if(email.equals("twitter"))
+                            {
+                                Toast.makeText(getActivity(), "Sign Up", Toast.LENGTH_SHORT).show();
+                                Log.d("score", "The getFirst request failed.");
+                                Bundle bundle = b;
+                                b.putString(ParseTables.Users.USERNAME, username);
+                                new PushUserIntoParse().execute(bundle);
+                            }
+                            else
+                            {
+                                Toast.makeText(getActivity(), "Log In", Toast.LENGTH_SHORT).show();
+                                ParseUser.logInInBackground(object.get(0).getUsername(), "ChestreamPasswordYo", new LogInCallback() {
+                                    public void done(ParseUser user, ParseException e) {
+                                        if (user != null) {
+                                            // Hooray! The user is logged in.
+                                            mProgressDialog.dismiss();
+                                            Intent intent = new Intent(activity, MainActivity.class);
+                                            activity.startActivity(intent);
+                                            activity.finish();
+                                        } else {
+                                            Log.d("login", e.getMessage() + e);
+                                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                            // Signup failed. Look at the ParseException to see what happened.
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
 
-                            Log.d("score", "Retrieved the object.");
-                        }
+                        Log.d("score", "Retrieved the object.");
                     }
-                });
+                }
+            });
 
 
             }
