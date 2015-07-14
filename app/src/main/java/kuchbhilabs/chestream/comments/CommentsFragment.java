@@ -1,5 +1,6 @@
 package kuchbhilabs.chestream.comments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,6 +26,7 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import kuchbhilabs.chestream.LoginActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.fragments.VideoFragment;
 
@@ -85,7 +87,7 @@ public class CommentsFragment extends Fragment {
                 ParseUser pUser = ParseUser.getCurrentUser();
                 if ((pUser != null)
                         && (pUser.isNew())
-                        && (pUser.isAuthenticated())
+//                        && (pUser.isAuthenticated())
                         && (pUser.getSessionToken() != null)
                 /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
                     Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
@@ -110,6 +112,8 @@ public class CommentsFragment extends Fragment {
                 else
                 {
                     Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
+                    Intent intent= new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -122,7 +126,7 @@ public class CommentsFragment extends Fragment {
                     ParseUser pUser = ParseUser.getCurrentUser();
                     if ((pUser != null)
                             && (pUser.isAuthenticated())
-                            && (pUser.isNew())
+//                            && (pUser.isNew())
                             && (pUser.getSessionToken() != null)
                 /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
                         Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
@@ -147,7 +151,8 @@ public class CommentsFragment extends Fragment {
                     else
                     {
                         Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
-                    }
+                        Intent intent= new Intent(getActivity(), LoginActivity.class);
+                        startActivity(intent);                    }
 
                 }
 

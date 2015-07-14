@@ -18,11 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
@@ -78,7 +73,7 @@ public class CompressionUploadService extends Service {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder = new Notification.Builder(this)
                 .setContentTitle("Chestream")
-                .setContentText("Compression in progress")
+                .setContentText("Uploading your video")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setProgress(0, 0, true);
 
@@ -87,145 +82,201 @@ public class CompressionUploadService extends Service {
         videoName = "video_" + timeStamp;
 
         new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                loadFFmpeg();
-                compress();
 
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    // Retrieve storage account from connection-string.
+                    CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
+
+                    // Create the blob client.
+                    CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+
+                    // Retrieve reference to a previously created container.
+                    CloudBlobContainer container = blobClient.getContainerReference("videos");
+
+                    // Create or overwrite the blob with contents from a local file.
+
+                    CloudBlockBlob blob = container.getBlockBlobReference(videoName + ".mp4");
+                    File file = new File(INPUT_VIDEO);
+                    blob.upload(new FileInputStream(file), file.length());
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+
+
+
+                ParseObject videos = ParseObject.create("Videos");
+                videos.put("id", videoName);
+                videos.put("title", title);
+                videos.put("user_location", location);
+                videos.put("url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
+//                                    videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
+                videos.put("upvotes",0);
+                videos.put("played", false);
+                videos.put("comments", new ArrayList<>());
+                videos.put("compiled", false);
+                ParseUser currentUser = ParseUser.getCurrentUser();
+                if (currentUser != null) {
+                    videos.put(ParseTables.Videos.USER, currentUser);
+                }
+                videos.put("video_gif","http://31.media.tumblr.com/a7d1b4cccb6f89dd745e88148e82b842/tumblr_mr4mswW7961sd35juo1_500.gif");
+                videos.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        stopForeground(true);
+                    }
+                });
+
+
+            }
         }.execute();
+
+//        new AsyncTask<Void, Void, Void>() {
+//            @Override
+//            protected Void doInBackground(Void... params) {
+//                loadFFmpeg();
+//                compress();
+//
+//                return null;
+//            }
+//        }.execute();
 
         return START_NOT_STICKY;
     }
 
-    private void loadFFmpeg() {
-        FFmpeg ffmpeg = FFmpeg.getInstance(this);
-        try {
-            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+//    private void loadFFmpeg() {
+//        FFmpeg ffmpeg = FFmpeg.getInstance(this);
+//        try {
+//            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+//
+//                @Override
+//                public void onStart() {
+//                    Log.d(TAG, "FFMPEG onstart");
+//                }
+//
+//                @Override
+//                public void onFailure() {
+//                    Log.d(TAG, "FFMPEG onFailure");
+//                }
+//
+//                @Override
+//                public void onSuccess() {
+//                    Log.d(TAG, "FFMPEG onSuccess");
+//                }
+//
+//                @Override
+//                public void onFinish() {
+//                    Log.d(TAG, "FFMPEG onFinish");
+//                }
+//            });
+//        } catch (FFmpegNotSupportedException e) {
+//            // Handle if FFmpeg is not supported by device
+//            e.printStackTrace();
+//        }
+//    }
 
-                @Override
-                public void onStart() {
-                    Log.d(TAG, "FFMPEG onstart");
-                }
-
-                @Override
-                public void onFailure() {
-                    Log.d(TAG, "FFMPEG onFailure");
-                }
-
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "FFMPEG onSuccess");
-                }
-
-                @Override
-                public void onFinish() {
-                    Log.d(TAG, "FFMPEG onFinish");
-                }
-            });
-        } catch (FFmpegNotSupportedException e) {
-            // Handle if FFmpeg is not supported by device
-            e.printStackTrace();
-        }
-    }
-
-    private void compress() {
-        FFmpeg ffmpeg = FFmpeg.getInstance(this);
-        try {
-            // to execute "ffmpeg -version" command you just need to pass "-version"
-            ffmpeg.execute(String.format(COMPRESS_CMD, INPUT_VIDEO, OUTPUT_VIDEO),
-                    new ExecuteBinaryResponseHandler() {
-
-                        @Override
-                        public void onStart() {
-                            Log.d(TAG, "FFMPEG onStart");
-                        }
-
-                        @Override
-                        public void onProgress(String message) {
-                            Log.d(TAG, "FFMPEG onProgress " + message);
-                        }
-
-                        @Override
-                        public void onFailure(String message) {
-                            Log.e(TAG, "FFMPEG onFailure " + message);
-                            stopForeground(true);
-                        }
-
-                        @Override
-                        public void onSuccess(String message) {
-                            mBuilder.setContentText("Uploading in progress");
-                            mNotificationManager.notify(id, mBuilder.build());
-                            Log.d(TAG, "FFMPEG onSuccess " + message);
-                            new AsyncTask<Void, Void, Void>() {
-
-                                @Override
-                                protected Void doInBackground(Void... voids) {
-                                    try {
-                                        // Retrieve storage account from connection-string.
-                                        CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
-
-                                        // Create the blob client.
-                                        CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
-
-                                        // Retrieve reference to a previously created container.
-                                        CloudBlobContainer container = blobClient.getContainerReference("videos");
-
-                                        // Create or overwrite the blob with contents from a local file.
-
-                                        CloudBlockBlob blob = container.getBlockBlobReference(videoName + ".mp4");
-                                        File file = new File(OUTPUT_VIDEO);
-                                        blob.upload(new FileInputStream(file), file.length());
-                                    } catch (Exception exception) {
-                                        exception.printStackTrace();
-                                    }
-                                    return null;
-                                }
-
-                                @Override
-                                protected void onPostExecute(Void aVoid) {
-
-
-
-                                    ParseObject videos = new ParseObject("Videos");
-                                    videos.put("id", videoName);
-                                    videos.put("title", title);
-                                    videos.put("user_location", location);
-                                    videos.put("url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
-//                                    videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
-                                    videos.put("upvotes",0);
-                                    videos.put("played", false);
-                                    videos.put("comments", new ArrayList<>());
-                                    videos.put("compiled", false);
-                                    ParseUser currentUser = ParseUser.getCurrentUser();
-                                    if (currentUser != null) {
-                                        videos.put(ParseTables.Videos.USER, currentUser);
-                                    }
-                                    videos.put("video_gif","http://31.media.tumblr.com/a7d1b4cccb6f89dd745e88148e82b842/tumblr_mr4mswW7961sd35juo1_500.gif");
-                                    videos.saveInBackground(new SaveCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            stopForeground(true);
-                                        }
-                                    });
-
-
-                                }
-                            }.execute();
-
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            Log.d(TAG, "FFMPEG onFinish");
-                        }
-                    });
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            // Handle if FFmpeg is already running
-            e.printStackTrace();
-        }
-
-    }
+//    private void compress() {
+//        FFmpeg ffmpeg = FFmpeg.getInstance(this);
+//        try {
+//            // to execute "ffmpeg -version" command you just need to pass "-version"
+//            ffmpeg.execute(String.format(COMPRESS_CMD, INPUT_VIDEO, OUTPUT_VIDEO),
+//                    new ExecuteBinaryResponseHandler() {
+//
+//                        @Override
+//                        public void onStart() {
+//                            Log.d(TAG, "FFMPEG onStart");
+//                        }
+//
+//                        @Override
+//                        public void onProgress(String message) {
+//                            Log.d(TAG, "FFMPEG onProgress " + message);
+//                        }
+//
+//                        @Override
+//                        public void onFailure(String message) {
+//                            Log.e(TAG, "FFMPEG onFailure " + message);
+//                            stopForeground(true);
+//                        }
+//
+//                        @Override
+//                        public void onSuccess(String message) {
+//                            mBuilder.setContentText("Uploading in progress");
+//                            mNotificationManager.notify(id, mBuilder.build());
+//                            Log.d(TAG, "FFMPEG onSuccess " + message);
+//                            new AsyncTask<Void, Void, Void>() {
+//
+//                                @Override
+//                                protected Void doInBackground(Void... voids) {
+//                                    try {
+//                                        // Retrieve storage account from connection-string.
+//                                        CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
+//
+//                                        // Create the blob client.
+//                                        CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+//
+//                                        // Retrieve reference to a previously created container.
+//                                        CloudBlobContainer container = blobClient.getContainerReference("videos");
+//
+//                                        // Create or overwrite the blob with contents from a local file.
+//
+//                                        CloudBlockBlob blob = container.getBlockBlobReference(videoName + ".mp4");
+//                                        File file = new File(OUTPUT_VIDEO);
+//                                        blob.upload(new FileInputStream(file), file.length());
+//                                    } catch (Exception exception) {
+//                                        exception.printStackTrace();
+//                                    }
+//                                    return null;
+//                                }
+//
+//                                @Override
+//                                protected void onPostExecute(Void aVoid) {
+//
+//
+//
+//                                    ParseObject videos = new ParseObject("Videos");
+//                                    videos.put("id", videoName);
+//                                    videos.put("title", title);
+//                                    videos.put("user_location", location);
+//                                    videos.put("url", "https://fo0.blob.core.windows.net/videos/" + videoName + ".mp4");
+////                                    videos.put("user_avatar", "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg");
+//                                    videos.put("upvotes",0);
+//                                    videos.put("played", false);
+//                                    videos.put("comments", new ArrayList<>());
+//                                    videos.put("compiled", false);
+//                                    ParseUser currentUser = ParseUser.getCurrentUser();
+//                                    if (currentUser != null) {
+//                                        videos.put(ParseTables.Videos.USER, currentUser);
+//                                    }
+//                                    videos.put("video_gif","http://31.media.tumblr.com/a7d1b4cccb6f89dd745e88148e82b842/tumblr_mr4mswW7961sd35juo1_500.gif");
+//                                    videos.saveInBackground(new SaveCallback() {
+//                                        @Override
+//                                        public void done(ParseException e) {
+//                                            stopForeground(true);
+//                                        }
+//                                    });
+//
+//
+//                                }
+//                            }.execute();
+//
+//                        }
+//
+//                        @Override
+//                        public void onFinish() {
+//                            Log.d(TAG, "FFMPEG onFinish");
+//                        }
+//                    });
+//        } catch (FFmpegCommandAlreadyRunningException e) {
+//            // Handle if FFmpeg is already running
+//            e.printStackTrace();
+//        }
+//
+//    }
 
 }
