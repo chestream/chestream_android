@@ -6,13 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.MediaCodec;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -261,7 +258,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                         avatar = parseObject.getString(ParseTables.Users.AVATAR);
                                                         isUrlFetched = true;
                                                         setVideoDetails();
-                                                        QueueFragment.updateCurrentlyPlaying();
+
                                                     }
                                                 });
                                     } else {
@@ -347,6 +344,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             currentVideo.put(ParseTables.Videos.PLAYED, true);
             currentVideo.saveInBackground();
             sendNextRequest();
+            QueueFragment.updateCurrentlyPlaying();
         }
         String text = "playWhenReady=" + playWhenReady + ", playbackState=";
         switch(playbackState) {
