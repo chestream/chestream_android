@@ -73,7 +73,7 @@ public class CompressionUploadService extends Service {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder = new Notification.Builder(this)
                 .setContentTitle("Chestream")
-                .setContentText("Compression in progress")
+                .setContentText("Uploading your video")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setProgress(0, 0, true);
 
@@ -111,7 +111,7 @@ public class CompressionUploadService extends Service {
 
 
 
-                ParseObject videos = new ParseObject("Videos");
+                ParseObject videos = ParseObject.create("Videos");
                 videos.put("id", videoName);
                 videos.put("title", title);
                 videos.put("user_location", location);
