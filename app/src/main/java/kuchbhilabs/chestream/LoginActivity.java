@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Ca
 
         //TODO: Make it work to load from the assets directory
         mediaPlayer = new MediaPlayer();
-        URL = "android.resource://"+getPackageName()+"/"+R.raw.vid4b;
+        URL = "android.resource://"+getPackageName()+"/"+R.raw.compressedvideo;
 
 
         ParseUser pUser = ParseUser.getCurrentUser();
