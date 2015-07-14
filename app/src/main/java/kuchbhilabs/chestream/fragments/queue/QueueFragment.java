@@ -152,7 +152,7 @@ public class QueueFragment extends Fragment {
                                     ParseUser pUser = ParseUser.getCurrentUser();
                                     if ((pUser != null)
                                             && (pUser.isAuthenticated())
-                                            && (pUser.isNew())
+//                                            && (pUser.isNew())
                                             && (pUser.getSessionToken() != null)
                 /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
 

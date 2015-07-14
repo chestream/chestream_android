@@ -37,7 +37,7 @@ import kuchbhilabs.chestream.helpers.Utilities;
  * Created by root on 28/6/15.
  */
 public class SignUpFragment extends Fragment {
-
+    Bundle bundle;
     String email= null;
     private EditText usernameEditText;
     private Button signUpButton;
@@ -78,8 +78,11 @@ public class SignUpFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 username = usernameEditText.getText().toString();
-                email = "twitter";
                 email = b.getString(ParseTables.Users.EMAIL);
+                if(email==null)
+                {
+                    email = "twitter";
+                }
                 ParseQuery<ParseUser> query = ParseUser.getQuery();
                 query.whereEqualTo("email_id", email);
                 query.findInBackground(new FindCallback<ParseUser>() {
@@ -87,20 +90,40 @@ public class SignUpFragment extends Fragment {
                         if (object.isEmpty()) {
                             Toast.makeText(getActivity(), "Sign Up", Toast.LENGTH_SHORT).show();
                             Log.d("score", "The getFirst request failed.");
-                            Bundle bundle = b;
+                            bundle = b;
                             b.putString(ParseTables.Users.USERNAME, username);
-                            new PushUserIntoParse().execute(bundle);
-                    } else {
-                            if(email.equals("twitter"))
-                            {
+                            ParseQuery<ParseUser> query = ParseUser.getQuery();
+                            query.whereEqualTo("username", username);
+                            query.findInBackground(new FindCallback<ParseUser>() {
+                                public void done(List<ParseUser> object, ParseException e) {
+                                    if (object.isEmpty()) {
+                                        new PushUserIntoParse().execute(bundle);
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getActivity(), "Please choose another username and try again !",Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        } else {
+                            if (email.equals("twitter")) {
                                 Toast.makeText(getActivity(), "Sign Up", Toast.LENGTH_SHORT).show();
                                 Log.d("score", "The getFirst request failed.");
-                                Bundle bundle = b;
+                                bundle = b;
                                 b.putString(ParseTables.Users.USERNAME, username);
-                                new PushUserIntoParse().execute(bundle);
+                                ParseQuery<ParseUser> query = ParseUser.getQuery();
+                                query.whereEqualTo("username", username);
+                                query.findInBackground(new FindCallback<ParseUser>() {
+                                    public void done(List<ParseUser> object, ParseException e) {
+                                        if (object.isEmpty()) {
+                                            new PushUserIntoParse().execute(bundle);
+                                        } else {
+                                            Toast.makeText(getActivity(), "Please choose another username and try again !", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
                             }
-                            else
-                            {
+                            else {
                                 Toast.makeText(getActivity(), "Log In", Toast.LENGTH_SHORT).show();
                                 ParseUser.logInInBackground(object.get(0).getUsername(), "ChestreamPasswordYo", new LogInCallback() {
                                     public void done(ParseUser user, ParseException e) {
@@ -119,10 +142,10 @@ public class SignUpFragment extends Fragment {
                                 });
                             }
 
-                        Log.d("score", "Retrieved the object.");
+                            Log.d("score", "Retrieved the object.");
+                        }
                     }
-                }
-            });
+                });
 
 
             }
