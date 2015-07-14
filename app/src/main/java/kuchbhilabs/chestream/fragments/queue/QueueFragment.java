@@ -50,6 +50,8 @@ import java.util.Locale;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.CompressionUploadService;
+import kuchbhilabs.chestream.LoginActivity;
+import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.NotificationReceiver;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
@@ -196,6 +198,8 @@ public class QueueFragment extends Fragment {
                                     else
                                     {
                                         Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
+                                        Intent intent= new Intent(getActivity(), LoginActivity.class);
+                                        startActivity(intent);
                                     }
 
                             }
