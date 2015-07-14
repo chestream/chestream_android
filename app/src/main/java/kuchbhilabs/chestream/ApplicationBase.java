@@ -12,6 +12,7 @@ import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
+import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -21,6 +22,9 @@ import kuchbhilabs.chestream.parse.ParseVideo;
  * Created by root on 20/6/15.
  */
 public class ApplicationBase extends Application {
+
+    public static final boolean LOG_DEBUG = true;
+    public static final boolean LOG_INFO = true;
 
     public static String userpass = "stomatrix@gmail.com" + ":" + "sauravclusterpoint";
     public static String basicAuth = "Basic "
@@ -36,6 +40,9 @@ public class ApplicationBase extends Application {
                 "0Sg7WlkNmt0jkC6dOQ91qkOUbGBoyiCqIG8xqU7z");
 
         ParseFacebookUtils.initialize(this);
+        ParseTwitterUtils.initialize("JdSrIpONnSYiOichfx59MNdlP",
+                "iH3md4EEpHkcfjyT0Yz0LyuFFrE7N9ys3cTc3pdq5iYz31qYLu");
+
         ParseACL defaultACL = new ParseACL();
         ParseUser.enableAutomaticUser();
 
