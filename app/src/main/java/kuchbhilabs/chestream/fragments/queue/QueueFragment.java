@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -37,7 +38,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.NotificationReceiver;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.fragments.VideoFragment;
 import kuchbhilabs.chestream.helpers.AppLocationService;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
@@ -141,42 +146,58 @@ public class QueueFragment extends Fragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                                        Intent chooser = Intent.createChooser(intent, "Choose a Video");
-                                        startActivityForResult(chooser, 2);
-                                        break;
-                                    case 1:
-                                        final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                                        takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
 
-                                        if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                            final int color = Color.parseColor("#00bcd4");
-                                            final Point p = Helper.getLocationInView(revealView, view);
+                                    ParseUser pUser = ParseUser.getCurrentUser();
+                                    if ((pUser != null)
+                                            && (pUser.isAuthenticated())
+                                            && (pUser.isNew())
+                                            && (pUser.getSessionToken() != null)
+                /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
 
-                                            revealView.reveal(p.x, p.y, color, view.getHeight() / 2, 440, null);
-                                            selectedView = view;
+                                        switch (which) {
+                                            case 0:
+                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                                                Intent chooser = Intent.createChooser(intent, "Choose a Video");
+                                                startActivityForResult(chooser, 2);
+                                                break;
+                                            case 1:
+                                                final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                                                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
 
-                                            handler=new Handler();
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    startActivityForResult(takeVideoIntent, 1);
+                                                if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                                    final int color = Color.parseColor("#00bcd4");
+                                                    final Point p = Helper.getLocationInView(revealView, view);
+
+                                                    revealView.reveal(p.x, p.y, color, view.getHeight() / 2, 440, null);
+                                                    selectedView = view;
+
+                                                    handler=new Handler();
                                                     handler.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            revealView.hide(p.x, p.y, android.R.color.transparent, 0, 330, null);
-                                                        }
-                                                    }, 300);
+                                                            startActivityForResult(takeVideoIntent, 1);
+                                                            handler.postDelayed(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    revealView.hide(p.x, p.y, android.R.color.transparent, 0, 330, null);
+                                                                }
+                                                            }, 300);
 
+                                                        }
+                                                    }, 500);
                                                 }
-                                            }, 500);
+                                                break;
+                                            default:
+                                                break;
                                         }
-                                        break;
-                                    default:
-                                        break;
-                                }
+
+
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
+                                    }
+
                             }
                         });
                 builder.show();
