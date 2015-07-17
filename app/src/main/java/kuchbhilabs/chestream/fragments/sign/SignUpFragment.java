@@ -66,6 +66,8 @@ public class SignUpFragment extends Fragment {
         }
 
         userAvatar = (SimpleDraweeView) rootView.findViewById(R.id.user_avatar_sign_up);
+        userAvatar.setImageURI(Uri.parse(b.getString(ParseTables.Users.AVATAR)));
+
 //        FacebookApi.getFacebookData(new FacebookApi.FbGotDataCallback() {
 //            @Override
 //            public void gotData(Bundle b) {
@@ -197,6 +199,9 @@ public class SignUpFragment extends Fragment {
             }
             if (bundle.getString(ParseTables.Users.USERNAME) != null) {
                 currentUser.setUsername(bundle.getString(ParseTables.Users.USERNAME));
+            }
+            if (bundle.getString(ParseTables.Users.AVATAR) != null) {
+                currentUser.put(ParseTables.Users.AVATAR, bundle.getString(ParseTables.Users.AVATAR));
             }
 
             currentUser.put(ParseTables.Users.FULLY_REGISTERED, true);

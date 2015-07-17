@@ -45,6 +45,17 @@ public class TwitterApi {
                 try {
                     HttpResponse response = client.execute(verifyGet);
                     JSONObject object = new JSONObject(EntityUtils.toString(response.getEntity()));
+                    Log.d("avatar", object.toString());
+                    String profile_pic = object.getString("profile_image_url_https");
+                    if(profile_pic==null)
+                    {
+                        profile_pic="http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
+                    }
+                    else
+                    {
+                        profile_pic = profile_pic.replace("normal", "400x400");
+                    }
+                    twitterBundle.putString(ParseTables.Users.AVATAR,profile_pic);
                     twitterBundle.putString(ParseTables.Users.USERNAME, twitter.getScreenName());
                     twitterBundle.putString(ParseTables.Users.NAME, object.getString("name"));
                     twitterBundle.putString(ParseTables.Users.CITY, object.getString("location"));

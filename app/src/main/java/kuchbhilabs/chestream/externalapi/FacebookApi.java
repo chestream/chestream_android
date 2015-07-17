@@ -30,7 +30,12 @@ public class FacebookApi {
                         Log.d(TAG, "" + object.toString());
                         try {
                             String id = object.getString("id");
-                            b.putString(ParseTables.Users.AVATAR,"https://graph.facebook.com/" + id + "/picture??width=300&&height=300");
+                            String profile_pic = "https://graph.facebook.com/" + id + "/picture??width=300&&height=300";
+                            if(profile_pic==null)
+                            {
+                                profile_pic="http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
+                            }
+                            b.putString(ParseTables.Users.AVATAR,profile_pic);
                             b.putString(ParseTables.Users.NAME, object.getString("name"));
                             b.putString(ParseTables.Users.EMAIL, object.getString("email"));
 

@@ -18,6 +18,7 @@ import com.parse.ParseUser;
 
 import java.io.IOException;
 
+import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.sign.SignInFragment;
 
 public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Callback {
@@ -63,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Ca
         if ((pUser != null)
                 && (pUser.isAuthenticated())
                 && (pUser.getSessionToken() != null)
-                /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
+                && (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))) {
             Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);

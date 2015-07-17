@@ -368,6 +368,12 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                                         String reverseDate = new StringBuffer(currentPerson.getBirthday()).reverse().toString();
                                                         b.putString(ParseTables.Users.DOB, reverseDate);
                                                     }
+                                                    String personPhoto2 = currentPerson.getImage().getUrl();
+                                                    if(personPhoto2==null)
+                                                    {
+                                                        personPhoto2="http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
+                                                    }
+                                                    b.putString(ParseTables.Users.AVATAR,personPhoto2);
                                                     b.putString("type","google");
                                                     showSignUpFragment(b);
 //                                                    new FetchUserPhotos(new FetchUserPhotos.PhotosFetcher() {
