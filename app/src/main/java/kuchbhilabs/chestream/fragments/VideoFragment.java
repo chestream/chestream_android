@@ -222,6 +222,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                         avatar = parseObject.getString(ParseTables.Users.AVATAR);
                                                         setVideoDetails();
 
+                                                        if (Helper.isKitkat()) {
+                                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                                                        }
+
                                                         bufferScreenProfile.setImageURI(Uri.parse(avatar));
                                                         bufferScreenUsername.setText(username);
 
@@ -235,8 +239,11 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                             public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
 
                                                 if(response.getBitmap() != null) {
+                                                    if (Helper.isKitkat()) {
+                                                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                                                    }
                                                     bufferScreenPreview.setImageBitmap(response.getBitmap());
-                                                    bufferScreen.setBackground(Helper.createBlurredImageFromBitmap(response.getBitmap(), activity));
+//                                                    bufferScreen.setBackground(Helper.createBlurredImageFromBitmap(response.getBitmap(), activity));
                                                 }
                                             }
 
@@ -246,7 +253,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                             }
                                         });
 //                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
-
+                                        if (Helper.isKitkat()) {
+                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                                        }
                                         bufferScreenTitle.setText(title);
 
                                         bufferStartTime = System.currentTimeMillis();
