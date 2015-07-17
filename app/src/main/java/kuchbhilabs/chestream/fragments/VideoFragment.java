@@ -71,7 +71,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     TextView tusername,tusernameComments;
     TextView ttotalVotes,ttotalVotesComments;
     SimpleDraweeView tdraweeView,tdraweeViewComments;
-    private SimpleDraweeView bufferScreenPreview;
+    private SimpleDraweeView bufferScreenPreview,bufferScreenProfile;
     private TextView bufferScreenTitle;
 
     Activity activity;
@@ -129,6 +129,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         bufferScreen = (FrameLayout) rootView.findViewById(R.id.buffer_screen);
         bufferScreenPreview = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_preview);
         bufferScreenTitle = (TextView) rootView.findViewById(R.id.buffer_screen_video_title);
+        bufferScreenProfile = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_profile_picture);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
@@ -201,6 +202,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         bufferScreen.setVisibility(View.VISIBLE);
                                         bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(
                                                 ParseTables.Videos.VIDEO_THUMBNAIL)));
+                                        bufferScreenProfile.setImageURI(Uri.parse(currentVideo.getString(
+                                                ParseTables.Videos.USER_AVATAR)));
                                         bufferScreenTitle.setText(currentVideo.getString(
                                                 ParseTables.Videos.TITLE));
                                         bufferStartTime = System.currentTimeMillis();

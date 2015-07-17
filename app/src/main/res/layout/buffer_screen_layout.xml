@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:typeface="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/buffer_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    android:background="@drawable/background">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:background="@android:color/transparent">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/buffer_screen_preview"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_gravity="center_horizontal"
+            fresco:actualImageScaleType="centerCrop" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/buffer_screen_profile_picture"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:paddingBottom="-30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            fresco:roundAsCircle="true" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/buffer_screen_video_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:padding="15dp"
+            android:textSize="25sp" />
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

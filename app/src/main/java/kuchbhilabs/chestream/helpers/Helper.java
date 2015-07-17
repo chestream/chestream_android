@@ -35,6 +35,12 @@ public class Helper {
         }
     }
 
+    public static int getPixelsFromDP(int dp,Context context){
+        float scale = context.getResources().getDisplayMetrics().density;
+        int dpAsPixels = (int) (dp*scale + 0.5f);
+        return dpAsPixels;
+    }
+
     public static Point getLocationInView(View src, View target) {
         final int[] l0 = new int[2];
         src.getLocationOnScreen(l0);
