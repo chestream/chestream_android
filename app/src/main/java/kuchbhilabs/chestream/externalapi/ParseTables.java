@@ -27,7 +27,7 @@ public class ParseTables {
         public static final String GIF = "video_gif";
         public static final String URL_M3U8 = "video_m3u8";
         public static final String USER_AVATAR = "user_avatar";
-        public static final String USER_USERNAME = "user_username";
+        public static final String USER_USERNAME = "user_name";
         public static final String VIDEO_THUMBNAIL="video_thumbnail";
     }
 
