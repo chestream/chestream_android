@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import kuchbhilabs.chestream.fragments.ProfileFragment;
+import kuchbhilabs.chestream.fragments.profile.ProfileFragment;
 import kuchbhilabs.chestream.fragments.VideoFragment;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 
