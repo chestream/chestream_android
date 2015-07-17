@@ -36,8 +36,8 @@ public class ApplicationBase extends Application {
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         ParseObject.registerSubclass(ParseVideo.class);
-        Parse.initialize(this, "M5tnZk2K6PdF82Ra8485bG2VQwPjpeZLeL96VLPj",
-                "0Sg7WlkNmt0jkC6dOQ91qkOUbGBoyiCqIG8xqU7z");
+        Parse.initialize(this, getString(R.string.i),
+                getString(R.string.p));
 
         ParseFacebookUtils.initialize(this);
         ParseTwitterUtils.initialize("JdSrIpONnSYiOichfx59MNdlP",
