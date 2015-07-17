@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -205,6 +206,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         currentVideo = list.get(0);
 
                                         loadingLayout.setVisibility(View.GONE);
+                                        if (Helper.isKitkat()) {
+                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                                        }
                                         bufferScreen.setVisibility(View.VISIBLE);
 
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
@@ -429,6 +433,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (Helper.isKitkat()) {
+                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                    }
                     bufferScreen.setVisibility(View.GONE);
                 }
             });

@@ -41,6 +41,10 @@ public class Helper {
         return dpAsPixels;
     }
 
+    public static boolean isKitkat(){
+        return Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT;
+    }
+
     public static Point getLocationInView(View src, View target) {
         final int[] l0 = new int[2];
         src.getLocationOnScreen(l0);
@@ -82,7 +86,7 @@ public class Helper {
 
         RenderScript rs=RenderScript.create(context);
         final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 8;
+        options.inSampleSize = 32;
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -93,7 +97,7 @@ public class Helper {
         final android.support.v8.renderscript.Allocation input = android.support.v8.renderscript.Allocation.createFromBitmap(rs, blurTemplate);
         final android.support.v8.renderscript.Allocation output = android.support.v8.renderscript.Allocation.createTyped(rs, input.getType());
         final android.support.v8.renderscript.ScriptIntrinsicBlur script = android.support.v8.renderscript.ScriptIntrinsicBlur.create(rs, android.support.v8.renderscript.Element.U8_4(rs));
-        script.setRadius(4f);
+        script.setRadius(10f);
         script.setInput(input);
         script.forEach(output);
         output.copyTo(blurTemplate);
