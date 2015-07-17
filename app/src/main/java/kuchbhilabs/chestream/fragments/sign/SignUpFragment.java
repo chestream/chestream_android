@@ -198,6 +198,9 @@ public class SignUpFragment extends Fragment {
             if (bundle.getString(ParseTables.Users.USERNAME) != null) {
                 currentUser.setUsername(bundle.getString(ParseTables.Users.USERNAME));
             }
+
+            currentUser.put(ParseTables.Users.FULLY_REGISTERED, true);
+
             try {
                 if (currentUser.getSessionToken() != null) {
                     currentUser.save();

@@ -186,8 +186,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                     Log.w(TAG, "Uh oh. The user cancelled the Facebook login.");
                 } else {
                     boolean fullyRegistered = user.getBoolean(ParseTables.Users.FULLY_REGISTERED);
-//                    if (user.isNew() || !fullyRegistered) {
-                    if (user.isNew()) {
+                    if (user.isNew() || !fullyRegistered) {
                         Log.w(TAG, "User signed up and logged in through Facebook!");
                         FacebookApi.getFacebookData(new FacebookApi.FbGotDataCallback() {
                             @Override
@@ -282,8 +281,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                     } catch (Exception ignored) {
                     }
 
-//                    if (user.isNew() || (!fullyRegistered)) {
-                    if (user.isNew()) {
+                    if (user.isNew() || (!fullyRegistered)) {
                         Log.w(TAG, "User signed up and logged in through Twitter!" + ParseTwitterUtils.getTwitter().getScreenName());
                         TwitterApi.getTwitterData(new TwitterApi.TwitterDataCallback() {
                             @Override
@@ -349,8 +347,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                             fullyRegistered = user.getBoolean(ParseTables.Users.FULLY_REGISTERED);
                                         } catch (Exception ignored) {
                                         }
-//                                        if (user.isNew() || !fullyRegistered) {
-                                        if (user.isNew()) {
+                                        if (user.isNew() || !fullyRegistered) {
                                             Log.d(TAG, "We've got a new user");
                                             showSignUpFragment(bundle);
                                             //TODO: download user data and sign up
@@ -360,8 +357,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                             activity.startActivity(intent);
                                         }
 
-//                                        if (user.isNew() || (!fullyRegistered)) {
-                                        if (user.isNew()) {
+                                        if (user.isNew() || (!fullyRegistered)) {
                                             try {
                                                 if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
                                                     final Person currentPerson = Plus.PeopleApi
