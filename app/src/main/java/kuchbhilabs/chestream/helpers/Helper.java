@@ -82,7 +82,7 @@ public class Helper {
 
         RenderScript rs=RenderScript.create(context);
         final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 12;
+        options.inSampleSize = 8;
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -93,7 +93,7 @@ public class Helper {
         final android.support.v8.renderscript.Allocation input = android.support.v8.renderscript.Allocation.createFromBitmap(rs, blurTemplate);
         final android.support.v8.renderscript.Allocation output = android.support.v8.renderscript.Allocation.createTyped(rs, input.getType());
         final android.support.v8.renderscript.ScriptIntrinsicBlur script = android.support.v8.renderscript.ScriptIntrinsicBlur.create(rs, android.support.v8.renderscript.Element.U8_4(rs));
-        script.setRadius(8f);
+        script.setRadius(4f);
         script.setInput(input);
         script.forEach(output);
         output.copyTo(blurTemplate);
