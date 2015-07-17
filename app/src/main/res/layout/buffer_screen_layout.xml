@@ -21,18 +21,18 @@
             android:layout_height="280dp"
             android:background="@android:color/transparent">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/buffer_screen_preview"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_gravity="center_horizontal"
-            fresco:actualImageScaleType="centerCrop" />
+            android:scaleType="centerCrop" />
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/buffer_screen_profile_picture"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:paddingBottom="-30dp"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:paddingBottom="-40dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             fresco:roundAsCircle="true" />
@@ -40,11 +40,24 @@
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/buffer_screen_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:textColor="#ffffff"
+            android:maxLines="1"
+            android:maxLength="10"
+            android:padding="15dp"
+            android:textSize="25sp" />
+
+        <TextView
             android:id="@+id/buffer_screen_video_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:ellipsize="end"
+            android:textColor="#ffffff"
             android:maxLines="2"
             android:padding="15dp"
             android:textSize="25sp" />

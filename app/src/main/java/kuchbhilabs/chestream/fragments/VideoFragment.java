@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -16,6 +17,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -44,12 +47,14 @@ import org.json.JSONObject;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.VolleySingleton;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
+import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
 /**
@@ -71,8 +76,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     TextView tusername,tusernameComments;
     TextView ttotalVotes,ttotalVotesComments;
     SimpleDraweeView tdraweeView,tdraweeViewComments;
-    private SimpleDraweeView bufferScreenPreview,bufferScreenProfile;
-    private TextView bufferScreenTitle;
+    private SimpleDraweeView bufferScreenProfile;
+    private ImageView bufferScreenPreview;
+    private TextView bufferScreenTitle,bufferScreenUsername;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
@@ -127,8 +133,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         tdraweeViewComments = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture_comments);
         loadingLayout = rootView.findViewById(R.id.loading_layout);
         bufferScreen = (FrameLayout) rootView.findViewById(R.id.buffer_screen);
-        bufferScreenPreview = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_preview);
+        bufferScreenPreview = (ImageView) rootView.findViewById(R.id.buffer_screen_preview);
         bufferScreenTitle = (TextView) rootView.findViewById(R.id.buffer_screen_video_title);
+        bufferScreenUsername = (TextView) rootView.findViewById(R.id.buffer_screen_username);
         bufferScreenProfile = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_profile_picture);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
@@ -199,24 +206,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         currentVideo = list.get(0);
 
                                         loadingLayout.setVisibility(View.GONE);
-                                        bufferScreen.setVisibility(View.VISIBLE);
-                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(
-                                                ParseTables.Videos.VIDEO_THUMBNAIL)));
-                                        bufferScreenProfile.setImageURI(Uri.parse(currentVideo.getString(
-                                                ParseTables.Videos.USER_AVATAR)));
-                                        bufferScreenTitle.setText(currentVideo.getString(
-                                                ParseTables.Videos.TITLE));
-                                        bufferStartTime = System.currentTimeMillis();
-
-                                        CommentsFragment.setUpComments();
-                                        url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
-
-                                        if (player != null) {
-                                            player.updateRendererBuilder(getRendererBuilder());
-                                            player.seekTo(0);
+                                        if (Helper.isKitkat()) {
+                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
                                         }
-                                        playerNeedsPrepare = true;
-                                        preparePlayer();
+                                        bufferScreen.setVisibility(View.VISIBLE);
 
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
                                         location = currentVideo.getString(ParseTables.Videos.LOCATION);
@@ -229,8 +222,55 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                         avatar = parseObject.getString(ParseTables.Users.AVATAR);
                                                         setVideoDetails();
 
+                                                        if (Helper.isKitkat()) {
+                                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                                                        }
+
+                                                        bufferScreenProfile.setImageURI(Uri.parse(avatar));
+                                                        bufferScreenUsername.setText(username);
+
+
                                                     }
                                                 });
+                                        ImageLoader imageLoader= VolleySingleton.getInstance(activity).getImageLoader();
+                                        imageLoader.get(currentVideo.getString(
+                                                ParseTables.Videos.VIDEO_THUMBNAIL), new ImageLoader.ImageListener() {
+                                            @Override
+                                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+
+                                                if(response.getBitmap() != null) {
+                                                    if (Helper.isKitkat()) {
+                                                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                                                    }
+                                                    bufferScreenPreview.setImageBitmap(response.getBitmap());
+//                                                    bufferScreen.setBackground(Helper.createBlurredImageFromBitmap(response.getBitmap(), activity));
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+
+                                            }
+                                        });
+//                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
+                                        if (Helper.isKitkat()) {
+                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                                        }
+                                        bufferScreenTitle.setText(title);
+
+                                        bufferStartTime = System.currentTimeMillis();
+
+                                        CommentsFragment.setUpComments();
+                                        url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
+
+                                        if (player != null) {
+                                            player.updateRendererBuilder(getRendererBuilder());
+                                            player.seekTo(0);
+                                        }
+                                        playerNeedsPrepare = true;
+                                        preparePlayer();
+
+
                                     } else {
                                         Toast.makeText(activity, "Shit Happened!", Toast.LENGTH_SHORT).show();
                                     }
@@ -402,6 +442,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (Helper.isKitkat()) {
+                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                    }
                     bufferScreen.setVisibility(View.GONE);
                 }
             });
