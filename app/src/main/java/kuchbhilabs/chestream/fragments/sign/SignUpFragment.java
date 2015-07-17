@@ -79,34 +79,33 @@ public class SignUpFragment extends Fragment {
             public void onClick(View v) {
                 username = usernameEditText.getText().toString();
                 email = b.getString(ParseTables.Users.EMAIL);
-                if(email==null)
+                String type = b.getString("type");
+
+                if(type.equals("facebook"))
                 {
-                    email = "twitter";
+                    Toast.makeText(getActivity(), "Sign Up", Toast.LENGTH_SHORT).show();
+                    Log.d("score", "The getFirst request failed.");
+                    bundle = b;
+                    b.putString(ParseTables.Users.USERNAME, username);
+                    ParseQuery<ParseUser> query = ParseUser.getQuery();
+                    query.whereEqualTo("username", username);
+                    query.findInBackground(new FindCallback<ParseUser>() {
+                        public void done(List<ParseUser> object, ParseException e) {
+                            if (object.isEmpty()) {
+                                new PushUserIntoParse().execute(bundle);
+                            } else {
+                                Toast.makeText(getActivity(), "Please choose another username and try again !", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }
-                ParseQuery<ParseUser> query = ParseUser.getQuery();
-                query.whereEqualTo("email_id", email);
-                query.findInBackground(new FindCallback<ParseUser>() {
-                    public void done(List<ParseUser> object, ParseException e) {
-                        if (object.isEmpty()) {
-                            Toast.makeText(getActivity(), "Sign Up", Toast.LENGTH_SHORT).show();
-                            Log.d("score", "The getFirst request failed.");
-                            bundle = b;
-                            b.putString(ParseTables.Users.USERNAME, username);
-                            ParseQuery<ParseUser> query = ParseUser.getQuery();
-                            query.whereEqualTo("username", username);
-                            query.findInBackground(new FindCallback<ParseUser>() {
-                                public void done(List<ParseUser> object, ParseException e) {
-                                    if (object.isEmpty()) {
-                                        new PushUserIntoParse().execute(bundle);
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(getActivity(), "Please choose another username and try again !",Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                        } else {
-                            if (email.equals("twitter")) {
+                if(type.equals("google"))
+                {
+                    ParseQuery<ParseUser> query = ParseUser.getQuery();
+                    query.whereEqualTo("email_id", email);
+                    query.findInBackground(new FindCallback<ParseUser>() {
+                        public void done(List<ParseUser> object, ParseException e) {
+                            if (object.isEmpty()) {
                                 Toast.makeText(getActivity(), "Sign Up", Toast.LENGTH_SHORT).show();
                                 Log.d("score", "The getFirst request failed.");
                                 bundle = b;
@@ -117,36 +116,53 @@ public class SignUpFragment extends Fragment {
                                     public void done(List<ParseUser> object, ParseException e) {
                                         if (object.isEmpty()) {
                                             new PushUserIntoParse().execute(bundle);
-                                        } else {
-                                            Toast.makeText(getActivity(), "Please choose another username and try again !", Toast.LENGTH_LONG).show();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getActivity(), "Please choose another username and try again !",Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 });
-                            }
-                            else {
-                                Toast.makeText(getActivity(), "Log In", Toast.LENGTH_SHORT).show();
-                                ParseUser.logInInBackground(object.get(0).getUsername(), "ChestreamPasswordYo", new LogInCallback() {
-                                    public void done(ParseUser user, ParseException e) {
-                                        if (user != null) {
-                                            // Hooray! The user is logged in.
-                                            mProgressDialog.dismiss();
-                                            Intent intent = new Intent(activity, MainActivity.class);
-                                            activity.startActivity(intent);
-                                            activity.finish();
-                                        } else {
-                                            Log.d("login", e.getMessage() + e);
-                                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                            // Signup failed. Look at the ParseException to see what happened.
+                            } else {
+                                    Toast.makeText(getActivity(), "Log In", Toast.LENGTH_SHORT).show();
+                                    ParseUser.logInInBackground(object.get(0).getUsername(), getString(R.string.pw), new LogInCallback() {
+                                        public void done(ParseUser user, ParseException e) {
+                                            if (user != null) {
+                                                // Hooray! The user is logged in.
+                                                mProgressDialog.dismiss();
+                                                Intent intent = new Intent(activity, MainActivity.class);
+                                                activity.startActivity(intent);
+                                                activity.finish();
+                                            } else {
+                                                Log.d("login", e.getMessage() + e);
+                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                // Signup failed. Look at the ParseException to see what happened.
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
+                                Log.d("score", "Retrieved the object.");
                             }
-
-                            Log.d("score", "Retrieved the object.");
+                    });
+                }
+                if(type.equals("twitter"))
+                {
+                    Toast.makeText(getActivity(), "Sign Up", Toast.LENGTH_SHORT).show();
+                    Log.d("score", "The getFirst request failed.");
+                    bundle = b;
+                    b.putString(ParseTables.Users.USERNAME, username);
+                    ParseQuery<ParseUser> query = ParseUser.getQuery();
+                    query.whereEqualTo("username", username);
+                    query.findInBackground(new FindCallback<ParseUser>() {
+                        public void done(List<ParseUser> object, ParseException e) {
+                            if (object.isEmpty()) {
+                                new PushUserIntoParse().execute(bundle);
+                            } else {
+                                Toast.makeText(getActivity(), "Please choose another username and try again !", Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
-                });
-
+                    });
+                }
 
             }
         });

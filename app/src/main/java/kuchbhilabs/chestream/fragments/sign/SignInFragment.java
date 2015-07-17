@@ -186,11 +186,13 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                     Log.w(TAG, "Uh oh. The user cancelled the Facebook login.");
                 } else {
                     boolean fullyRegistered = user.getBoolean(ParseTables.Users.FULLY_REGISTERED);
-                    if (user.isNew() || !fullyRegistered) {
+//                    if (user.isNew() || !fullyRegistered) {
+                    if (user.isNew()) {
                         Log.w(TAG, "User signed up and logged in through Facebook!");
                         FacebookApi.getFacebookData(new FacebookApi.FbGotDataCallback() {
                             @Override
                             public void gotData(final Bundle bundle) {
+                                bundle.putString("type", "facebook");
                                 showSignUpFragment(bundle);
 //                                new FetchUserPhotos(new FetchUserPhotos.PhotosFetcher() {
 //                                    @Override
@@ -280,11 +282,13 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                     } catch (Exception ignored) {
                     }
 
-                    if (user.isNew() || (!fullyRegistered)) {
+//                    if (user.isNew() || (!fullyRegistered)) {
+                    if (user.isNew()) {
                         Log.w(TAG, "User signed up and logged in through Twitter!" + ParseTwitterUtils.getTwitter().getScreenName());
                         TwitterApi.getTwitterData(new TwitterApi.TwitterDataCallback() {
                             @Override
                             public void gotData(Bundle bundle) {
+                                bundle.putString("type","twitter");
                                 showSignUpFragment(bundle);
                             }
                         });
@@ -345,7 +349,8 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                             fullyRegistered = user.getBoolean(ParseTables.Users.FULLY_REGISTERED);
                                         } catch (Exception ignored) {
                                         }
-                                        if (user.isNew() || !fullyRegistered) {
+//                                        if (user.isNew() || !fullyRegistered) {
+                                        if (user.isNew()) {
                                             Log.d(TAG, "We've got a new user");
                                             showSignUpFragment(bundle);
                                             //TODO: download user data and sign up
@@ -355,7 +360,8 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                             activity.startActivity(intent);
                                         }
 
-                                        if (user.isNew() || (!fullyRegistered)) {
+//                                        if (user.isNew() || (!fullyRegistered)) {
+                                        if (user.isNew()) {
                                             try {
                                                 if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
                                                     final Person currentPerson = Plus.PeopleApi
@@ -366,6 +372,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                                         String reverseDate = new StringBuffer(currentPerson.getBirthday()).reverse().toString();
                                                         b.putString(ParseTables.Users.DOB, reverseDate);
                                                     }
+                                                    b.putString("type","google");
                                                     showSignUpFragment(b);
 //                                                    new FetchUserPhotos(new FetchUserPhotos.PhotosFetcher() {
 //                                                        @Override
