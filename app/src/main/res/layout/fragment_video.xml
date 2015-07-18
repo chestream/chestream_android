@@ -113,13 +113,19 @@
 
         <include layout="@layout/buffer_screen_layout"/>
 
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/statusBarHeight"
+            android:gravity="right|top"
+            android:layout_gravity="top|right">
+
         <TextureView
             android:id="@+id/camera_preview"
-            android:layout_width="480dp"
-            android:layout_height="640dp"
-            android:gravity="right|top"
-            android:layout_gravity="top|right"
-            android:visibility="gone" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
+        </FrameLayout>
 
     </FrameLayout>
 
