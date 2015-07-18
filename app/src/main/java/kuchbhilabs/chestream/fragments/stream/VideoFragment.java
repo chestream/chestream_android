@@ -24,6 +24,8 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +40,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
@@ -54,6 +58,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.VolleySingleton;
@@ -89,6 +94,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private SimpleDraweeView bufferScreenProfile;
     private ImageView bufferScreenPreview;
     private TextView bufferScreenTitle,bufferScreenUsername;
+    private KenBurnsView patternView;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
@@ -132,6 +138,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private boolean fingerUpBeEarly = true;
     private Handler uiHandler;
 
+    int[] patternImages = {R.drawable.pattern1, R.drawable.pattern2,R.drawable.pattern3,R.drawable.pattern4,R.drawable.pattern5,R.drawable.pattern6,R.drawable.pattern7,R.drawable.pattern8};
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -159,6 +167,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         bufferScreenTitle = (TextView) rootView.findViewById(R.id.buffer_screen_video_title);
         bufferScreenUsername = (TextView) rootView.findViewById(R.id.buffer_screen_username);
         bufferScreenProfile = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_profile_picture);
+        patternView=(KenBurnsView) rootView.findViewById(R.id.patternView);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
@@ -242,6 +251,14 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         }
                                         bufferScreen.setVisibility(View.VISIBLE);
 
+                                        Random random=new Random();
+                                        int rndInt = random.nextInt(patternImages.length);
+                                        patternView.setImageDrawable(getResources().getDrawable(patternImages[rndInt]));
+
+                                        Interpolator interpolator=new LinearInterpolator();
+                                        RandomTransitionGenerator generator = new RandomTransitionGenerator(4000, interpolator);
+                                        patternView.setTransitionGenerator(generator);
+
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
                                         location = currentVideo.getString(ParseTables.Videos.LOCATION);
                                         title = currentVideo.getString(ParseTables.Videos.TITLE);
@@ -263,27 +280,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                                                     }
                                                 });
-                                        ImageLoader imageLoader= VolleySingleton.getInstance(activity).getImageLoader();
-                                        imageLoader.get(currentVideo.getString(
-                                                ParseTables.Videos.VIDEO_THUMBNAIL), new ImageLoader.ImageListener() {
-                                            @Override
-                                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-
-                                                if(response.getBitmap() != null) {
-                                                    if (Helper.isKitkat()) {
-                                                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
-                                                    }
-                                                    bufferScreenPreview.setImageBitmap(response.getBitmap());
-//                                                    bufferScreen.setBackground(Helper.createBlurredImageFromBitmap(response.getBitmap(), activity));
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-                                                error.printStackTrace();
-                                            }
-                                        });
-//                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
+                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
                                         if (Helper.isKitkat()) {
                                             TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
                                         }

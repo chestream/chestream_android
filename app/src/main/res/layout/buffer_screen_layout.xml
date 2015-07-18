@@ -12,7 +12,7 @@
     <com.flaviofaria.kenburnsview.KenBurnsView
         android:id="@+id/patternView"
         android:layout_width="match_parent"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="280dp"
         android:layout_height="match_parent" />
 
 
@@ -24,13 +24,13 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:layout_height="310dp"
             android:elevation="5dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/buffer_screen_preview"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="280dp"
             android:layout_gravity="center_horizontal"
             fresco:actualImageScaleType="centerCrop"
             android:elevation="7dp"/>
