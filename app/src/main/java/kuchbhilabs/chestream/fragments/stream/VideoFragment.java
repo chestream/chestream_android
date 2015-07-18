@@ -66,9 +66,6 @@ import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
-/**
- * Created by naman on 20/06/15.
- */
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
         View.OnTouchListener{
