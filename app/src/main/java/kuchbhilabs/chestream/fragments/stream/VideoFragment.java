@@ -1,25 +1,30 @@
-package kuchbhilabs.chestream.fragments;
+package kuchbhilabs.chestream.fragments.stream;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +33,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.flaviofaria.kenburnsview.KenBurnsView;
-import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
@@ -47,10 +51,11 @@ import com.parse.ParseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.VolleySingleton;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
@@ -64,7 +69,7 @@ import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
  * Created by naman on 20/06/15.
  */
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
-        DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener{
+        DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener{
 
     String url = "";
     String upvotes = "";
@@ -80,9 +85,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     TextView ttotalVotes,ttotalVotesComments;
     SimpleDraweeView tdraweeView,tdraweeViewComments;
     private SimpleDraweeView bufferScreenProfile;
-    private SimpleDraweeView bufferScreenPreview;
+    private ImageView bufferScreenPreview;
     private TextView bufferScreenTitle,bufferScreenUsername;
-    private KenBurnsView patternView;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
@@ -115,8 +119,12 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     long playerPosition = 0;
     boolean playerNeedsPrepare = true;
     private EventLogger eventLogger;
+    private HandlerThread handlerThread;
+    private ExoPlayerHandler exoPlayerHandler;
 
-    int[] patternImages = {R.drawable.pattern1, R.drawable.pattern2,R.drawable.pattern3,R.drawable.pattern4,R.drawable.pattern5,R.drawable.pattern6,R.drawable.pattern7,R.drawable.pattern8};
+    private TextureView cameraPreview;
+    private Camera camera;
+    private CameraHandler cameraHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -139,16 +147,23 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         tdraweeViewComments = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture_comments);
         loadingLayout = rootView.findViewById(R.id.loading_layout);
         bufferScreen = (FrameLayout) rootView.findViewById(R.id.buffer_screen);
-        bufferScreenPreview = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_preview);
+        bufferScreenPreview = (ImageView) rootView.findViewById(R.id.buffer_screen_preview);
         bufferScreenTitle = (TextView) rootView.findViewById(R.id.buffer_screen_video_title);
         bufferScreenUsername = (TextView) rootView.findViewById(R.id.buffer_screen_username);
         bufferScreenProfile = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_profile_picture);
-        patternView=(KenBurnsView) rootView.findViewById(R.id.patternView);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
         loadingFrame=(View) rootView.findViewById(R.id.loading_frame);
         dividerView=rootView.findViewById(R.id.dividerView);
+
+        cameraPreview = (TextureView) rootView.findViewById(R.id.camera_preview);
+        cameraPreview.setSurfaceTextureListener(this);
+        handlerThread = new HandlerThread("HandlerThread");
+        handlerThread.start();
+        cameraHandler = new CameraHandler(handlerThread.getLooper());
+        cameraHandler.sendMessage(cameraHandler.obtainMessage(CameraHandler.MSG_INITIALIZE));
+        cameraPreview.setVisibility(View.VISIBLE);
 
         sendNextRequest();
 
@@ -171,6 +186,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
         holder.addCallback(this);
+
+        exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
         return rootView;
     }
@@ -218,14 +235,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         }
                                         bufferScreen.setVisibility(View.VISIBLE);
 
-                                        Random random=new Random();
-                                        int rndInt = random.nextInt(patternImages.length);
-                                        patternView.setImageDrawable(getResources().getDrawable(patternImages[rndInt]));
-
-                                        Interpolator interpolator=new LinearInterpolator();
-                                        RandomTransitionGenerator generator = new RandomTransitionGenerator(5000, interpolator);
-                                        patternView.setTransitionGenerator(generator);
-
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
                                         location = currentVideo.getString(ParseTables.Videos.LOCATION);
                                         title = currentVideo.getString(ParseTables.Videos.TITLE);
@@ -247,9 +256,30 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                                                     }
                                                 });
+                                        ImageLoader imageLoader= VolleySingleton.getInstance(activity).getImageLoader();
+                                        imageLoader.get(currentVideo.getString(
+                                                ParseTables.Videos.VIDEO_THUMBNAIL), new ImageLoader.ImageListener() {
+                                            @Override
+                                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
 
-                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
+                                                if(response.getBitmap() != null) {
+                                                    if (Helper.isKitkat()) {
+                                                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                                                    }
+                                                    bufferScreenPreview.setImageBitmap(response.getBitmap());
+//                                                    bufferScreen.setBackground(Helper.createBlurredImageFromBitmap(response.getBitmap(), activity));
+                                                }
+                                            }
 
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                error.printStackTrace();
+                                            }
+                                        });
+//                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
+                                        if (Helper.isKitkat()) {
+                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+                                        }
                                         bufferScreenTitle.setText(title);
 
                                         bufferStartTime = System.currentTimeMillis();
@@ -257,14 +287,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
 
-                                        if (player != null) {
-                                            player.updateRendererBuilder(getRendererBuilder());
-                                            player.seekTo(0);
-                                        }
-                                        playerNeedsPrepare = true;
-                                        preparePlayer();
-
-
+                                        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
+                                                ExoPlayerHandler.MSG_SET_RENDERER_BUILDER));
+                                        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
+                                                ExoPlayerHandler.MSG_PREPARE));
                                     } else {
                                         Toast.makeText(activity, "Shit Happened!", Toast.LENGTH_SHORT).show();
                                     }
@@ -310,6 +336,68 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 //                },5000);
             }
         });
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        Log.d(TAG, "TEXTURE AVAILABLE NOW");
+        try {
+            camera.setPreviewTexture(surface);
+            Log.d(TAG, "width = " + width + " height = " + height);
+            cameraHandler.sendMessage(cameraHandler.obtainMessage(CameraHandler.MSG_START_PREVIEW));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+    }
+
+    private class ExoPlayerHandler extends Handler {
+        public static final int MSG_PREPARE = 0;
+        public static final int MSG_RELEASE = 1;
+        public static final int MSG_SET_RENDERER_BUILDER = 2;
+
+        public ExoPlayerHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_PREPARE:
+                    preparePlayer();
+                    break;
+                case MSG_RELEASE:
+                    releasePlayer();
+                    break;
+                case MSG_SET_RENDERER_BUILDER:
+                    setRendererBuilder();
+                    break;
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    private void setRendererBuilder() {
+        if (player != null) {
+            player.updateRendererBuilder(getRendererBuilder());
+            player.seekTo(0);
+        }
+        playerNeedsPrepare = true;
     }
 
     @Override
@@ -440,6 +528,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                         TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
                     }
                     bufferScreen.setVisibility(View.GONE);
+
                 }
             });
         } catch (InterruptedException e) {
@@ -452,6 +541,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         activity.unregisterReceiver(receiver);
         super.onPause();
         releasePlayer();
+        finalizeCamera();
         audioCapabilitiesReceiver.unregister();
     }
 
@@ -559,4 +649,48 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     }
 
+    private void initializeCamera() {
+        if (camera == null) {
+            camera = Camera.open(0);
+            camera.setDisplayOrientation(90);
+            Camera.Parameters parameters = camera.getParameters();
+            parameters.setPreviewSize(640, 480);
+            camera.setParameters(parameters);
+        }
+    }
+
+    private void finalizeCamera() {
+        if (camera != null) {
+            camera.release();
+            camera = null;
+        }
+    }
+
+    public class CameraHandler extends Handler {
+
+        public static final int MSG_INITIALIZE = 0;
+        public static final int MSG_FINALIZE = 1;
+        public static final int MSG_START_PREVIEW = 2;
+
+        public CameraHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_INITIALIZE:
+                    initializeCamera();
+                    break;
+                case MSG_START_PREVIEW:
+                    if (camera != null) {
+                        camera.startPreview();
+                        Log.d(TAG, "PREVIEW STARTED");
+                    }
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Wrong option.");
+            }
+        }
+    }
 }

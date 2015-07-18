@@ -28,7 +28,7 @@ import java.util.List;
 
 import kuchbhilabs.chestream.LoginActivity;
 import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.fragments.VideoFragment;
+import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 
 /**
  * Created by naman on 20/06/15.
