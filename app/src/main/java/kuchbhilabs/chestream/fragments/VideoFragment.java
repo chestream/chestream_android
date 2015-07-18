@@ -8,6 +8,10 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -111,6 +115,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     long playerPosition = 0;
     boolean playerNeedsPrepare = true;
     private EventLogger eventLogger;
+    private HandlerThread handlerThread;
+    private ExoPlayerHandler exoPlayerHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -164,6 +170,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
         holder.addCallback(this);
+
+        handlerThread = new HandlerThread("ExoPlayerHandler");
+        exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
         return rootView;
     }
@@ -263,14 +272,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
 
-                                        if (player != null) {
-                                            player.updateRendererBuilder(getRendererBuilder());
-                                            player.seekTo(0);
-                                        }
-                                        playerNeedsPrepare = true;
-                                        preparePlayer();
-
-
+                                        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
+                                                ExoPlayerHandler.MSG_SET_RENDERER_BUILDER));
+                                        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
+                                                ExoPlayerHandler.MSG_PREPARE));
                                     } else {
                                         Toast.makeText(activity, "Shit Happened!", Toast.LENGTH_SHORT).show();
                                     }
@@ -316,6 +321,41 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 //                },5000);
             }
         });
+    }
+
+    private class ExoPlayerHandler extends Handler {
+        public static final int MSG_PREPARE = 0;
+        public static final int MSG_RELEASE = 1;
+        public static final int MSG_SET_RENDERER_BUILDER = 2;
+
+        public ExoPlayerHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_PREPARE:
+                    preparePlayer();
+                    break;
+                case MSG_RELEASE:
+                    releasePlayer();
+                    break;
+                case MSG_SET_RENDERER_BUILDER:
+                    setRendererBuilder();
+                    break;
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    private void setRendererBuilder() {
+        if (player != null) {
+            player.updateRendererBuilder(getRendererBuilder());
+            player.seekTo(0);
+        }
+        playerNeedsPrepare = true;
     }
 
     @Override
