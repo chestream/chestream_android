@@ -1,10 +1,11 @@
-package kuchbhilabs.chestream.fragments;
+package kuchbhilabs.chestream.fragments.stream;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -118,6 +119,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private HandlerThread handlerThread;
     private ExoPlayerHandler exoPlayerHandler;
 
+    private CameraPreview cameraPreview;
+    private Camera camera;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -148,6 +152,14 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
         loadingFrame=(View) rootView.findViewById(R.id.loading_frame);
         dividerView=rootView.findViewById(R.id.dividerView);
+
+        //Not really sure whether to use Camera on UI thread or a background thread
+        cameraPreview = (CameraPreview) rootView.findViewById(R.id.camera_preview);
+        cameraPreview.setVisibility(View.VISIBLE);
+        initializeCamera();
+        cameraPreview.setStuffs(camera);
+        cameraPreview.setZOrderMediaOverlay(true);
+        cameraPreview.startPreview();
 
         sendNextRequest();
 
@@ -499,6 +511,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         activity.unregisterReceiver(receiver);
         super.onPause();
         releasePlayer();
+        finalizeCamera();
         audioCapabilitiesReceiver.unregister();
     }
 
@@ -606,4 +619,17 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     }
 
+    private void initializeCamera() {
+        if (camera == null) {
+            camera = Camera.open(1);
+            camera.setDisplayOrientation(90);
+        }
+    }
+
+    private void finalizeCamera() {
+        if (camera != null) {
+            camera.release();
+            camera = null;
+        }
+    }
 }

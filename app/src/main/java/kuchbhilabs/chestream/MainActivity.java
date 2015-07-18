@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import kuchbhilabs.chestream.fragments.profile.ProfileFragment;
-import kuchbhilabs.chestream.fragments.VideoFragment;
+import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 
 public class MainActivity extends AppCompatActivity {

@@ -9,10 +9,6 @@ import com.parse.ParsePushBroadcastReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
-
-import kuchbhilabs.chestream.fragments.VideoFragment;
-
 public class NotificationReceiver extends ParsePushBroadcastReceiver {
 
     private static final String TAG = "NotificationReceiver";
