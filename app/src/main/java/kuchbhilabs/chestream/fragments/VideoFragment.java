@@ -172,6 +172,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         holder.addCallback(this);
 
         handlerThread = new HandlerThread("ExoPlayerHandler");
+        handlerThread.start();
         exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
         return rootView;
@@ -258,7 +259,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                                             @Override
                                             public void onErrorResponse(VolleyError error) {
-
+                                                error.printStackTrace();
                                             }
                                         });
 //                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
