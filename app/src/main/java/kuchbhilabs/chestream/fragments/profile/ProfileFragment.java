@@ -65,7 +65,6 @@ public class ProfileFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Profile");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
@@ -89,7 +88,6 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
-
 
         return rootView;
     }

@@ -76,7 +76,7 @@ import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
  */
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
-        View.OnTouchListener{
+        View.OnTouchListener {
 
     String url = "";
     String upvotes = "";
@@ -135,8 +135,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private CameraHandler cameraHandler;
 
     private boolean fingerDown = false;
-    private boolean fingerUpBeEarly = true;
     private Handler uiHandler;
+    float fingerDownX, fingerDownY;
 
     int[] patternImages = {R.drawable.pattern1, R.drawable.pattern2,R.drawable.pattern3,R.drawable.pattern4,R.drawable.pattern5,R.drawable.pattern6,R.drawable.pattern7,R.drawable.pattern8};
 
@@ -702,16 +702,40 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     public boolean onTouch(View v, MotionEvent e) {
         Log.d(TAG, "onTouch");
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
+            fingerDownX = e.getX();
+            fingerDownY = e.getY();
             fingerDown = true;
             uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (fingerDown) {
+//                    if (fingerDown) {
                         camera.startPreview();
                         cameraPreview.setVisibility(View.VISIBLE);
-                    }
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, "Capturing the photo in 3 secs", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    uiHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            camera.takePicture(null, new Camera.PictureCallback() {
+                                @Override
+                                public void onPictureTaken(byte[] data, Camera camera) {
+                                   activity.runOnUiThread(new Runnable() {
+                                       @Override
+                                       public void run() {
+                                           Toast.makeText(activity, "Uploading photo!", Toast.LENGTH_SHORT).show();
+                                       }
+                                   });
+                                }
+                            }, null);
+                        }
+                    }, 3000);
+//                    }
                 }
-            }, 1500);
+            }, 1000);
             return true;
         }
         if (e.getAction() == MotionEvent.ACTION_UP) {
@@ -720,6 +744,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             camera.stopPreview();
             cameraPreview.setVisibility(View.GONE);
             uiHandler.removeCallbacksAndMessages(null);
+        }
+        if (e.getAction() == MotionEvent.ACTION_MOVE) {
+            //TODO: we're not receiving ACTION_MOVE. Move this logic somewhere else
+            Log.d(TAG, "gap x = " + Math.abs(e.getX() - fingerDownX));
+            Log.d(TAG, "gap y = " + Math.abs(e.getY() - fingerDownY));
+            if (Math.abs(e.getX() - fingerDownX) > 20 || Math.abs(e.getY() - fingerDownY) > 20) {
+                //It's a swipe. Fall back.
+                uiHandler.removeCallbacksAndMessages(null);
+            }
+            return true;
         }
         return false;
     }
