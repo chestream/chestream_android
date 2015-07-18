@@ -12,7 +12,6 @@
     sothree:panelHeight="200dp"
     sothree:shadowHeight="0dp">
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -93,8 +92,6 @@
 
             </LinearLayout>
 
-
-
             <kuchbhilabs.chestream.helpers.TypefaceTextView
                 android:id="@+id/video_title"
                 android:layout_width="wrap_content"
@@ -115,9 +112,18 @@
             android:id="@+id/loading_layout"/>
 
         <include layout="@layout/buffer_screen_layout"/>
+
+        <TextureView
+            android:id="@+id/camera_preview"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/statusBarHeight"
+            android:gravity="right|top"
+            android:layout_gravity="top|right"
+            android:visibility="gone" />
+
     </FrameLayout>
 
     <include layout="@layout/layout_panel_bottom" />
-
 
 </kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout>

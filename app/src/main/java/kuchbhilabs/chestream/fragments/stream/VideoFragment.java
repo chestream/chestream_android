@@ -1,19 +1,27 @@
-package kuchbhilabs.chestream.fragments;
+package kuchbhilabs.chestream.fragments.stream;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -44,6 +52,7 @@ import com.parse.ParseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
@@ -61,7 +70,8 @@ import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
  * Created by naman on 20/06/15.
  */
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
-        DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener{
+        DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
+        View.OnTouchListener{
 
     String url = "";
     String upvotes = "";
@@ -111,15 +121,27 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     long playerPosition = 0;
     boolean playerNeedsPrepare = true;
     private EventLogger eventLogger;
+    private HandlerThread handlerThread;
+    private ExoPlayerHandler exoPlayerHandler;
+
+    private TextureView cameraPreview;
+    private Camera camera;
+    private CameraHandler cameraHandler;
+
+    private boolean fingerDown = false;
+    private boolean fingerUpBeEarly = true;
+    private Handler uiHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_video, null);
+        rootView.setOnTouchListener(this);
 
         activity = getActivity();
         receiver = new CommentsBroadcastReceiver();
+        uiHandler = new Handler();
 
         audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(activity, this);
 
@@ -143,6 +165,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         loadingFrame=(View) rootView.findViewById(R.id.loading_frame);
         dividerView=rootView.findViewById(R.id.dividerView);
 
+        cameraPreview = (TextureView) rootView.findViewById(R.id.camera_preview);
+        cameraPreview.setSurfaceTextureListener(this);
+        handlerThread = new HandlerThread("HandlerThread");
+        handlerThread.start();
+        cameraHandler = new CameraHandler(handlerThread.getLooper());
+        cameraHandler.sendMessage(cameraHandler.obtainMessage(CameraHandler.MSG_INITIALIZE));
+
         sendNextRequest();
 
         slidingUpPanelLayout = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
@@ -164,6 +193,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
         holder.addCallback(this);
+
+        exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
         return rootView;
     }
@@ -249,7 +280,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                                             @Override
                                             public void onErrorResponse(VolleyError error) {
-
+                                                error.printStackTrace();
                                             }
                                         });
 //                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
@@ -263,14 +294,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
 
-                                        if (player != null) {
-                                            player.updateRendererBuilder(getRendererBuilder());
-                                            player.seekTo(0);
-                                        }
-                                        playerNeedsPrepare = true;
-                                        preparePlayer();
-
-
+                                        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
+                                                ExoPlayerHandler.MSG_SET_RENDERER_BUILDER));
+                                        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
+                                                ExoPlayerHandler.MSG_PREPARE));
                                     } else {
                                         Toast.makeText(activity, "Shit Happened!", Toast.LENGTH_SHORT).show();
                                     }
@@ -316,6 +343,68 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 //                },5000);
             }
         });
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        Log.d(TAG, "TEXTURE AVAILABLE NOW");
+        try {
+            camera.setPreviewTexture(surface);
+            Log.d(TAG, "width = " + width + " height = " + height);
+            cameraHandler.sendMessage(cameraHandler.obtainMessage(CameraHandler.MSG_START_PREVIEW));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+    }
+
+    private class ExoPlayerHandler extends Handler {
+        public static final int MSG_PREPARE = 0;
+        public static final int MSG_RELEASE = 1;
+        public static final int MSG_SET_RENDERER_BUILDER = 2;
+
+        public ExoPlayerHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_PREPARE:
+                    preparePlayer();
+                    break;
+                case MSG_RELEASE:
+                    releasePlayer();
+                    break;
+                case MSG_SET_RENDERER_BUILDER:
+                    setRendererBuilder();
+                    break;
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    private void setRendererBuilder() {
+        if (player != null) {
+            player.updateRendererBuilder(getRendererBuilder());
+            player.seekTo(0);
+        }
+        playerNeedsPrepare = true;
     }
 
     @Override
@@ -446,6 +535,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                         TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
                     }
                     bufferScreen.setVisibility(View.GONE);
+
                 }
             });
         } catch (InterruptedException e) {
@@ -458,6 +548,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         activity.unregisterReceiver(receiver);
         super.onPause();
         releasePlayer();
+        finalizeCamera();
         audioCapabilitiesReceiver.unregister();
     }
 
@@ -565,4 +656,74 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     }
 
+    private void initializeCamera() {
+        if (camera == null) {
+            camera = Camera.open(0);
+            camera.setDisplayOrientation(90);
+            Camera.Parameters parameters = camera.getParameters();
+            parameters.setPreviewSize(640, 480);
+            camera.setParameters(parameters);
+        }
+    }
+
+    private void finalizeCamera() {
+        if (camera != null) {
+            camera.release();
+            camera = null;
+        }
+    }
+
+    public class CameraHandler extends Handler {
+
+        public static final int MSG_INITIALIZE = 0;
+        public static final int MSG_FINALIZE = 1;
+        public static final int MSG_START_PREVIEW = 2;
+
+        public CameraHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_INITIALIZE:
+                    initializeCamera();
+                    break;
+                case MSG_START_PREVIEW:
+                    if (camera != null) {
+                        camera.startPreview();
+                        Log.d(TAG, "PREVIEW STARTED");
+                    }
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Wrong option.");
+            }
+        }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent e) {
+        Log.d(TAG, "onTouch");
+        if (e.getAction() == MotionEvent.ACTION_DOWN) {
+            fingerDown = true;
+            uiHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (fingerDown) {
+                        camera.startPreview();
+                        cameraPreview.setVisibility(View.VISIBLE);
+                    }
+                }
+            }, 1500);
+            return true;
+        }
+        if (e.getAction() == MotionEvent.ACTION_UP) {
+            fingerDown = false;
+            Log.d(TAG, "Finger up");
+            camera.stopPreview();
+            cameraPreview.setVisibility(View.GONE);
+            uiHandler.removeCallbacksAndMessages(null);
+        }
+        return false;
+    }
 }

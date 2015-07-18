@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
     android:id="@+id/buffer_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone"
-    android:background="@drawable/background">
+    android:visibility="gone">
 
+
+    <com.flaviofaria.kenburnsview.KenBurnsView
+        android:id="@+id/patternView"
+        android:layout_width="match_parent"
+        android:layout_marginTop="250dp"
+        android:layout_height="match_parent" />
 
 
     <LinearLayout
@@ -19,14 +25,15 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="280dp"
-            android:background="@android:color/transparent">
+            android:elevation="5dp">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/buffer_screen_preview"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_gravity="center_horizontal"
-            android:scaleType="centerCrop" />
+            fresco:actualImageScaleType="centerCrop"
+            android:elevation="7dp"/>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/buffer_screen_profile_picture"
@@ -35,32 +42,39 @@
             android:paddingBottom="-40dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            fresco:roundAsCircle="true" />
+            fresco:roundAsCircle="true"
+            android:elevation="10dp"/>
 
         </RelativeLayout>
 
-        <TextView
+
+
+        <kuchbhilabs.chestream.helpers.TypefaceTextView
             android:id="@+id/buffer_screen_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
             android:ellipsize="end"
-            android:textColor="#ffffff"
+            android:textColor="#000000"
             android:maxLines="1"
             android:maxLength="10"
             android:padding="15dp"
-            android:textSize="25sp" />
+            android:textSize="22sp"
+            typeface:typeface="HelveticaNeue-Light"/>
 
-        <TextView
+        <kuchbhilabs.chestream.helpers.TypefaceTextView
             android:id="@+id/buffer_screen_video_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
             android:ellipsize="end"
-            android:textColor="#ffffff"
+            android:textColor="#000000"
             android:maxLines="2"
             android:padding="15dp"
-            android:textSize="25sp" />
+            android:textSize="23sp"
+            typeface:typeface="HelveticaNeue-Light"/>
 
 
     </LinearLayout>
