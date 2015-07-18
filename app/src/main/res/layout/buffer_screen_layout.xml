@@ -6,46 +6,32 @@
     android:id="@+id/buffer_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone">
+>
 
 
     <com.flaviofaria.kenburnsview.KenBurnsView
         android:id="@+id/patternView"
         android:layout_width="match_parent"
-        android:layout_marginTop="280dp"
         android:layout_height="match_parent" />
-
+    
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/statusBarHeight">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="310dp"
-            android:elevation="5dp">
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/buffer_screen_preview"
-            android:layout_width="match_parent"
-            android:layout_height="280dp"
-            android:layout_gravity="center_horizontal"
-            fresco:actualImageScaleType="centerCrop"
-            android:elevation="7dp"/>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/buffer_screen_profile_picture"
             android:layout_width="85dp"
             android:layout_height="85dp"
-            android:paddingBottom="-40dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="30dp"
             fresco:roundAsCircle="true"
-            android:elevation="10dp"/>
-
-        </RelativeLayout>
+            android:elevation="7dp"/>
 
 
 
@@ -76,8 +62,22 @@
             android:textSize="23sp"
             typeface:typeface="HelveticaNeue-Light"/>
 
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/buffer_screen_preview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"
+            fresco:actualImageScaleType="centerCrop"
+            android:elevation="15dp"/>
+
 
     </LinearLayout>
+
+   
 
 
 </FrameLayout>

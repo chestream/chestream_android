@@ -5,7 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
+import android.graphics.Shader;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,7 +39,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -61,7 +63,6 @@ import java.util.List;
 import java.util.Random;
 
 import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.VolleySingleton;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
@@ -253,10 +254,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                                         Random random=new Random();
                                         int rndInt = random.nextInt(patternImages.length);
-                                        patternView.setImageDrawable(getResources().getDrawable(patternImages[rndInt]));
+
+                                        BitmapDrawable pattern = new BitmapDrawable(BitmapFactory.decodeResource(getActivity().getResources(),patternImages[rndInt]));
+                                        pattern.setTileModeX(Shader.TileMode.REPEAT);
+                                        pattern.setTileModeY(Shader.TileMode.REPEAT);
+
+                                        patternView.setImageBitmap(pattern.getBitmap());
 
                                         Interpolator interpolator=new LinearInterpolator();
-                                        RandomTransitionGenerator generator = new RandomTransitionGenerator(4000, interpolator);
+                                        RandomTransitionGenerator
+                                                generator = new RandomTransitionGenerator(4000, interpolator);
                                         patternView.setTransitionGenerator(generator);
 
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
@@ -281,9 +288,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                     }
                                                 });
                                         bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
-                                        if (Helper.isKitkat()) {
-                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
-                                        }
+
                                         bufferScreenTitle.setText(title);
 
                                         bufferStartTime = System.currentTimeMillis();

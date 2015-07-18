@@ -48,7 +48,7 @@ public class LoadingProgress extends ImageView
 
     private void init()
     {
-        this.bTQ = ((BitmapDrawable)getResources().getDrawable(R.drawable.loading_bitmap));
+        this.bTQ = ((BitmapDrawable)getResources().getDrawable(R.drawable.bitmappattern1));
         this.mBitmap = this.bTQ.getBitmap();
         this.mPaint = new Paint(6);
         this.bTR = new Rect(0, 0, 0, 0);
