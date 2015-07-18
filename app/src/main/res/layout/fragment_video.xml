@@ -65,7 +65,7 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:textColor="#ffffff"
                     android:maxLines="1"
-                    android:maxLength="8"
+                    android:maxLength="12"
                     android:ellipsize="end"
                     android:textSize="14sp"
                     android:textStyle="normal"
@@ -96,7 +96,7 @@
                 android:id="@+id/video_title"
                 android:layout_width="wrap_content"
                 android:paddingRight="10dp"
-                android:paddingLeft="10dp"
+                android:paddingLeft="5dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="15dp"
                 android:gravity="center_vertical"
@@ -115,8 +115,8 @@
 
         <TextureView
             android:id="@+id/camera_preview"
-            android:layout_width="150dp"
-            android:layout_height="200dp"
+            android:layout_width="120dp"
+            android:layout_height="140dp"
             android:layout_marginTop="@dimen/statusBarHeight"
             android:gravity="right|top"
             android:layout_gravity="top|right"

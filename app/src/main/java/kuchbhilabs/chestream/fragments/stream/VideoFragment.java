@@ -5,7 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
+import android.graphics.Shader;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +27,8 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,10 +39,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
@@ -54,9 +60,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.VolleySingleton;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
@@ -68,7 +74,7 @@ import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
-        View.OnTouchListener{
+        View.OnTouchListener {
 
     String url = "";
     String upvotes = "";
@@ -86,6 +92,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private SimpleDraweeView bufferScreenProfile;
     private ImageView bufferScreenPreview;
     private TextView bufferScreenTitle,bufferScreenUsername;
+    private KenBurnsView patternView;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
@@ -126,8 +133,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private CameraHandler cameraHandler;
 
     private boolean fingerDown = false;
-    private boolean fingerUpBeEarly = true;
     private Handler uiHandler;
+    float fingerDownX, fingerDownY;
+
+    int[] patternImages = {R.drawable.pattern1, R.drawable.pattern2,R.drawable.pattern3,R.drawable.pattern4,R.drawable.pattern5,R.drawable.pattern6,R.drawable.pattern7,R.drawable.pattern8};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -156,6 +165,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         bufferScreenTitle = (TextView) rootView.findViewById(R.id.buffer_screen_video_title);
         bufferScreenUsername = (TextView) rootView.findViewById(R.id.buffer_screen_username);
         bufferScreenProfile = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_profile_picture);
+        patternView=(KenBurnsView) rootView.findViewById(R.id.patternView);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
@@ -239,6 +249,20 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         }
                                         bufferScreen.setVisibility(View.VISIBLE);
 
+                                        Random random=new Random();
+                                        int rndInt = random.nextInt(patternImages.length);
+
+                                        BitmapDrawable pattern = new BitmapDrawable(BitmapFactory.decodeResource(getActivity().getResources(),patternImages[rndInt]));
+                                        pattern.setTileModeX(Shader.TileMode.REPEAT);
+                                        pattern.setTileModeY(Shader.TileMode.REPEAT);
+
+                                        patternView.setImageBitmap(pattern.getBitmap());
+
+                                        Interpolator interpolator=new LinearInterpolator();
+                                        RandomTransitionGenerator
+                                                generator = new RandomTransitionGenerator(4000, interpolator);
+                                        patternView.setTransitionGenerator(generator);
+
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
                                         location = currentVideo.getString(ParseTables.Videos.LOCATION);
                                         title = currentVideo.getString(ParseTables.Videos.TITLE);
@@ -260,30 +284,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                                                     }
                                                 });
-                                        ImageLoader imageLoader= VolleySingleton.getInstance(activity).getImageLoader();
-                                        imageLoader.get(currentVideo.getString(
-                                                ParseTables.Videos.VIDEO_THUMBNAIL), new ImageLoader.ImageListener() {
-                                            @Override
-                                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
 
-                                                if(response.getBitmap() != null) {
-                                                    if (Helper.isKitkat()) {
-                                                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
-                                                    }
-                                                    bufferScreenPreview.setImageBitmap(response.getBitmap());
-//                                                    bufferScreen.setBackground(Helper.createBlurredImageFromBitmap(response.getBitmap(), activity));
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-                                                error.printStackTrace();
-                                            }
-                                        });
-//                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
-                                        if (Helper.isKitkat()) {
-                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
-                                        }
                                         bufferScreenTitle.setText(title);
 
                                         bufferStartTime = System.currentTimeMillis();
@@ -702,16 +704,40 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     public boolean onTouch(View v, MotionEvent e) {
         Log.d(TAG, "onTouch");
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
+            fingerDownX = e.getX();
+            fingerDownY = e.getY();
             fingerDown = true;
             uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (fingerDown) {
+//                    if (fingerDown) {
                         camera.startPreview();
                         cameraPreview.setVisibility(View.VISIBLE);
-                    }
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, "Capturing the photo in 3 secs", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    uiHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            camera.takePicture(null, new Camera.PictureCallback() {
+                                @Override
+                                public void onPictureTaken(byte[] data, Camera camera) {
+                                   activity.runOnUiThread(new Runnable() {
+                                       @Override
+                                       public void run() {
+                                           Toast.makeText(activity, "Uploading photo!", Toast.LENGTH_SHORT).show();
+                                       }
+                                   });
+                                }
+                            }, null);
+                        }
+                    }, 3000);
+//                    }
                 }
-            }, 1500);
+            }, 1000);
             return true;
         }
         if (e.getAction() == MotionEvent.ACTION_UP) {
@@ -720,6 +746,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             camera.stopPreview();
             cameraPreview.setVisibility(View.GONE);
             uiHandler.removeCallbacksAndMessages(null);
+        }
+        if (e.getAction() == MotionEvent.ACTION_MOVE) {
+            //TODO: we're not receiving ACTION_MOVE. Move this logic somewhere else
+            Log.d(TAG, "gap x = " + Math.abs(e.getX() - fingerDownX));
+            Log.d(TAG, "gap y = " + Math.abs(e.getY() - fingerDownY));
+            if (Math.abs(e.getX() - fingerDownX) > 20 || Math.abs(e.getY() - fingerDownY) > 20) {
+                //It's a swipe. Fall back.
+                uiHandler.removeCallbacksAndMessages(null);
+            }
+            return true;
         }
         return false;
     }
