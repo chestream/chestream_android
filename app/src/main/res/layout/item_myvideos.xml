@@ -5,19 +5,12 @@
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:layout_marginTop="5dp"
     android:background="#70ffffff"
     android:elevation="2dp">
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/thumbnail"
-        android:scaleType="centerCrop"
-        />
 
 
     <FrameLayout
@@ -49,15 +42,17 @@
             android:orientation="horizontal">
 
             <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/profile_picture"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
+                android:id="@+id/thumbnail"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="7dp"
-                fresco:roundAsCircle="true" />
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:scaleType="centerCrop"
+                />
 
 
             <LinearLayout
@@ -68,23 +63,10 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_toLeftOf="@+id/actions"
-                android:layout_toRightOf="@+id/profile_picture"
+                android:layout_toRightOf="@+id/thumbnail"
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
-
-                <kuchbhilabs.chestream.helpers.TypefaceTextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:paddingLeft="10dp"
-                    android:text="Username"
-                    android:textColor="#000000"
-                    android:textSize="13sp"
-                    android:textStyle="normal"
-                    typeface:typeface="HelveticaNeue-Light"
-                    />
 
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
                     android:id="@+id/video_title"
@@ -126,14 +108,6 @@
                 android:orientation="vertical"
                 android:paddingRight="15dp">
 
-                <ImageButton
-                    android:id="@+id/up_vote"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_expand_less_black_24dp" />
 
                 <kuchbhilabs.chestream.helpers.TypefaceTextView
                     android:id="@+id/video_score"
@@ -147,14 +121,6 @@
                     typeface:typeface="HelveticaNeue-Medium"
                     />
 
-                <ImageButton
-                    android:id="@+id/down_vote"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_expand_more_black_24dp" />
             </LinearLayout>
 
 
