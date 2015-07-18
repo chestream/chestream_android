@@ -108,19 +108,19 @@
 
         </LinearLayout>
 
-
-
         <include layout="@layout/loading_layout"
             android:id="@+id/loading_layout"/>
 
         <include layout="@layout/buffer_screen_layout"/>
 
-        <kuchbhilabs.chestream.fragments.stream.CameraPreview
+        <TextureView
             android:id="@+id/camera_preview"
-            android:layout_width="360dp"
-            android:layout_height="500dp"
+            android:layout_width="480dp"
+            android:layout_height="640dp"
             android:gravity="right|top"
+            android:layout_gravity="top|right"
             android:visibility="visible" />
+
     </FrameLayout>
 
     <include layout="@layout/layout_panel_bottom" />
