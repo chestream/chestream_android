@@ -18,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
@@ -69,7 +70,8 @@ import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
  * Created by naman on 20/06/15.
  */
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
-        DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener{
+        DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
+        View.OnTouchListener{
 
     String url = "";
     String upvotes = "";
@@ -126,14 +128,20 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private Camera camera;
     private CameraHandler cameraHandler;
 
+    private boolean fingerDown = false;
+    private boolean fingerUpBeEarly = true;
+    private Handler uiHandler;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_video, null);
+        rootView.setOnTouchListener(this);
 
         activity = getActivity();
         receiver = new CommentsBroadcastReceiver();
+        uiHandler = new Handler();
 
         audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(activity, this);
 
@@ -163,7 +171,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         handlerThread.start();
         cameraHandler = new CameraHandler(handlerThread.getLooper());
         cameraHandler.sendMessage(cameraHandler.obtainMessage(CameraHandler.MSG_INITIALIZE));
-        cameraPreview.setVisibility(View.VISIBLE);
 
         sendNextRequest();
 
@@ -692,5 +699,31 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                     throw new UnsupportedOperationException("Wrong option.");
             }
         }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent e) {
+        Log.d(TAG, "onTouch");
+        if (e.getAction() == MotionEvent.ACTION_DOWN) {
+            fingerDown = true;
+            uiHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (fingerDown) {
+                        camera.startPreview();
+                        cameraPreview.setVisibility(View.VISIBLE);
+                    }
+                }
+            }, 1500);
+            return true;
+        }
+        if (e.getAction() == MotionEvent.ACTION_UP) {
+            fingerDown = false;
+            Log.d(TAG, "Finger up");
+            camera.stopPreview();
+            cameraPreview.setVisibility(View.GONE);
+            uiHandler.removeCallbacksAndMessages(null);
+        }
+        return false;
     }
 }
