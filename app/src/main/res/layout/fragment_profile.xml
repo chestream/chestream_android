@@ -43,9 +43,18 @@
                 android:text="Username"
                 android:maxLines="1"
                 android:textColor="#ffffff"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
         </LinearLayout>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/preview_gif"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            fresco:progressBarImage="@drawable/loading"
+            fresco:progressBarAutoRotateInterval="1000"
+            />
 
     </FrameLayout>
 
