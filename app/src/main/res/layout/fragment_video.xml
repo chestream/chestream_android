@@ -119,7 +119,7 @@
             android:layout_height="640dp"
             android:gravity="right|top"
             android:layout_gravity="top|right"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </FrameLayout>
 
