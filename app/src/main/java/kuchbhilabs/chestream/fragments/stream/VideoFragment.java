@@ -343,6 +343,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         Log.d(TAG, "TEXTURE AVAILABLE NOW");
         try {
             camera.setPreviewTexture(surface);
+            Log.d(TAG, "width = " + width + " height = " + height);
             cameraHandler.sendMessage(cameraHandler.obtainMessage(CameraHandler.MSG_START_PREVIEW));
         } catch (IOException e) {
             e.printStackTrace();
