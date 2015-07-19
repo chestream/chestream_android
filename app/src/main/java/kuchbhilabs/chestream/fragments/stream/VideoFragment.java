@@ -661,7 +661,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     private void initializeCamera() {
         if (camera == null) {
-            camera = Camera.open(0);
+            camera = Camera.open(1);
             camera.setDisplayOrientation(90);
             Camera.Parameters parameters = camera.getParameters();
             parameters.setPreviewSize(640, 480);
