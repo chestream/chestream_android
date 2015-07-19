@@ -664,7 +664,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             camera = Camera.open(1);
             camera.setDisplayOrientation(90);
             Camera.Parameters parameters = camera.getParameters();
-            parameters.setPreviewSize(640, 480);
+            parameters.setPreviewSize(320, 240);
             camera.setParameters(parameters);
         }
     }
