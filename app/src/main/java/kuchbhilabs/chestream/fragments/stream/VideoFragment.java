@@ -11,6 +11,7 @@ import android.graphics.SurfaceTexture;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -51,6 +52,7 @@ import com.google.android.exoplayer.util.Util;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -722,9 +724,15 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                     uiHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            camera.takePicture(null, new Camera.PictureCallback() {
+                            camera.takePicture(null, null, null, new Camera.PictureCallback() {
                                 @Override
-                                public void onPictureTaken(byte[] data, Camera camera) {
+                                public void onPictureTaken(final byte[] data, Camera camera) {
+                                    AsyncTask.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            uploadImageToParse(data);
+                                        }
+                                    });
                                    activity.runOnUiThread(new Runnable() {
                                        @Override
                                        public void run() {
@@ -732,7 +740,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                        }
                                    });
                                 }
-                            }, null);
+                            });
                         }
                     }, 3000);
 //                    }
@@ -758,5 +766,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             return true;
         }
         return false;
+    }
+
+    private void uploadImageToParse(byte[] image) {
+        ParseFile imageFile = new ParseFile("image.jpg", image);
+        imageFile.saveInBackground();
+        ParseObject comment = new ParseObject(ParseTables.Comments._NAME);
+        comment.put(ParseTables.Comments.IMAGE, imageFile);
+        comment.put(ParseTables.Comments.USER, ParseUser.getCurrentUser());
+        comment.put(ParseTables.Comments.TEXT, "");
+        comment.put(ParseTables.Comments.VIDEO, currentVideo);
+        comment.saveInBackground();
     }
 }

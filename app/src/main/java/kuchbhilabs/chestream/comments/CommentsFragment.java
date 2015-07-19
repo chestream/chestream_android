@@ -28,6 +28,7 @@ import java.util.List;
 
 import kuchbhilabs.chestream.LoginActivity;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 
 /**
@@ -95,9 +96,9 @@ public class CommentsFragment extends Fragment {
                     ParseObject currentVideoObjectComment = VideoFragment.currentVideo ;
                     List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
                     ParseObject postComment = new ParseObject("Comments");
-                    postComment.put("user", pUser);
-                    postComment.put("comment", editText.getText().toString());
-                    postComment.put("video_object", currentVideoObjectComment);
+                    postComment.put(ParseTables.Comments.USER, pUser);
+                    postComment.put(ParseTables.Comments.TEXT, editText.getText().toString());
+                    postComment.put(ParseTables.Comments.VIDEO, currentVideoObjectComment);
                     commentsArrray.add(postComment);
                     currentVideoObjectComment.put("comments", commentsArrray);
                     editText.setText("");
