@@ -68,8 +68,10 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
         });
         commentsRowHolder.comment.setText(comment.getString(ParseTables.Comments.TEXT));
         ParseFile image = comment.getParseFile(ParseTables.Comments.IMAGE);
-        commentsRowHolder.commentPhoto.setImageURI(Uri.parse(image.getUrl()));
-        Log.d(TAG, "URL = " + image.getUrl());
+        if (image != null) {
+            commentsRowHolder.commentPhoto.setImageURI(Uri.parse(image.getUrl()));
+            Log.d(TAG, "URL = " + image.getUrl());
+        }
     }
 
     @Override
