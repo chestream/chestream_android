@@ -1,6 +1,10 @@
 package kuchbhilabs.chestream.comments;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.LoginActivity;
+import kuchbhilabs.chestream.NotificationReceiver;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.stream.VideoFragment;
@@ -48,6 +53,9 @@ public class CommentsFragment extends Fragment {
 //    FloatingActionButton addCommentFab;
     private static final String TAG = "CommentsFragment";
 
+    private BroadcastReceiver receiver;
+    private Activity activity;
+
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
          super.onCreateView(inflater, container, savedInstanceState);
@@ -60,6 +68,8 @@ public class CommentsFragment extends Fragment {
 //        addCommentFab=(FloatingActionButton) v.findViewById(R.id.addCommentFab);
 
         sendComment  =(ImageView) v.findViewById(R.id.send);
+
+        activity = getActivity();
 
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setHasFixedSize(true);
@@ -122,7 +132,7 @@ public class CommentsFragment extends Fragment {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId== EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     //TODO: Add a new comment to the current video
                     ParseUser pUser = ParseUser.getCurrentUser();
                     if ((pUser != null)
@@ -132,7 +142,7 @@ public class CommentsFragment extends Fragment {
                 /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
                         Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
 
-                        ParseObject currentVideoObjectComment = VideoFragment.currentVideo ;
+                        ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
                         List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
                         ParseObject postComment = new ParseObject("Comments");
                         postComment.put("user", pUser);
@@ -148,12 +158,11 @@ public class CommentsFragment extends Fragment {
                                 setUpComments();
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
-                        Intent intent= new Intent(getActivity(), LoginActivity.class);
-                        startActivity(intent);                    }
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                        startActivity(intent);
+                    }
 
                 }
 
@@ -161,7 +170,21 @@ public class CommentsFragment extends Fragment {
             }
         });
 
-
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(NotificationReceiver.ACTION_COMMENT);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "Comment photo uploaded.", Toast.LENGTH_SHORT).show();
+                        setUpComments();
+                    }
+                });
+            }
+        };
+        activity.registerReceiver(receiver, intentFilter);
 /*
         Button tempButton = (Button) v.findViewById(R.id.button_test);
         tempButton.setOnClickListener(new View.OnClickListener() {
@@ -177,32 +200,15 @@ public class CommentsFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onDestroy() {
+        activity.unregisterReceiver(receiver);
+        super.onDestroy();
+    }
+
     public static void setUpComments(){
 
         ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
-
-
-//        List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
-//        Log.d("ttt",commentsArrray.toString());
-//        commentsAdapter.updateDataSet(commentsArrray);
-//        commentsAdapter.notifyDataSetChanged();
-//        commentsCount.setText(commentsArrray.size()+ " Comments");
-
-
-
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
-//        query.orderByDescending("createdAt");
-//        query.findInBackground(new FindCallback<ParseObject>() {
-//            @Override
-//            public void done(List<ParseObject> list, ParseException e) {
-//                Log.d(TAG, "Updating comments dataset");
-//                commentsAdapter.updateDataSet(list);
-//                commentsAdapter.notifyDataSetChanged();
-//                commentsCount.setText(list.size()+ " Comments");
-//            }
-//        });
-
-
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
         query.whereEqualTo("video_object", currentVideoObjectComment);

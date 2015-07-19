@@ -52,5 +52,11 @@
         android:textSize="14sp"
         typeface:typeface="HelveticaNeue-Light"/>
 
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/comment_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxHeight="100dp"
+        android:maxWidth="100dp" />
 
 </LinearLayout>

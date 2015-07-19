@@ -54,8 +54,10 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -776,6 +778,19 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         comment.put(ParseTables.Comments.USER, ParseUser.getCurrentUser());
         comment.put(ParseTables.Comments.TEXT, "");
         comment.put(ParseTables.Comments.VIDEO, currentVideo);
-        comment.saveInBackground();
+        comment.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                ParsePush push = new ParsePush();
+                JSONObject message = new JSONObject();
+                try {
+                    message.put("messageType", "comment");
+                    push.setMessage(message.toString());
+                    push.sendInBackground();
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
     }
 }

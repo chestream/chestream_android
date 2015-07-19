@@ -12,8 +12,11 @@ import org.json.JSONObject;
 public class NotificationReceiver extends ParsePushBroadcastReceiver {
 
     private static final String TAG = "NotificationReceiver";
+
     public static final String ACTION_VOTE = "kuchbhilabs.chestream.votes";
     public static final String EXTRA_VIDEO_ID = "video_id";
+
+    public static final String ACTION_COMMENT = "kuchbhilabs.chestream.comment";
 
     @Override
     protected void onPushReceive(Context context, Intent intent) {
@@ -35,6 +38,13 @@ public class NotificationReceiver extends ParsePushBroadcastReceiver {
                     broadcast.putExtra(EXTRA_VIDEO_ID, object.getString("videoId"));
                     broadcast.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     broadcast.setAction(ACTION_VOTE);
+                    context.sendBroadcast(broadcast);
+                }
+                if (object.getString("messageType").equals("comment")) {
+                    Log.d(TAG, "Photo Uploaded");
+                    Intent broadcast = new Intent();
+                    broadcast.setAction(ACTION_COMMENT);
+                    broadcast.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     context.sendBroadcast(broadcast);
                 }
             } catch (JSONException e) {
