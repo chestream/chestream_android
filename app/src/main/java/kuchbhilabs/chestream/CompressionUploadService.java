@@ -108,9 +108,6 @@ public class CompressionUploadService extends Service {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-
-
-
                 ParseObject videos = ParseObject.create("Videos");
                 videos.put("id", videoName);
                 videos.put("title", title);
@@ -124,6 +121,8 @@ public class CompressionUploadService extends Service {
                 ParseUser currentUser = ParseUser.getCurrentUser();
                 if (currentUser != null) {
                     videos.put(ParseTables.Videos.USER, currentUser);
+                    videos.put(ParseTables.Videos.USER_USERNAME, currentUser.getString(ParseTables.Users.USERNAME));
+                    videos.put(ParseTables.Videos.USER_AVATAR, currentUser.getString(ParseTables.Users.AVATAR));
                 }
                 videos.put("video_gif","http://31.media.tumblr.com/a7d1b4cccb6f89dd745e88148e82b842/tumblr_mr4mswW7961sd35juo1_500.gif");
                 videos.saveInBackground(new SaveCallback() {
