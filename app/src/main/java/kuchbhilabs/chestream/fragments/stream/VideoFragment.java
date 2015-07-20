@@ -447,6 +447,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             currentVideo.saveInBackground();
             sendNextRequest();
             QueueFragment.updateCurrentlyPlaying();
+            uiHandler.removeCallbacksAndMessages(null);
         }
         String text = "playWhenReady=" + playWhenReady + ", playbackState=";
         switch(playbackState) {
