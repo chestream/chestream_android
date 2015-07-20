@@ -620,10 +620,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                tvideoTitle.setAlpha(1-slideOffset);
-                tusername.setAlpha(1-slideOffset);
-                tlocation.setAlpha(1-slideOffset);
-                tdraweeView.setAlpha(1-slideOffset);
+                tvideoTitle.setAlpha(1 - slideOffset);
+                tusername.setAlpha(1 - slideOffset);
+                tlocation.setAlpha(1 - slideOffset);
+                tdraweeView.setAlpha(1 - slideOffset);
             }
 
             @Override
@@ -661,11 +661,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     private void initializeCamera() {
         if (camera == null) {
-            camera = Camera.open(1);
-            camera.setDisplayOrientation(90);
-            Camera.Parameters parameters = camera.getParameters();
-            parameters.setPreviewSize(320, 240);
-            camera.setParameters(parameters);
+            try {
+                camera = Camera.open(1);
+                camera.setDisplayOrientation(90);
+                Camera.Parameters parameters = camera.getParameters();
+                parameters.setPreviewSize(320, 240);
+                camera.setParameters(parameters);
+            } catch (Exception e) {
+                e.printStackTrace();
+                camera = null;
+            }
         }
     }
 
