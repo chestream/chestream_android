@@ -5,13 +5,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -59,7 +59,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         ImageButton upVote;
         ImageButton downVote;
         TextView totalVotes;
-        CardView rootLayout;
+        FrameLayout rootLayout;
         CircularRevealView revealView;
         SimpleDraweeView draweeView,thumbnail;
 
@@ -73,7 +73,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             totalVotes = (TextView) itemView.findViewById(R.id.video_score);
             upVote = (ImageButton) itemView.findViewById(R.id.up_vote);
             downVote = (ImageButton) itemView.findViewById(R.id.down_vote);
-            rootLayout = (CardView) itemView.findViewById(R.id.root_layout);
+            rootLayout = (FrameLayout) itemView.findViewById(R.id.root_layout);
             revealView = (CircularRevealView) itemView.findViewById(R.id.reveal);
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
             thumbnail=(SimpleDraweeView) itemView.findViewById(R.id.thumbnail);

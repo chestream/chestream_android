@@ -223,9 +223,15 @@ public class QueueFragment extends Fragment {
                 SimpleSectionedRecyclerViewAdapter(getActivity(),R.layout.queue_section_header,R.id.section_text,queueVideosAdapter);
         mSectionedAdapter.setSections(sections.toArray(dummy));
 
-        upload.attachToRecyclerView(recyclerView);
-
         loadFromParse();
+
+//        Overlay overlay=new Overlay()
+//                .disableClick(false);
+//        TourGuide mTourGuideHandler = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+//                .setPointer(new Pointer())
+//                .setToolTip(new ToolTip().setTitle("Upload!").setDescription("Click here to upload your first video"))
+//                .setOverlay(overlay)
+//                .playOn(upload);
 
         return rootView;
     }
