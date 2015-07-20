@@ -89,7 +89,10 @@ public class ProfileFragment extends Fragment {
                 }
             });
         }
-
+        else{
+            username.setText("Login to view profile.");
+            profile.setImageURI(Uri.parse("http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg"));
+        }
 
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
