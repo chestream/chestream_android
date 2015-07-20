@@ -5,23 +5,40 @@
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    >
+    android:layout_height="200dp">
 
-    <LinearLayout
+    <kuchbhilabs.chestream.helpers.CircularRevealView
+        android:id="@+id/reveal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#11000000"
+        android:scaleType="centerCrop" />
+
+    <View
+        android:id="@+id/pallete"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#33000000" />
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/profile_picture"
@@ -38,125 +55,120 @@
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="10dp"
                 android:text="Username"
-                android:textColor="#000000"
-                android:textSize="15sp"
+                android:textColor="#ffffff"
+                android:textSize="13sp"
                 android:textStyle="normal"
                 typeface:typeface="HelveticaNeue-Medium" />
 
         </LinearLayout>
 
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/thumbnail"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="10dp"
-            android:background="#11000000"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp">
 
 
 
-        <LinearLayout
-            android:id="@+id/details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="130dp"
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
 
-
-            <kuchbhilabs.chestream.helpers.TypefaceTextView
-                android:id="@+id/video_title"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:paddingLeft="10dp"
-                android:text="Video Title"
-                android:textColor="#000000"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                typeface:typeface="HelveticaNeue-Medium" />
-
-            <kuchbhilabs.chestream.helpers.TypefaceTextView
-                android:id="@+id/video_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:text="Location"
-                android:textColor="#000000"
-                android:textSize="13sp"
-                typeface:typeface="HelveticaNeue-Light"
-
-
-                />
-
-        </LinearLayout>
-            <LinearLayout
-                android:id="@+id/actions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal"
-                android:paddingRight="20dp"
-                android:visibility="visible">
+                android:layout_alignParentBottom="true">
 
-                <ImageButton
-                    android:id="@+id/up_vote"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_expand_less_black_24dp" />
 
-                <kuchbhilabs.chestream.helpers.TypefaceTextView
-                    android:id="@+id/video_score"
+                <LinearLayout
+                    android:id="@+id/details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="130dp"
+                    android:orientation="vertical"
                     android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:layout_weight="1"
-                    android:text="1000"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    typeface:typeface="HelveticaNeue-Medium" />
-
-                <ImageButton
-                    android:id="@+id/down_vote"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_expand_more_black_24dp" />
-            </LinearLayout>
+                    android:paddingRight="10dp">
 
 
-        </RelativeLayout>
+                    <kuchbhilabs.chestream.helpers.TypefaceTextView
+                        android:id="@+id/video_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:paddingLeft="10dp"
+                        android:text="Video Title"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        typeface:typeface="HelveticaNeue-Medium" />
+
+                    <kuchbhilabs.chestream.helpers.TypefaceTextView
+                        android:id="@+id/video_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="Location"
+                        android:textColor="#ffffff"
+                        android:textSize="13sp"
+                        typeface:typeface="HelveticaNeue-Light"
+
+
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/actions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal"
+                    android:paddingRight="20dp"
+                    android:visibility="visible">
+
+                    <ImageButton
+                        android:id="@+id/up_vote"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_expand_less_white_24dp" />
+
+                    <kuchbhilabs.chestream.helpers.TypefaceTextView
+                        android:id="@+id/video_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="#ffffff"
+                        android:text="1000"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        typeface:typeface="HelveticaNeue-Medium" />
+
+                    <ImageButton
+                        android:id="@+id/down_vote"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_expand_more_white_24dp" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
 
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#15000000"/>
+            android:background="#15000000" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <kuchbhilabs.chestream.helpers.CircularRevealView
-        android:id="@+id/reveal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent" />
+
 </FrameLayout>
