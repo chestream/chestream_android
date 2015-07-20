@@ -22,10 +22,12 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xml.sax.helpers.ParserAdapter;
 
 import java.util.List;
 
@@ -249,6 +251,14 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         video.put(ParseTables.Videos.UPVOTE, currentVotes + 1);
         video.saveInBackground();
         notifyVotes(objectId);
+
+        //Add to parse relations
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            ParseRelation<ParseObject> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
+            relation.add(video);
+            currentUser.saveInBackground();
+        }
     }
 
     private void downvote(int position) {
@@ -257,6 +267,13 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         if (currentVotes > 0) {
             video.put(ParseTables.Videos.UPVOTE, currentVotes - 1);
             video.saveInBackground();
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            if (currentUser != null) {
+                Log.d(TAG, "Doing shit with PArse");
+                ParseRelation<ParseObject> relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
+                relation.add(video);
+                currentUser.saveInBackground();
+            }
         }
     }
 
