@@ -531,7 +531,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             }
             Log.d(TAG, "Waking up");
 
-            player.setPlayWhenReady(true);
+            if (player != null) {
+                player.setPlayWhenReady(true);
+            }
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
