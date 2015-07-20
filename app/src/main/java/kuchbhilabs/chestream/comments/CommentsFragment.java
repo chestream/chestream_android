@@ -97,14 +97,16 @@ public class CommentsFragment extends Fragment {
             public void onClick(View view) {
                 ParseUser pUser = ParseUser.getCurrentUser();
                 if ((pUser != null)
-                        && (pUser.isNew())
-//                        && (pUser.isAuthenticated())
+                        && (pUser.isAuthenticated())
                         && (pUser.getSessionToken() != null)
-                /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
+                        ){
                     Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
 
                     ParseObject currentVideoObjectComment = VideoFragment.currentVideo ;
                     List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
+                    if (commentsArrray == null) {
+                        commentsArrray = new ArrayList<>();
+                    }
                     ParseObject postComment = new ParseObject("Comments");
                     postComment.put(ParseTables.Comments.USER, pUser);
                     postComment.put(ParseTables.Comments.TEXT, editText.getText().toString());
@@ -137,9 +139,8 @@ public class CommentsFragment extends Fragment {
                     ParseUser pUser = ParseUser.getCurrentUser();
                     if ((pUser != null)
                             && (pUser.isAuthenticated())
-//                            && (pUser.isNew())
                             && (pUser.getSessionToken() != null)
-                /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
+                            ){
                         Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
 
                         ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
