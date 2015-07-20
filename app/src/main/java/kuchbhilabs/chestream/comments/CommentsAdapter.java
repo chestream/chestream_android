@@ -51,6 +51,8 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
     @Override
     public void onBindViewHolder(final CommentsRowHolder commentsRowHolder, int i) {
         ParseObject comment = commentsList.get(i);
+        commentsRowHolder.commentPhoto.setImageURI(null);
+        commentsRowHolder.comment.setText("");
         comment.getParseUser(ParseTables.Comments.USER).fetchIfNeededInBackground(new GetCallback<ParseUser>() {
             @Override
             public void done(ParseUser user, ParseException e) {
@@ -92,7 +94,6 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
             commentPhoto = (SimpleDraweeView) view.findViewById(R.id.comment_photo);
 
             view.setOnClickListener(this);
-
         }
 
         @Override
