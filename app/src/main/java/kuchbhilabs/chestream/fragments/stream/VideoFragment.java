@@ -71,10 +71,6 @@ import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
-import tourguide.tourguide.Overlay;
-import tourguide.tourguide.Pointer;
-import tourguide.tourguide.ToolTip;
-import tourguide.tourguide.TourGuide;
 
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
