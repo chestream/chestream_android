@@ -43,6 +43,7 @@ public class ProfileFragment extends Fragment {
     RecyclerView recyclerView;
     MyVideosAdapter adapter;
     TextView username ;
+    ParseUser pUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,9 +58,42 @@ public class ProfileFragment extends Fragment {
         username=(TextView) rootView.findViewById(R.id.username);
         gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
 
-        ParseUser parseUser = ParseUser.getCurrentUser() ;
-        username.setText(parseUser.getUsername());
-        profile.setImageURI(Uri.parse(parseUser.getString("avatar")));
+        pUser = ParseUser.getCurrentUser() ;
+
+        if ((pUser != null)
+                && (pUser.isAuthenticated())
+                && (pUser.getSessionToken() != null)
+                && (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))) {
+
+            username.setText(pUser.getUsername());
+            profile.setImageURI(Uri.parse(pUser.getString("avatar")));
+
+            ParseQuery<ParseVideo> query = ParseQuery.getQuery(ParseVideo.class);
+            query.orderByDescending(ParseTables.Videos.UPVOTE);
+            query.whereEqualTo(ParseTables.Videos.COMPILED, true);
+            query.whereEqualTo("user", pUser);
+            query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+            query.findInBackground(new FindCallback<ParseVideo>() {
+                @Override
+                public void done(List<ParseVideo> parseObjects, ParseException e) {
+                    if(parseObjects.isEmpty())
+                    {
+                        Log.d(TAG, "Empty");
+                    }
+                    else {
+                        adapter = new MyVideosAdapter(getActivity(), new ArrayList<ParseVideo>());
+                        adapter.updateDataSet(parseObjects);
+                        adapter.notifyDataSetChanged();
+                        recyclerView.setAdapter(adapter);
+                    }
+                }
+            });
+        }
+        else{
+            username.setText("Login to view profile.");
+            profile.setImageURI(Uri.parse("http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg"));
+        }
+
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Profile");
@@ -67,27 +101,6 @@ public class ProfileFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
-
-        ParseQuery<ParseVideo> query = ParseQuery.getQuery(ParseVideo.class);
-        query.orderByDescending(ParseTables.Videos.UPVOTE);
-        query.whereEqualTo(ParseTables.Videos.COMPILED, true);
-        query.whereEqualTo("user", parseUser);
-        query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
-        query.findInBackground(new FindCallback<ParseVideo>() {
-            @Override
-            public void done(List<ParseVideo> parseObjects, ParseException e) {
-                if(parseObjects.isEmpty())
-                {
-                    Log.d(TAG, "Empty");
-                }
-                else {
-                    adapter = new MyVideosAdapter(getActivity(), new ArrayList<ParseVideo>());
-                    adapter.updateDataSet(parseObjects);
-                    adapter.notifyDataSetChanged();
-                    recyclerView.setAdapter(adapter);
-                }
-            }
-        });
 
         return rootView;
     }
