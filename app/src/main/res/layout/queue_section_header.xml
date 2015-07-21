@@ -4,7 +4,7 @@
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
     <!--<View-->
         <!--android:layout_width="20dp"-->
@@ -16,25 +16,28 @@
 
 <kuchbhilabs.chestream.helpers.TypefaceTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="48dp"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:paddingLeft="10dp"
+    android:layout_marginTop="5dp"
     android:singleLine="true"
     android:textAllCaps="true"
-    android:textColor="#000000"
+    android:textColor="#ffffff"
     android:background="@android:color/transparent"
     android:textSize="13sp"
     android:id="@+id/section_text"
     android:textStyle="bold"
     typeface:typeface="HelveticaNeue-Medium"/>
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@android:color/holo_blue_dark"-->
-        <!--android:layout_gravity="center_vertical"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="20dp"-->
-        <!--/>-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ffffff"
+        android:layout_gravity="left"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="8dp"
+        />
 
 </LinearLayout>

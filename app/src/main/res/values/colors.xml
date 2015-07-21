@@ -2,8 +2,9 @@
 <resources>
 
     <color name="colorPrimary">#FF9800</color>
-    <color name="colorPrimaryDark">#F57C00</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF9800</color>
+
 
     <integer-array name="gplus_colors">
         <item>@color/gplus_color_1</item>

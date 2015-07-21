@@ -102,8 +102,8 @@ public class QueueFragment extends Fragment {
         toolbar=(Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Stream");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(5);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
+
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(NotificationReceiver.ACTION_VOTE);

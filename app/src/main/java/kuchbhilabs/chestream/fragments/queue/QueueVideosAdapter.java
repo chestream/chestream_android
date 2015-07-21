@@ -2,7 +2,11 @@ package kuchbhilabs.chestream.fragments.queue;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.graphics.ColorUtils;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +20,10 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -57,6 +65,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         TextView totalVotes;
         FrameLayout rootLayout;
         SimpleDraweeView draweeView,thumbnail;
+        View palette;
 
         QVHolder(final View itemView) {
             super(itemView);
@@ -71,6 +80,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             rootLayout = (FrameLayout) itemView.findViewById(R.id.root_layout);
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
             thumbnail=(SimpleDraweeView) itemView.findViewById(R.id.thumbnail);
+            palette=(View) itemView.findViewById(R.id.pallete);
         }
     }
 
@@ -126,8 +136,23 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         ParseUser user = video.getParseUser(ParseTables.Videos.USER);
         holder.username.setText(video.getString(ParseTables.Videos.USER_USERNAME));
         try {
+            ImageLoader.getInstance().displayImage(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL), holder.thumbnail,
+                    new DisplayImageOptions.Builder().cacheInMemory(true)
+                            .cacheOnDisk(false)
+
+                            .resetViewBeforeLoading(true)
+                            .displayer(new FadeInBitmapDisplayer(400))
+                            .build(),new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            Palette palette=Palette.generate(loadedImage);
+                            int color=palette.getDarkVibrantColor(Color.parseColor("33ffffff"));
+                            holder.palette.setBackgroundColor(ColorUtils.setAlphaComponent(color, 90));
+
+                        }
+                    });
             holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
-            holder.thumbnail.setImageURI(Uri.parse(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
+//            holder.thumbnail.setImageURI(Uri.parse(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

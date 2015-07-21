@@ -5,7 +5,8 @@
     xmlns:typeface="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:layout_height="200dp">
+    android:layout_height="200dp"
+    android:layout_marginBottom="10dp">
 
 
     <com.facebook.drawee.view.SimpleDraweeView
@@ -19,13 +20,14 @@
         android:id="@+id/pallete"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#33000000" />
+        android:background="#33ffffff" />
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/gradient">
 
 
         <LinearLayout
