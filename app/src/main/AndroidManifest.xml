@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="kuchbhilabs.chestream" >
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -35,6 +36,7 @@
         android:required="true" />
 
     <application
+        tools:replace="android:icon"
         android:allowBackup="true"
         android:name="kuchbhilabs.chestream.ApplicationBase"
         android:icon="@mipmap/ic_launcher"

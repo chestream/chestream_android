@@ -2,16 +2,14 @@ package kuchbhilabs.chestream.fragments.queue;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -31,8 +29,6 @@ import java.util.List;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.helpers.CircularRevealView;
-import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.parse.ParseVideo;
 
 
@@ -59,8 +55,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         ImageButton upVote;
         ImageButton downVote;
         TextView totalVotes;
-        CardView rootLayout;
-        CircularRevealView revealView;
+        FrameLayout rootLayout;
         SimpleDraweeView draweeView,thumbnail;
 
         QVHolder(final View itemView) {
@@ -73,8 +68,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             totalVotes = (TextView) itemView.findViewById(R.id.video_score);
             upVote = (ImageButton) itemView.findViewById(R.id.up_vote);
             downVote = (ImageButton) itemView.findViewById(R.id.down_vote);
-            rootLayout = (CardView) itemView.findViewById(R.id.root_layout);
-            revealView = (CircularRevealView) itemView.findViewById(R.id.reveal);
+            rootLayout = (FrameLayout) itemView.findViewById(R.id.root_layout);
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
             thumbnail=(SimpleDraweeView) itemView.findViewById(R.id.thumbnail);
         }
@@ -151,10 +145,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     holder.totalVotes.setText(votes + "");
                     //  holder.upVote.getBackground().setAlpha(165);
                     //  holder.downVote.getBackground().setAlpha(65);
-                    final int color = Color.parseColor("#00bcd4");
-                    final Point p = Helper.getLocationInView(holder.revealView, v);
-
-                    holder.revealView.reveal(p.x, p.y, color, v.getHeight() / 10, 440, null);
                     upvote(position);
                 } else {
                 }
@@ -166,9 +156,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 int votes = total_votes[0] - 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
                     holder.totalVotes.setText(votes + "");
-                    final int color = Color.TRANSPARENT;
-                    final Point p = Helper.getLocationInView(holder.revealView, v);
-                    holder.revealView.hide(p.x, p.y, color, v.getHeight() / 20, 440, null);
                     downvote(position);
                 } else {
                 }

@@ -223,8 +223,6 @@ public class QueueFragment extends Fragment {
                 SimpleSectionedRecyclerViewAdapter(getActivity(),R.layout.queue_section_header,R.id.section_text,queueVideosAdapter);
         mSectionedAdapter.setSections(sections.toArray(dummy));
 
-        upload.attachToRecyclerView(recyclerView);
-
         loadFromParse();
 
         return rootView;
