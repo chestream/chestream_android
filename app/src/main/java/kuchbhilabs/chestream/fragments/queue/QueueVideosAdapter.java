@@ -2,22 +2,29 @@ package kuchbhilabs.chestream.fragments.queue;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
-import android.support.v7.widget.CardView;
+import android.support.v4.graphics.ColorUtils;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -33,8 +40,6 @@ import java.util.List;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.helpers.CircularRevealView;
-import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.parse.ParseVideo;
 
 
@@ -61,9 +66,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         ImageButton upVote;
         ImageButton downVote;
         TextView totalVotes;
-        CardView rootLayout;
-        CircularRevealView revealView;
+        FrameLayout rootLayout;
         SimpleDraweeView draweeView,thumbnail;
+        View palette;
 
         QVHolder(final View itemView) {
             super(itemView);
@@ -75,10 +80,10 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             totalVotes = (TextView) itemView.findViewById(R.id.video_score);
             upVote = (ImageButton) itemView.findViewById(R.id.up_vote);
             downVote = (ImageButton) itemView.findViewById(R.id.down_vote);
-            rootLayout = (CardView) itemView.findViewById(R.id.root_layout);
-            revealView = (CircularRevealView) itemView.findViewById(R.id.reveal);
+            rootLayout = (FrameLayout) itemView.findViewById(R.id.root_layout);
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
             thumbnail=(SimpleDraweeView) itemView.findViewById(R.id.thumbnail);
+            palette=(View) itemView.findViewById(R.id.pallete);
         }
     }
 
@@ -134,8 +139,23 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         ParseUser user = video.getParseUser(ParseTables.Videos.USER);
         holder.username.setText(video.getString(ParseTables.Videos.USER_USERNAME));
         try {
+            ImageLoader.getInstance().displayImage(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL), holder.thumbnail,
+                    new DisplayImageOptions.Builder().cacheInMemory(true)
+                            .cacheOnDisk(false)
+
+                            .resetViewBeforeLoading(true)
+                            .displayer(new FadeInBitmapDisplayer(400))
+                            .build(),new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            Palette palette=Palette.generate(loadedImage);
+                            int color=palette.getDarkVibrantColor(Color.parseColor("33ffffff"));
+                            holder.palette.setBackgroundColor(ColorUtils.setAlphaComponent(color, 90));
+
+                        }
+                    });
             holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
-            holder.thumbnail.setImageURI(Uri.parse(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
+//            holder.thumbnail.setImageURI(Uri.parse(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -148,15 +168,14 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.upVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.pop_out));
                 int votes = total_votes[0] + 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
+                    holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(context,R.anim.pop_out));
                     holder.totalVotes.setText(votes + "");
+
                     //  holder.upVote.getBackground().setAlpha(165);
                     //  holder.downVote.getBackground().setAlpha(65);
-                    final int color = Color.parseColor("#00bcd4");
-                    final Point p = Helper.getLocationInView(holder.revealView, v);
-
-                    holder.revealView.reveal(p.x, p.y, color, v.getHeight() / 10, 440, null);
                     upvote(position);
                 } else {
                 }
@@ -165,12 +184,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.downVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.pop_out));
                 int votes = total_votes[0] - 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
+                    holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(context,R.anim.pop_out));
                     holder.totalVotes.setText(votes + "");
-                    final int color = Color.TRANSPARENT;
-                    final Point p = Helper.getLocationInView(holder.revealView, v);
-                    holder.revealView.hide(p.x, p.y, color, v.getHeight() / 20, 440, null);
                     downvote(position);
                 } else {
                 }
