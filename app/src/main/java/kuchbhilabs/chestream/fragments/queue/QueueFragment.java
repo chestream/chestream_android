@@ -225,14 +225,6 @@ public class QueueFragment extends Fragment {
 
         loadFromParse();
 
-//        Overlay overlay=new Overlay()
-//                .disableClick(false);
-//        TourGuide mTourGuideHandler = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
-//                .setPointer(new Pointer())
-//                .setToolTip(new ToolTip().setTitle("Upload!").setDescription("Click here to upload your first video"))
-//                .setOverlay(overlay)
-//                .playOn(upload);
-
         return rootView;
     }
 

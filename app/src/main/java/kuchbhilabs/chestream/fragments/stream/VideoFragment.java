@@ -207,14 +207,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
         exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
-//        Overlay overlay=new Overlay()
-//                .disableClick(false);
-//        TourGuide mTourGuideHandler = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
-//                .setPointer(new Pointer())
-//                .setToolTip(new ToolTip().setTitle("Welcome!").setDescription("Click on Get Started to begin..."))
-//                .setOverlay(overlay)
-//                .playOn(tdraweeView);
-
         return rootView;
     }
 
