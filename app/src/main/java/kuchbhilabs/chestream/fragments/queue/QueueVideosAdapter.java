@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -165,9 +166,12 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.upVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.pop_out));
                 int votes = total_votes[0] + 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
+                    holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(context,R.anim.pop_out));
                     holder.totalVotes.setText(votes + "");
+
                     //  holder.upVote.getBackground().setAlpha(165);
                     //  holder.downVote.getBackground().setAlpha(65);
                     upvote(position);
@@ -178,8 +182,10 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.downVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.pop_out));
                 int votes = total_votes[0] - 1;
                 if (Math.abs(total_votes[0] - votes) == 1) {
+                    holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(context,R.anim.pop_out));
                     holder.totalVotes.setText(votes + "");
                     downvote(position);
                 } else {
