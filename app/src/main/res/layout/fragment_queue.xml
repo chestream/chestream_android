@@ -35,13 +35,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         fab:fab_colorNormal="#FF9800"
-        fab:fab_colorPressed="@color/colorPrimaryDark"
+        fab:fab_colorPressed="@color/colorAccent"
         fab:fab_colorRipple="@color/colorAccent"
-
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:src="@drawable/ic_video_upload"
+        android:src="@drawable/ic_videocam_white_24dp"
         android:scaleType="centerInside"
         />
 
@@ -49,7 +48,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#CC000000"
+            android:background="#B3000000"
             android:elevation="5dp"
             android:layout_gravity="top"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -64,6 +63,13 @@
                 android:textSize="18sp"
                 android:layout_gravity="center"
                 android:id="@+id/toolbar_title" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_gravity="right|center_vertical"
+                android:src="@drawable/ic_add_white_24dp"/>
 
         </android.support.v7.widget.Toolbar>
 
