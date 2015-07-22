@@ -653,15 +653,46 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         if (camera == null) {
             try {
                 camera = Camera.open(1);
+                Log.d(TAG, "OPENING THE CAMERA");
                 camera.setDisplayOrientation(90);
                 Camera.Parameters parameters = camera.getParameters();
-                parameters.setPreviewSize(320, 240);
+//                parameters.setPreviewSize(320, 240);
+                setPreviewSize(parameters, 320);
                 camera.setParameters(parameters);
             } catch (Exception e) {
                 e.printStackTrace();
                 camera = null;
             }
         }
+    }
+
+    private void setPreviewSize(Camera.Parameters parameters, int expectedWidth) {
+        List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
+        Log.d(TAG, "======Preview Sizes======");
+        int minDiff = 100000000;
+        Camera.Size minSize = null;
+        for (Camera.Size size : sizes) {
+            Log.d(TAG, size.width + "x" + size.height);
+            if (minDiff > Math.abs(expectedWidth - size.width)) {
+                minDiff = Math.abs(expectedWidth - size.width);
+                minSize = size;
+            }
+        }
+        Log.d(TAG, "choosing " + minSize.width + "x" + minSize.height);
+        parameters.setPreviewSize(minSize.width, minSize.height);
+
+        sizes = parameters.getSupportedPictureSizes();
+        minDiff = 100000000;
+        Log.d(TAG, "=====PICTURE SIZES=====");
+        for (Camera.Size size : sizes) {
+            Log.d(TAG, size.width + "x" + size.height);
+            if (minDiff > Math.abs(expectedWidth - size.width)) {
+                minDiff = Math.abs(expectedWidth - size.width);
+                minSize = size;
+            }
+        }
+        Log.d(TAG, "choosing " + minSize.width + "x" + minSize.height);
+        parameters.setPictureSize(minSize.width, minSize.height);
     }
 
     private void finalizeCamera() {
@@ -707,49 +738,27 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                 fingerDownX = e.getX();
                 fingerDownY = e.getY();
                 fingerDown = true;
-                uiHandler.postDelayed(new Runnable() {
+                AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-//                    if (fingerDown) {
-                        camera.startPreview();
-                        cameraPreview.setVisibility(View.VISIBLE);
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(activity, "Capturing the photo in 3 secs", Toast.LENGTH_SHORT).show();
+                        while (camera == null) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
                             }
-                        });
-                        uiHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                camera.takePicture(null, null, null, new Camera.PictureCallback() {
-                                    @Override
-                                    public void onPictureTaken(final byte[] data, Camera camera) {
-                                        AsyncTask.execute(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                uploadImageToParse(data);
-                                            }
-                                        });
-                                        activity.runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(activity, "Uploading photo!", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }, 3000);
-//                    }
+                        }
+                        uiHandler.postDelayed(startPreview, 1000);
                     }
-                }, 1000);
+                });
                 return true;
             }
             if (e.getAction() == MotionEvent.ACTION_UP) {
                 fingerDown = false;
                 Log.d(TAG, "Finger up");
-                camera.stopPreview();
+                if (camera != null) {
+                    camera.stopPreview();
+                }
                 cameraPreview.setVisibility(View.GONE);
                 uiHandler.removeCallbacksAndMessages(null);
             }
@@ -765,6 +774,42 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             }
         }
         return false;
+    }
+
+    private Runnable startPreview = new Runnable(){
+        @Override
+        public void run() {
+            camera.startPreview();
+            cameraPreview.setVisibility(View.VISIBLE);
+            Toast.makeText(activity, "Capturing the photo in 3 secs", Toast.LENGTH_SHORT).show();
+            uiHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    camera.takePicture(null, null, null, new Camera.PictureCallback() {
+                        @Override
+                        public void onPictureTaken(final byte[] data, Camera camera) {
+                            VideoFragment.this.onPictureTaken(data, camera);
+                        }
+                    });
+                }
+            }, 3000);
+        }
+    };
+
+    private void onPictureTaken(final byte[] data, Camera camera) {
+        Log.d(TAG, "Number of pixels = " + data.length);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                uploadImageToParse(data);
+            }
+        });
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(activity, "Uploading photo!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void uploadImageToParse(byte[] image) {

@@ -376,6 +376,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             case -1:
                 upVote.setImageResource(R.drawable.ic_expand_less_white_24dp);
                 downVote.setImageResource(R.drawable.ic_expand_more_yellow_24dp);
+                break;
         }
     }
 
