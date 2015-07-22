@@ -45,6 +45,7 @@ import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
+import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
@@ -101,6 +102,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
 
+    AspectRatioFrameLayout videoFrame;
     SurfaceView surfaceView;
     SurfaceHolder holder;
     private static TextView commentFloating;
@@ -196,6 +198,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         CommentsFragment commentsFragment = new CommentsFragment();
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
 
+        videoFrame = (AspectRatioFrameLayout) rootView.findViewById(R.id.video_frame);
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
         holder.addCallback(this);
@@ -462,16 +465,23 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     }
 
     @Override
-    public void onVideoSizeChanged(int width, int height, float pixelWidthAspectRatio) {
+    public void onVideoSizeChanged(final int width, final int height, final float pixelWidthAspectRatio) {
 //        shutterView.setVisibility(View.GONE);
 //        surfaceView.setVideoWidthHeightRatio(
 //                height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
         Log.d(TAG, "width = " + width + " height = " + height);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                videoFrame.setAspectRatio(
+                        height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
+            }
+        });
     }
 
     public DemoPlayer.RendererBuilder getRendererBuilder() {
         String userAgent = Util.getUserAgent(activity, "ExoPlayerDemo");
-        return new HlsRendererBuilder(activity, userAgent, url, null, audioCapabilities);
+        return new HlsRendererBuilder(activity, userAgent, url, audioCapabilities);
     }
 
     private void preparePlayer() {
@@ -480,7 +490,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         if (player == null) {
             player = new DemoPlayer(getRendererBuilder());
             player.addListener(this);
-            player.setTextListener(null);
             player.setMetadataListener(null);
             player.seekTo(playerPosition);
             playerNeedsPrepare = true;
