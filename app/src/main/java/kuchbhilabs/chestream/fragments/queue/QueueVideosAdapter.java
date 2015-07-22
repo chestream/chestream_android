@@ -2,7 +2,6 @@ package kuchbhilabs.chestream.fragments.queue;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -27,19 +26,16 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
-import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
@@ -198,6 +194,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             @Override
             public void onClick(View v) {
                 int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
+                v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
+                holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
                 if (video.isVoted == 1) {
                     holder.totalVotes.setText(String.valueOf(currentVotes - 1));
                     video.isVoted = 0;
@@ -218,6 +216,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             @Override
             public void onClick(View v) {
                 int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
+                v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
+                holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
                 if (video.isVoted == 1) {
                     holder.totalVotes.setText(String.valueOf(currentVotes - 2));
                     video.isVoted = -1;
