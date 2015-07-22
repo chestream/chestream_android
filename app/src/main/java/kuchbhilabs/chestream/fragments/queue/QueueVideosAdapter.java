@@ -1,5 +1,6 @@
 package kuchbhilabs.chestream.fragments.queue;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -58,7 +59,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     AlertDialog.Builder builder;
     AlertDialog dialog;
-    Context context;
+    Activity activity;
 
     private static final String BLANK_AVATAR = "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
 
@@ -66,6 +67,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     private List<ParseVideo> downVotedVideos;
 
     ParseUser currentUser;
+
+    Handler handler;
 
     public static class QVHolder extends RecyclerView.ViewHolder {
         TextView videoTitle;
@@ -95,9 +98,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     }
 
 
-    public QueueVideosAdapter(Context context, final List<ParseVideo> videos) {
+    public QueueVideosAdapter(Activity activity, final List<ParseVideo> videos) {
         this.videos = videos;
-        this.context = context;
+        this.activity = activity;
         currentUser = ParseUser.getCurrentUser();
         ParseRelation<ParseVideo> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
         try {
@@ -107,6 +110,12 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                handler = new Handler();
+            }
+        });
     }
 
     public void updateDataSet(List<ParseVideo> list) {
@@ -227,7 +236,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             }
         });
 
-        final Handler handler = new Handler();
         final Runnable mLongPressed = new Runnable() {
             public void run() {
                 Log.i("", "Long press!");
