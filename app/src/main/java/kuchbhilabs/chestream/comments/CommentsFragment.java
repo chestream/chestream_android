@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -48,6 +50,7 @@ public class CommentsFragment extends Fragment {
 
     static CommentsAdapter commentsAdapter;
     ImageView sendComment;
+    SimpleDraweeView avatar;
     static TextView commentsLoading;
     View addCommentsFooter;
 //    FloatingActionButton addCommentFab;
@@ -55,6 +58,7 @@ public class CommentsFragment extends Fragment {
 
     private BroadcastReceiver receiver;
     private Activity activity;
+    ParseUser pUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class CommentsFragment extends Fragment {
         editText=(EditText) v.findViewById(R.id.commentEditText);
         commentsLoading=(TextView) v.findViewById(R.id.commentsLoading);
         addCommentsFooter=v.findViewById(R.id.addCommentFooter);
+        avatar=(SimpleDraweeView) v.findViewById(R.id.avatar);
 //        addCommentFab=(FloatingActionButton) v.findViewById(R.id.addCommentFab);
 
         sendComment  =(ImageView) v.findViewById(R.id.send);
@@ -79,23 +84,21 @@ public class CommentsFragment extends Fragment {
         commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<ParseObject>());
         recyclerView.setAdapter(commentsAdapter);
 
-//        addCommentFab.attachToRecyclerView(recyclerView);
+       pUser = ParseUser.getCurrentUser() ;
 
-//        int footerHeight = 30;
-//
-//        QuickReturnRecyclerViewOnScrollListener scrollListener = new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.FOOTER)
-//                .footer(addCommentsFooter)
-//                .minFooterTranslation(footerHeight)
-//                .isSnappable(true)
-//                .build();
-//        recyclerView.setOnScrollListener(scrollListener);
+        if ((pUser != null)
+                && (pUser.isAuthenticated())
+                && (pUser.getSessionToken() != null)
+                && (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))) {
+            avatar.setImageURI(Uri.parse(pUser.getString("avatar")));
+        } else {
+            avatar.setImageURI(Uri.parse("http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg"));
+        }
 
-//        setUpComments();
 
         sendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ParseUser pUser = ParseUser.getCurrentUser();
                 if ((pUser != null)
                         && (pUser.isAuthenticated())
                         && (pUser.getSessionToken() != null)

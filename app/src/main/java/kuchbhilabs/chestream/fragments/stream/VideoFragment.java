@@ -186,13 +186,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         sendNextRequest();
 
         slidingUpPanelLayout = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
-       // slidingUpPanelLayout2 = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout2);
         slidingUpPanelLayout.setOverlayed(true);
         slidingUpPanelLayout.setEnableDragViewTouchEvents(true);
-
-
-//        slidingUpPanelLayout2.setOverlayed(true);
-//        slidingUpPanelLayout2.setEnableDragViewTouchEvents(true);
 
         setPanelSlideListeners();
 
@@ -335,15 +330,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                 Uri uri = Uri.parse(avatar);
                 tdraweeView.setImageURI(uri);
                 tdraweeViewComments.setImageURI(uri);
-//                slidingUpPanelLayout2.expandPanel();
-//                slidingUpPanelLayout2.setPanelHeight(75);
-//                Handler handlerCollapse=new Handler();
-//                handlerCollapse.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        slidingUpPanelLayout2.collapsePanel();
-//                    }
-//                },5000);
             }
         });
     }
@@ -715,65 +701,67 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     @Override
     public boolean onTouch(View v, MotionEvent e) {
         Log.d(TAG, "onTouch");
-        if (e.getAction() == MotionEvent.ACTION_DOWN) {
-            fingerDownX = e.getX();
-            fingerDownY = e.getY();
-            fingerDown = true;
-            uiHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+        if (currentVideo!=null) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                fingerDownX = e.getX();
+                fingerDownY = e.getY();
+                fingerDown = true;
+                uiHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 //                    if (fingerDown) {
                         camera.startPreview();
                         cameraPreview.setVisibility(View.VISIBLE);
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, "Capturing the photo in 3 secs", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    uiHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            camera.takePicture(null, null, null, new Camera.PictureCallback() {
-                                @Override
-                                public void onPictureTaken(final byte[] data, Camera camera) {
-                                    AsyncTask.execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            uploadImageToParse(data);
-                                        }
-                                    });
-                                   activity.runOnUiThread(new Runnable() {
-                                       @Override
-                                       public void run() {
-                                           Toast.makeText(activity, "Uploading photo!", Toast.LENGTH_SHORT).show();
-                                       }
-                                   });
-                                }
-                            });
-                        }
-                    }, 3000);
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(activity, "Capturing the photo in 3 secs", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        uiHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                camera.takePicture(null, null, null, new Camera.PictureCallback() {
+                                    @Override
+                                    public void onPictureTaken(final byte[] data, Camera camera) {
+                                        AsyncTask.execute(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                uploadImageToParse(data);
+                                            }
+                                        });
+                                        activity.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(activity, "Uploading photo!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }, 3000);
 //                    }
-                }
-            }, 1000);
-            return true;
-        }
-        if (e.getAction() == MotionEvent.ACTION_UP) {
-            fingerDown = false;
-            Log.d(TAG, "Finger up");
-            camera.stopPreview();
-            cameraPreview.setVisibility(View.GONE);
-            uiHandler.removeCallbacksAndMessages(null);
-        }
-        if (e.getAction() == MotionEvent.ACTION_MOVE) {
-            //TODO: we're not receiving ACTION_MOVE. Move this logic somewhere else
-            Log.d(TAG, "gap x = " + Math.abs(e.getX() - fingerDownX));
-            Log.d(TAG, "gap y = " + Math.abs(e.getY() - fingerDownY));
-            if (Math.abs(e.getX() - fingerDownX) > 20 || Math.abs(e.getY() - fingerDownY) > 20) {
-                //It's a swipe. Fall back.
+                    }
+                }, 1000);
+                return true;
+            }
+            if (e.getAction() == MotionEvent.ACTION_UP) {
+                fingerDown = false;
+                Log.d(TAG, "Finger up");
+                camera.stopPreview();
+                cameraPreview.setVisibility(View.GONE);
                 uiHandler.removeCallbacksAndMessages(null);
             }
-            return true;
+            if (e.getAction() == MotionEvent.ACTION_MOVE) {
+                //TODO: we're not receiving ACTION_MOVE. Move this logic somewhere else
+                Log.d(TAG, "gap x = " + Math.abs(e.getX() - fingerDownX));
+                Log.d(TAG, "gap y = " + Math.abs(e.getY() - fingerDownY));
+                if (Math.abs(e.getX() - fingerDownX) > 20 || Math.abs(e.getY() - fingerDownY) > 20) {
+                    //It's a swipe. Fall back.
+                    uiHandler.removeCallbacksAndMessages(null);
+                }
+                return true;
+            }
         }
         return false;
     }
