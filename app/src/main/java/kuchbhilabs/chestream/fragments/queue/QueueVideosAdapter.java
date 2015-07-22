@@ -1,10 +1,12 @@
 package kuchbhilabs.chestream.fragments.queue;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +39,7 @@ import com.parse.ParseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
@@ -55,10 +58,16 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     AlertDialog.Builder builder;
     AlertDialog dialog;
-    Context context;
-
+    Activity activity;
 
     private static final String BLANK_AVATAR = "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
+
+    private List<ParseVideo> upVotedVideos;
+    private List<ParseVideo> downVotedVideos;
+
+    ParseUser currentUser;
+
+    Handler handler;
 
     public static class QVHolder extends RecyclerView.ViewHolder {
         TextView videoTitle;
@@ -88,9 +97,24 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     }
 
 
-    public QueueVideosAdapter(Context context, final List<ParseVideo> videos) {
+    public QueueVideosAdapter(Activity activity, final List<ParseVideo> videos) {
         this.videos = videos;
-        this.context = context;
+        this.activity = activity;
+        currentUser = ParseUser.getCurrentUser();
+        ParseRelation<ParseVideo> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
+        try {
+            upVotedVideos = relation.getQuery().find();
+            relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
+            downVotedVideos = relation.getQuery().find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                handler = new Handler();
+            }
+        });
     }
 
     public void updateDataSet(List<ParseVideo> list) {
@@ -128,15 +152,15 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     @Override
     public void onBindViewHolder(final QVHolder holder, final int position) {
 
-        final ParseObject video = videos.get(position);
+        final ParseVideo video = videos.get(position);
+        Log.d(TAG, "Video voting = " + video.isVoted);
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
 
-        ParseUser user = video.getParseUser(ParseTables.Videos.USER);
         holder.username.setText(video.getString(ParseTables.Videos.USER_USERNAME));
         try {
             ImageLoader.getInstance().displayImage(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL), holder.thumbnail,
                     new DisplayImageOptions.Builder().cacheInMemory(true)
-                            .cacheOnDisk(false)
+                            .cacheOnDisk(true)
 
                             .resetViewBeforeLoading(true)
                             .displayer(new FadeInBitmapDisplayer(400))
@@ -158,75 +182,59 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
 
-        user.fetchIfNeededInBackground(new GetCallback<ParseUser>() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                ParseRelation upVoteRelation = user.getRelation(ParseTables.Users.UPVOTED);
-                ParseRelation downVoteRelation = user.getRelation(ParseTables.Users.DOWNVOTED);
-                ParseQuery upVoteQuery = upVoteRelation.getQuery();
-                upVoteQuery.whereEqualTo("objectId", video.getObjectId());
-                upVoteQuery.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> list, ParseException e) {
-                        if (e != null) {
-                            e.printStackTrace();
-                            return;
-                        }
-                        if (list.size() > 0) {
-                            Log.d(TAG, "The user has upvoted the video already");
-                        }
-                    }
-                });
-
-                ParseQuery downVotedQuery = downVoteRelation.getQuery();
-                downVotedQuery.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> list, ParseException e) {
-                        if (e != null) {
-                            e.printStackTrace();
-                            return;
-                        }
-                        if (list.size() > 0) {
-                            Log.d(TAG, "user has already downvoted this video");
-                        }
-                    }
-                });
+        if (video.isVoted == -2) {
+            Log.d(TAG, "searching for the first time");
+            if (upVotedVideos.contains(video)) {
+                video.isVoted = 1;
+            } else if (downVotedVideos.contains(video)) {
+                video.isVoted = -1;
+            } else {
+                video.isVoted = 0;
             }
-        });
+        }
+        setVoteButtons(video.isVoted, holder.upVote, holder.downVote);
 
-        final int[] total_votes = {Integer.parseInt(holder.totalVotes.getText().toString())};
-
-        holder.upVote.setOnClickListener(new View.OnClickListener() {
+        holder.upVote.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.pop_out));
-                int votes = total_votes[0] + 1;
-                if (Math.abs(total_votes[0] - votes) == 1) {
-                    holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(context,R.anim.pop_out));
-                    holder.totalVotes.setText(votes + "");
-
-                    //  holder.upVote.getBackground().setAlpha(165);
-                    //  holder.downVote.getBackground().setAlpha(65);
-                    upvote(position);
+                int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
+                if (video.isVoted == 1) {
+                    holder.totalVotes.setText(String.valueOf(currentVotes - 1));
+                    video.isVoted = 0;
+                    downvote(position, 1);
+                } else if (video.isVoted == -1) {
+                    holder.totalVotes.setText(String.valueOf(currentVotes + 2));
+                    video.isVoted = 1;
+                    upvote(position, 2);
                 } else {
+                    holder.totalVotes.setText(String.valueOf(currentVotes + 1));
+                    video.isVoted = 1;
+                    upvote(position, 1);
                 }
+                setVoteButtons(video.isVoted, holder.upVote, holder.downVote);
             }
         });
         holder.downVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.pop_out));
-                int votes = total_votes[0] - 1;
-                if (Math.abs(total_votes[0] - votes) == 1) {
-                    holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(context,R.anim.pop_out));
-                    holder.totalVotes.setText(votes + "");
-                    downvote(position);
+                int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
+                if (video.isVoted == 1) {
+                    holder.totalVotes.setText(String.valueOf(currentVotes - 2));
+                    video.isVoted = -1;
+                    downvote(position, 2);
+                } else if (video.isVoted == -1) {
+                    holder.totalVotes.setText(String.valueOf(currentVotes + 1));
+                    video.isVoted = 0;
+                    upvote(position, 1);
                 } else {
+                    holder.totalVotes.setText(String.valueOf(currentVotes - 1));
+                    video.isVoted = -1;
+                    downvote(position, 1);
                 }
+                setVoteButtons(video.isVoted, holder.upVote, holder.downVote);
             }
         });
 
-        final android.os.Handler handler = new android.os.Handler();
         final Runnable mLongPressed = new Runnable() {
             public void run() {
                 Log.i("", "Long press!");
@@ -297,35 +305,41 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         return videos.size();
     }
 
-    private void upvote(int position) {
+    private void upvote(int position, int amount) {
         ParseObject video = videos.get(position);
         int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
         String objectId = video.getObjectId();
-        video.put(ParseTables.Videos.UPVOTE, currentVotes + 1);
+        video.put(ParseTables.Videos.UPVOTE, currentVotes + amount);
         video.saveInBackground();
         notifyVotes(objectId);
 
         //Add to parse relations
-        ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             ParseRelation<ParseObject> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
             relation.add(video);
+            relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
+            relation.remove(video);
             currentUser.saveInBackground();
+        } else {
+            Log.e(TAG, "Did not add to the relation because the user is null");
         }
     }
 
-    private void downvote(int position) {
+    private void downvote(int position, int amount) {
         ParseObject video = videos.get(position);
         int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
         if (currentVotes > 0) {
-            video.put(ParseTables.Videos.UPVOTE, currentVotes - 1);
+            video.put(ParseTables.Videos.UPVOTE, currentVotes - amount);
             video.saveInBackground();
-            ParseUser currentUser = ParseUser.getCurrentUser();
             if (currentUser != null) {
                 Log.d(TAG, "Doing shit with PArse");
                 ParseRelation<ParseObject> relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
                 relation.add(video);
+                relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
+                relation.remove(video);
                 currentUser.saveInBackground();
+            } else {
+                Log.e(TAG, "Did not add to the relation because current user is null");
             }
         }
     }
@@ -349,6 +363,21 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         videos.remove(i);
     }
 
+    private void setVoteButtons(int isVoted, ImageButton upVote, ImageButton downVote) {
+        switch (isVoted) {
+            case 0:
+                upVote.setImageResource(R.drawable.ic_expand_less_white_24dp);
+                downVote.setImageResource(R.drawable.ic_expand_more_white_24dp);
+                break;
+            case 1:
+                upVote.setImageResource(R.drawable.ic_expand_less_yellow_24dp);
+                downVote.setImageResource(R.drawable.ic_expand_more_white_24dp);
+                break;
+            case -1:
+                upVote.setImageResource(R.drawable.ic_expand_less_white_24dp);
+                downVote.setImageResource(R.drawable.ic_expand_more_yellow_24dp);
+        }
+    }
 
     @Override
     public int getItemViewType(int position) {

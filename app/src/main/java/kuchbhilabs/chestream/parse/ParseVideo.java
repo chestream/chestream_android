@@ -9,9 +9,16 @@ import com.parse.ParseObject;
 @ParseClassName("Videos")
 public class ParseVideo extends ParseObject {
 
+    //-2 indicated that it's voting wrt the current user has not been fetched yet
+    public int isVoted = -2;
+
     @Override
     public boolean equals (Object o) {
         ParseVideo object = (ParseVideo) o;
         return object.getObjectId().equals(getObjectId());
+    }
+
+    public boolean isVoteStatusFetched() {
+        return isVoted != -2;
     }
 }
