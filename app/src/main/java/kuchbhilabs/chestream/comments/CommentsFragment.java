@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -99,37 +100,39 @@ public class CommentsFragment extends Fragment {
         sendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ((pUser != null)
-                        && (pUser.isAuthenticated())
-                        && (pUser.getSessionToken() != null)
-                        ){
-                    Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
+                view.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
+                ParseObject currentVideoObjectComment = VideoFragment.currentVideo ;
+                if (currentVideoObjectComment!=null) {
+                    if ((pUser != null)
+                            && (pUser.isAuthenticated())
+                            && (pUser.getSessionToken() != null)
+                            ) {
+                        Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
 
-                    ParseObject currentVideoObjectComment = VideoFragment.currentVideo ;
-                    List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
-                    if (commentsArrray == null) {
-                        commentsArrray = new ArrayList<>();
-                    }
-                    ParseObject postComment = new ParseObject("Comments");
-                    postComment.put(ParseTables.Comments.USER, pUser);
-                    postComment.put(ParseTables.Comments.TEXT, editText.getText().toString());
-                    postComment.put(ParseTables.Comments.VIDEO, currentVideoObjectComment);
-                    commentsArrray.add(postComment);
-                    currentVideoObjectComment.put("comments", commentsArrray);
-                    editText.setText("");
-                    currentVideoObjectComment.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
-                            setUpComments();
+
+                        List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
+                        if (commentsArrray == null) {
+                            commentsArrray = new ArrayList<>();
                         }
-                    });
-                }
-                else
-                {
-                    Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
-                    Intent intent= new Intent(getActivity(), LoginActivity.class);
-                    startActivity(intent);
+                        ParseObject postComment = new ParseObject("Comments");
+                        postComment.put(ParseTables.Comments.USER, pUser);
+                        postComment.put(ParseTables.Comments.TEXT, editText.getText().toString());
+                        postComment.put(ParseTables.Comments.VIDEO, currentVideoObjectComment);
+                        commentsArrray.add(postComment);
+                        currentVideoObjectComment.put("comments", commentsArrray);
+                        editText.setText("");
+                        currentVideoObjectComment.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
+                                setUpComments();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                        startActivity(intent);
+                    }
                 }
             }
         });
