@@ -16,6 +16,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -138,63 +139,61 @@ public class QueueFragment extends Fragment {
             public void onClick(final View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Choose Video Source");
-                builder.setItems(new CharSequence[] {"Gallery", "Camera"},
+                builder.setItems(new CharSequence[]{"Gallery", "Camera"},
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                    ParseUser pUser = ParseUser.getCurrentUser();
-                                    if ((pUser != null)
-                                            && (pUser.isAuthenticated())
+                                ParseUser pUser = ParseUser.getCurrentUser();
+                                if ((pUser != null)
+                                        && (pUser.isAuthenticated())
 //                                            && (pUser.isNew())
-                                            && (pUser.getSessionToken() != null)
+                                        && (pUser.getSessionToken() != null)
                 /*&& (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))*/) {
 
-                                        switch (which) {
-                                            case 0:
-                                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                                                Intent chooser = Intent.createChooser(intent, "Choose a Video");
-                                                startActivityForResult(chooser, 2);
-                                                break;
-                                            case 1:
-                                                final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                                                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+                                    switch (which) {
+                                        case 0:
+                                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                                            Intent chooser = Intent.createChooser(intent, "Choose a Video");
+                                            startActivityForResult(chooser, 2);
+                                            break;
+                                        case 1:
+                                            final Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                                            takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
 
-                                                if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                                    final int color = Color.parseColor("#00bcd4");
-                                                    final Point p = Helper.getLocationInView(revealView, view);
+                                            if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                                final int color = Color.parseColor("#00bcd4");
+                                                final Point p = Helper.getLocationInView(revealView, view);
 
-                                                    revealView.reveal(p.x, p.y, color, view.getHeight() / 2, 440, null);
-                                                    selectedView = view;
+                                                revealView.reveal(p.x, p.y, color, view.getHeight() / 2, 440, null);
+                                                selectedView = view;
 
-                                                    handler=new Handler();
-                                                    handler.postDelayed(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            startActivityForResult(takeVideoIntent, 1);
-                                                            handler.postDelayed(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    revealView.hide(p.x, p.y, android.R.color.transparent, 0, 330, null);
-                                                                }
-                                                            }, 300);
+                                                handler = new Handler();
+                                                handler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        startActivityForResult(takeVideoIntent, 1);
+                                                        handler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                revealView.hide(p.x, p.y, android.R.color.transparent, 0, 330, null);
+                                                            }
+                                                        }, 300);
 
-                                                        }
-                                                    }, 500);
-                                                }
-                                                break;
-                                            default:
-                                                break;
-                                        }
-
-
+                                                    }
+                                                }, 500);
+                                            }
+                                            break;
+                                        default:
+                                            break;
                                     }
-                                    else
-                                    {
-                                        Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
-                                        Intent intent= new Intent(getActivity(), LoginActivity.class);
-                                        startActivity(intent);
-                                    }
+
+
+                                } else {
+                                    Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                    startActivity(intent);
+                                }
 
                             }
                         });
@@ -205,22 +204,31 @@ public class QueueFragment extends Fragment {
 
 
         recyclerView.setHasFixedSize(true);
-        queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseVideo>());
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                //In background because some important shit is being downloading inside the constructor
+                queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseVideo>());
+
+                List<SimpleSectionedRecyclerViewAdapter.Section> sections =
+                        new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
+
+                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(0, "Currently Playing"));
+                sections.add(new SimpleSectionedRecyclerViewAdapter.Section(1, "Up Next in Queue"));
+
+
+                SimpleSectionedRecyclerViewAdapter.Section[] dummy =
+                        new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
+                mSectionedAdapter = new
+                        SimpleSectionedRecyclerViewAdapter(getActivity(), R.layout.queue_section_header,
+                        R.id.section_text, queueVideosAdapter);
+                mSectionedAdapter.setSections(sections.toArray(dummy));
+            }
+        });
+
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(llm);
-
-        List<SimpleSectionedRecyclerViewAdapter.Section> sections =
-                new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
-
-        sections.add(new SimpleSectionedRecyclerViewAdapter.Section(0,"Currently Playing"));
-        sections.add(new SimpleSectionedRecyclerViewAdapter.Section(1,"Up Next in Queue"));
-
-
-        SimpleSectionedRecyclerViewAdapter.Section[] dummy = new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
-        mSectionedAdapter = new
-                SimpleSectionedRecyclerViewAdapter(getActivity(),R.layout.queue_section_header,R.id.section_text,queueVideosAdapter);
-        mSectionedAdapter.setSections(sections.toArray(dummy));
 
         loadFromParse();
 
@@ -396,13 +404,31 @@ public class QueueFragment extends Fragment {
         query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
         query.findInBackground(new FindCallback<ParseVideo>() {
             @Override
-            public void done(List<ParseVideo> parseObjects, ParseException e) {
-                progressBar.setVisibility(View.GONE);
-                queueVideosAdapter.updateDataSet(parseObjects);
-                recyclerView.setAdapter(mSectionedAdapter);
-                queueVideosAdapter.notifyDataSetChanged();
-                mSectionedAdapter.notifyDataSetChanged();
-                bounceUploadButton();
+            public void done(final List<ParseVideo> parseObjects, ParseException e) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (queueVideosAdapter == null) {
+                            //queueVideosAdapter is instantiated in another thread. Make sure it's not null
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setVisibility(View.GONE);
+                                queueVideosAdapter.updateDataSet(parseObjects);
+                                recyclerView.setAdapter(mSectionedAdapter);
+                                queueVideosAdapter.notifyDataSetChanged();
+                                mSectionedAdapter.notifyDataSetChanged();
+                                bounceUploadButton();
+                            }
+                        });
+                    }
+                });
             }
         });
     }

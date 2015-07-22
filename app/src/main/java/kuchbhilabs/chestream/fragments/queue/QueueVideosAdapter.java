@@ -38,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.helpers.ParserAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
@@ -58,8 +59,12 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     AlertDialog dialog;
     Context context;
 
-
     private static final String BLANK_AVATAR = "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
+
+    private List<ParseVideo> upVotedVideos;
+    private List<ParseVideo> downVotedVideos;
+
+    ParseUser currentUser;
 
     public static class QVHolder extends RecyclerView.ViewHolder {
         TextView videoTitle;
@@ -92,6 +97,29 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     public QueueVideosAdapter(Context context, final List<ParseVideo> videos) {
         this.videos = videos;
         this.context = context;
+        currentUser = ParseUser.getCurrentUser();
+        ParseRelation<ParseVideo> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
+        relation.getQuery().findInBackground(new FindCallback<ParseVideo>() {
+            @Override
+            public void done(List<ParseVideo> list, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                    return;
+                }
+                upVotedVideos = list;
+            }
+        });
+        relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
+        relation.getQuery().findInBackground(new FindCallback<ParseVideo>() {
+            @Override
+            public void done(List<ParseVideo> list, ParseException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                    return;
+                }
+                downVotedVideos = list;
+            }
+        });
     }
 
     public void updateDataSet(List<ParseVideo> list) {
@@ -308,6 +336,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             ParseRelation<ParseObject> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
             relation.add(video);
             currentUser.saveInBackground();
+        } else {
+            Log.e(TAG, "Did not add to the relation because the user is null");
         }
     }
 
@@ -323,6 +353,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 ParseRelation<ParseObject> relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
                 relation.add(video);
                 currentUser.saveInBackground();
+            } else {
+                Log.e(TAG, "Did not add to the relation because current user is null");
             }
         }
     }
