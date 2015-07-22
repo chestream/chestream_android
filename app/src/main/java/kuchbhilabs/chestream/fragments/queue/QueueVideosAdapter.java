@@ -99,27 +99,13 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         this.context = context;
         currentUser = ParseUser.getCurrentUser();
         ParseRelation<ParseVideo> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
-        relation.getQuery().findInBackground(new FindCallback<ParseVideo>() {
-            @Override
-            public void done(List<ParseVideo> list, ParseException e) {
-                if (e != null) {
-                    e.printStackTrace();
-                    return;
-                }
-                upVotedVideos = list;
-            }
-        });
-        relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
-        relation.getQuery().findInBackground(new FindCallback<ParseVideo>() {
-            @Override
-            public void done(List<ParseVideo> list, ParseException e) {
-                if (e != null) {
-                    e.printStackTrace();
-                    return;
-                }
-                downVotedVideos = list;
-            }
-        });
+        try {
+            upVotedVideos = relation.getQuery().find();
+            relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
+            downVotedVideos = relation.getQuery().find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateDataSet(List<ParseVideo> list) {
