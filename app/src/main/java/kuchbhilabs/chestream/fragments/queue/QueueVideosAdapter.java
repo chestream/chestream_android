@@ -143,7 +143,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     @Override
     public void onBindViewHolder(final QVHolder holder, final int position) {
 
-        final ParseObject video = videos.get(position);
+        final ParseVideo video = videos.get(position);
+        Log.d(TAG, "Video voting = " + video.isVoted);
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
 
         ParseUser user = video.getParseUser(ParseTables.Videos.USER);
@@ -151,7 +152,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         try {
             ImageLoader.getInstance().displayImage(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL), holder.thumbnail,
                     new DisplayImageOptions.Builder().cacheInMemory(true)
-                            .cacheOnDisk(false)
+                            .cacheOnDisk(true)
 
                             .resetViewBeforeLoading(true)
                             .displayer(new FadeInBitmapDisplayer(400))
@@ -173,13 +174,21 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
 
-        int vote = 0;
-        if (upVotedVideos.contains(video)) {
-            vote = 1;
+        if (video.isVoted == -2) {
+            Log.d(TAG, "searching for the first time");
+            if (upVotedVideos.contains(video)) {
+                video.isVoted = 1;
+            } else if (downVotedVideos.contains(video)) {
+                video.isVoted = -1;
+            }
+        }
+        if (video.isVoted == 1) {
             holder.upVote.setImageResource(R.drawable.ic_expand_less_yellow_24dp);
-        } else if (downVotedVideos.contains(video)) {
-            vote = -1;
+        } else if (video.isVoted == -1) {
             holder.downVote.setImageResource(R.drawable.ic_expand_more_yellow_24dp);
+        } else {
+            holder.upVote.setImageResource(R.drawable.ic_expand_less_black_24dp);
+            holder.downVote.setImageResource(R.drawable.ic_expand_more_black_24dp);
         }
 
         final android.os.Handler handler = new android.os.Handler();
