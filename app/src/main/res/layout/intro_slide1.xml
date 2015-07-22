@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:typeface="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:layout_weight="10"
     android:id="@+id/main">
 
-    <TextView
+    <kuchbhilabs.chestream.helpers.TypefaceTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -16,8 +17,9 @@
         android:paddingLeft="32dp"
         android:textColor="#ffffff"
         android:paddingRight="32dp"
-        android:textSize="25sp"
-        android:text="Best Videos from around the world"/>
+        android:textSize="20sp"
+        typeface:typeface="HelveticaNeue-Light"
+        android:text="Chestream is live 24/7.Videos gets played in descending number of upvotes"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -44,7 +46,7 @@
         android:paddingLeft="64dp"
         android:paddingRight="64dp"
         android:textSize="18sp"
-        android:text="A whole new look at world around you"/>
+        android:text="Chestream is singular.Same video plays on all device at same time."/>
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="64dp" />
