@@ -791,7 +791,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     }
 
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        Log.d(TAG, "position = " + position + " positionOffset = " + positionOffset);
+//        Log.d(TAG, "position = " + position + " positionOffset = " + positionOffset);
         if (positionOffset > 0.001) {
             fingerDown = false;
             uiHandler.removeCallbacksAndMessages(null);
