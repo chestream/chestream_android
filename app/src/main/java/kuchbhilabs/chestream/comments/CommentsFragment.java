@@ -162,7 +162,7 @@ public class CommentsFragment extends Fragment {
                             @Override
                             public void done(ParseException e) {
                                 Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
-                                setUpComments();
+                                commentsAdapter.notifyDataSetChanged();
                             }
                         });
                     } else {

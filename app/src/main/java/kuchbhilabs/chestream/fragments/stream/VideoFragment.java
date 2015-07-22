@@ -749,6 +749,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             if (e.getAction() == MotionEvent.ACTION_UP) {
                 fingerDown = false;
                 Log.d(TAG, "Finger up");
+                if (camera!=null)
                 camera.stopPreview();
                 cameraPreview.setVisibility(View.GONE);
                 uiHandler.removeCallbacksAndMessages(null);
