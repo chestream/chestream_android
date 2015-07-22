@@ -8,8 +8,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import kuchbhilabs.chestream.fragments.profile.ProfileFragment;
@@ -69,7 +67,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     @Override
     public void onPageSelected(int position) {
-
+        if (position==2){
+            QueueFragment.bounceUploadButton();
+        }
     }
 
     @Override

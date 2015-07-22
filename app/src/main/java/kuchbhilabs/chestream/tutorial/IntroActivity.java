@@ -53,7 +53,7 @@ public abstract class IntroActivity extends AppCompatActivity {
 
         final TextView skipButton = (TextView) findViewById(R.id.skip);
         final ImageView nextButton = (ImageView) findViewById(R.id.next);
-        final TextView doneButton = (TextView) findViewById(R.id.done);
+        final ImageView doneButton = (ImageView) findViewById(R.id.done);
         mVibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
 
         skipButton.setOnClickListener(new View.OnClickListener() {

@@ -19,6 +19,7 @@
             android:layout_width="fill_parent"
             android:id="@+id/bottom_separator"
             android:layout_height="1px"
+            android:visibility="gone"
             android:background="#55000000">
         </TextView>
         <LinearLayout
@@ -49,23 +50,20 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                style="?android:attr/borderlessButtonStyle"
+                android:background="@null"
                 android:id="@+id/next"
                 android:layout_gravity="center"
                 android:layout_weight="0.2"
-                android:src="@drawable/ic_navigate_next_white_24dp"/>
-
-            <Button
+                android:src="@drawable/ic_arrow_forward_white_24px"/>
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                style="?android:attr/borderlessButtonStyle"
-                android:visibility="gone"
+                android:background="@null"
                 android:id="@+id/done"
-                android:paddingRight="16dp"
-                android:textColor="#ffffff"
-                android:layout_gravity="start"
+                android:layout_gravity="center"
+                android:visibility="gone"
                 android:layout_weight="0.2"
-                android:text="Done"/>
+                android:src="@drawable/ic_done_white_24px"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

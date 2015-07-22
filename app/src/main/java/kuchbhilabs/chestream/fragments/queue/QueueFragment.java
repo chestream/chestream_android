@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -68,7 +69,7 @@ public class QueueFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
-    private FloatingActionButton upload;
+    private static FloatingActionButton upload;
     private CircularRevealView revealView;
     private View selectedView;
     android.os.Handler handler;
@@ -81,7 +82,7 @@ public class QueueFragment extends Fragment {
     SmoothProgressBar progressBar;
 
     private BroadcastReceiver receiver;
-    private Activity activity;
+    private static Activity activity;
 
     public QueueFragment() {
         // Required empty public constructor
@@ -398,6 +399,7 @@ public class QueueFragment extends Fragment {
                 recyclerView.setAdapter(mSectionedAdapter);
                 queueVideosAdapter.notifyDataSetChanged();
                 mSectionedAdapter.notifyDataSetChanged();
+                bounceUploadButton();
             }
         });
     }
@@ -405,5 +407,9 @@ public class QueueFragment extends Fragment {
     public static void updateCurrentlyPlaying(){
         queueVideosAdapter.removeItem(0);
         queueVideosAdapter.notifyItemRemoved(0);
+    }
+
+    public static void bounceUploadButton(){
+        upload.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
     }
 }
