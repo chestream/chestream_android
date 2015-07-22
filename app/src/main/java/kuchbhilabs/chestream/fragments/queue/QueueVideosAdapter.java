@@ -236,6 +236,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         .build();
                 QueueFragment.gifView.setController(controller);
                 QueueFragment.gifView.setVisibility(View.VISIBLE);
+                QueueFragment.progressBar.setVisibility(View.VISIBLE);
             }
         };
 
@@ -254,6 +255,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    QueueFragment.progressBar.setVisibility(View.GONE);
                     return true;
 
                 } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -262,6 +264,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    QueueFragment.progressBar.setVisibility(View.GONE);
                     return true;
 
                 } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
@@ -270,6 +273,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    QueueFragment.progressBar.setVisibility(View.GONE);
                     return true;
                 } else
                     return false;
