@@ -110,7 +110,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private static final String TAG = "VideoFragment";
 
     private static final String TEST_URL = "http://128.199.128.227/chestream_raw/video_1434859043/video_1434859043.mp4";
-    private static final String NEXT_URL = "http://128.199.128.227:8800/";
+    private static final String NEXT_URL = "http://104.131.207.33:8800/";
 
     private CommentsBroadcastReceiver receiver;
 

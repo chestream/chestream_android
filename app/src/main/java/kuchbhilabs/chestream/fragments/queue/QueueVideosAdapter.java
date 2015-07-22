@@ -25,10 +25,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
+import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
@@ -73,7 +75,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         QVHolder(final View itemView) {
             super(itemView);
 
-
             videoTitle = (TextView) itemView.findViewById(R.id.video_title);
             location = (TextView) itemView.findViewById(R.id.video_location);
             username = (TextView) itemView.findViewById(R.id.username);
@@ -114,9 +115,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     @Override
     public QVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         if (viewType == 0) {
-
             View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_current_item, parent, false);
             QVHolder cvh = new QVHolder(v1);
             return cvh;
@@ -125,13 +124,10 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             QVHolder qvh = new QVHolder(v2);
             return qvh;
         }
-
-
     }
 
     @Override
     public void onBindViewHolder(final QVHolder holder, final int position) {
-
 
         final ParseObject video = videos.get(position);
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
@@ -151,7 +147,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                             Palette palette=Palette.generate(loadedImage);
                             int color=palette.getDarkVibrantColor(Color.parseColor("33ffffff"));
                             holder.palette.setBackgroundColor(ColorUtils.setAlphaComponent(color, 90));
-
                         }
                     });
             holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
@@ -163,6 +158,43 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
+
+        user.fetchIfNeededInBackground(new GetCallback<ParseUser>() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                ParseRelation upVoteRelation = user.getRelation(ParseTables.Users.UPVOTED);
+                ParseRelation downVoteRelation = user.getRelation(ParseTables.Users.DOWNVOTED);
+                ParseQuery upVoteQuery = upVoteRelation.getQuery();
+                upVoteQuery.whereEqualTo("objectId", video.getObjectId());
+                upVoteQuery.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> list, ParseException e) {
+                        if (e != null) {
+                            e.printStackTrace();
+                            return;
+                        }
+                        if (list.size() > 0) {
+                            Log.d(TAG, "The user has upvoted the video already");
+                        }
+                    }
+                });
+
+                ParseQuery downVotedQuery = downVoteRelation.getQuery();
+                downVotedQuery.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> list, ParseException e) {
+                        if (e != null) {
+                            e.printStackTrace();
+                            return;
+                        }
+                        if (list.size() > 0) {
+                            Log.d(TAG, "user has already downvoted this video");
+                        }
+                    }
+                });
+            }
+        });
+
         final int[] total_votes = {Integer.parseInt(holder.totalVotes.getText().toString())};
 
         holder.upVote.setOnClickListener(new View.OnClickListener() {
