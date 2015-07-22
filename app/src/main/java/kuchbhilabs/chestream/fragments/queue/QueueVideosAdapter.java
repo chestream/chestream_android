@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
@@ -147,7 +148,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         Log.d(TAG, "Video voting = " + video.isVoted);
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
 
-        ParseUser user = video.getParseUser(ParseTables.Videos.USER);
         holder.username.setText(video.getString(ParseTables.Videos.USER_USERNAME));
         try {
             ImageLoader.getInstance().displayImage(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL), holder.thumbnail,
@@ -191,7 +191,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             holder.downVote.setImageResource(R.drawable.ic_expand_more_black_24dp);
         }
 
-        final android.os.Handler handler = new android.os.Handler();
+        final Handler handler = new Handler();
         final Runnable mLongPressed = new Runnable() {
             public void run() {
                 Log.i("", "Long press!");
