@@ -145,7 +145,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             Palette palette=Palette.generate(loadedImage);
-                            int color=palette.getDarkVibrantColor(Color.parseColor("33ffffff"));
+                            int color=palette.getDarkVibrantColor(Color.parseColor("#33ffffff"));
                             holder.palette.setBackgroundColor(ColorUtils.setAlphaComponent(color, 90));
                         }
                     });

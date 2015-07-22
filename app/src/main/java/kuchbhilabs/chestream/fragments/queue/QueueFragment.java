@@ -122,9 +122,8 @@ public class QueueFragment extends Fragment {
                         if (derp.contains(updatedVideo)) {
                             int location = derp.indexOf(updatedVideo);
                             queueVideosAdapter.updateItem(location);
-                            Toast.makeText(activity, "AWESOME", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(activity, "NO SHIT", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "An upvote has been done but the video is not in the list");
                         }
                     }
                 });
