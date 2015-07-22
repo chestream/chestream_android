@@ -173,73 +173,14 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
 
-        user.fetchIfNeededInBackground(new GetCallback<ParseUser>() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                ParseRelation upVoteRelation = user.getRelation(ParseTables.Users.UPVOTED);
-                ParseRelation downVoteRelation = user.getRelation(ParseTables.Users.DOWNVOTED);
-                ParseQuery upVoteQuery = upVoteRelation.getQuery();
-                upVoteQuery.whereEqualTo("objectId", video.getObjectId());
-                upVoteQuery.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> list, ParseException e) {
-                        if (e != null) {
-                            e.printStackTrace();
-                            return;
-                        }
-                        if (list.size() > 0) {
-                            Log.d(TAG, "The user has upvoted the video already");
-                        }
-                    }
-                });
-
-                ParseQuery downVotedQuery = downVoteRelation.getQuery();
-                downVotedQuery.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> list, ParseException e) {
-                        if (e != null) {
-                            e.printStackTrace();
-                            return;
-                        }
-                        if (list.size() > 0) {
-                            Log.d(TAG, "user has already downvoted this video");
-                        }
-                    }
-                });
-            }
-        });
-
-        final int[] total_votes = {Integer.parseInt(holder.totalVotes.getText().toString())};
-
-        holder.upVote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.pop_out));
-                int votes = total_votes[0] + 1;
-                if (Math.abs(total_votes[0] - votes) == 1) {
-                    holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(context,R.anim.pop_out));
-                    holder.totalVotes.setText(votes + "");
-
-                    //  holder.upVote.getBackground().setAlpha(165);
-                    //  holder.downVote.getBackground().setAlpha(65);
-                    upvote(position);
-                } else {
-                }
-            }
-        });
-        holder.downVote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.pop_out));
-                int votes = total_votes[0] - 1;
-                if (Math.abs(total_votes[0] - votes) == 1) {
-                    holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(context,R.anim.pop_out));
-                    holder.totalVotes.setText(votes + "");
-                    downvote(position);
-                } else {
-                }
-            }
-        });
+        int vote = 0;
+        if (upVotedVideos.contains(video)) {
+            vote = 1;
+            holder.upVote.setImageResource(R.drawable.ic_expand_less_yellow_24dp);
+        } else if (downVotedVideos.contains(video)) {
+            vote = -1;
+            holder.downVote.setImageResource(R.drawable.ic_expand_more_yellow_24dp);
+        }
 
         final android.os.Handler handler = new android.os.Handler();
         final Runnable mLongPressed = new Runnable() {

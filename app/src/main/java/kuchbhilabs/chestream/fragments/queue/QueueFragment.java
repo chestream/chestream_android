@@ -216,7 +216,6 @@ public class QueueFragment extends Fragment {
                 sections.add(new SimpleSectionedRecyclerViewAdapter.Section(0, "Currently Playing"));
                 sections.add(new SimpleSectionedRecyclerViewAdapter.Section(1, "Up Next in Queue"));
 
-
                 SimpleSectionedRecyclerViewAdapter.Section[] dummy =
                         new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
                 mSectionedAdapter = new
