@@ -63,6 +63,11 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <activity
+            android:name=".tutorial.AppIntroActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.FullScreen" />
+
         <service
             android:name=".CompressionUploadService"
             android:enabled="true"

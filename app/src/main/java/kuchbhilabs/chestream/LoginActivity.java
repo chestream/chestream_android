@@ -1,17 +1,17 @@
 package kuchbhilabs.chestream;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.sign.SignInFragment;
+import kuchbhilabs.chestream.tutorial.AppIntroActivity;
 
 public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -27,7 +28,7 @@ public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Ca
     public static final boolean INFO = ApplicationBase.LOG_INFO;
     private static final String TAG = "LoginActivity";
 
-
+    SharedPreferences prefs = null;
     public static final String KEY_PREF_SIGNED_IN = "signed_in";
 
     private MediaPlayer mediaPlayer;
@@ -43,6 +44,14 @@ public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Ca
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        prefs = getSharedPreferences("chestream", MODE_PRIVATE);
+
+        if (prefs.getBoolean("firstrun", true)) {
+            Log.d("intro", "here");
+            startIntro();
+        }
+
         setContentView(R.layout.activity_login);
 
         surfaceView = (SurfaceView) findViewById(R.id.login_surface_view);
@@ -144,6 +153,12 @@ public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Ca
             fragment.onActivityResult(requestCode, resultCode,data);
         }
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void startIntro() {
+        Intent intent = new Intent(this, AppIntroActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
 
