@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:layout_weight="10"
+    android:id="@+id/main">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/statusBarHeight"
+        android:paddingTop="15dp"
+        android:gravity="center"
+        android:paddingLeft="32dp"
+        android:textColor="#ffffff"
+        android:paddingRight="32dp"
+        android:textSize="25sp"
+        android:text="Comment on videos to interact with people around the world"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_weight="9">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:src="@drawable/screen_comments"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:textColor="#ffffff"
+        android:paddingLeft="64dp"
+        android:paddingRight="64dp"
+        android:textSize="18sp"
+        android:text="You can also send your reaction to the video as a selfie"/>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="64dp" />
 </LinearLayout>

@@ -36,7 +36,6 @@ import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xml.sax.helpers.ParserAdapter;
 
 import java.util.List;
 
@@ -145,8 +144,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             Palette palette=Palette.generate(loadedImage);
-                            int color=palette.getDarkVibrantColor(Color.parseColor("#33ffffff"));
-                            holder.palette.setBackgroundColor(ColorUtils.setAlphaComponent(color, 90));
+                            int color=palette.getVibrantColor(Color.parseColor("#33ffffff"));
+                            holder.palette.setBackgroundColor(ColorUtils.setAlphaComponent(color, 20));
                         }
                     });
             holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
