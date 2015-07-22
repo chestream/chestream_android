@@ -111,7 +111,6 @@ public class QueueFragment extends Fragment {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                loadFromParse();
                 String videoId = intent.getStringExtra(NotificationReceiver.EXTRA_VIDEO_ID);
                 ParseQuery<ParseVideo> query = ParseQuery.getQuery(ParseVideo.class);
                 query.whereEqualTo("objectId", videoId);
@@ -139,7 +138,7 @@ public class QueueFragment extends Fragment {
             @Override
             public void onClick(final View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Choose Image Source");
+                builder.setTitle("Choose Video Source");
                 builder.setItems(new CharSequence[] {"Gallery", "Camera"},
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -231,7 +230,12 @@ public class QueueFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        activity.unregisterReceiver(receiver);
+        try {
+            activity.unregisterReceiver(receiver);
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+
         super.onDestroy();
     }
 
