@@ -80,7 +80,7 @@ public class QueueFragment extends Fragment {
     AppLocationService appLocationService;
 
     Toolbar toolbar;
-    SmoothProgressBar progressBar;
+    public static SmoothProgressBar progressBar;
 
     private BroadcastReceiver receiver;
     private static Activity activity;

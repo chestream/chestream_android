@@ -16,9 +16,11 @@ public class AppIntroActivity extends IntroActivity {
 
     @Override
     public void init(Bundle savedInstanceState) {
+        addSlide(new Slide4(),getApplicationContext());
         addSlide(new Slide1(), getApplicationContext());
         addSlide(new Slide2(), getApplicationContext());
         addSlide(new Slide3(), getApplicationContext());
+        addSlide(new Slide5(),getApplicationContext());
 
     }
 

@@ -38,7 +38,6 @@ import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xml.sax.helpers.ParserAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -169,8 +168,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             Palette palette=Palette.generate(loadedImage);
-                            int color=palette.getDarkVibrantColor(Color.parseColor("#33ffffff"));
-                            holder.palette.setBackgroundColor(ColorUtils.setAlphaComponent(color, 90));
+                            int color=palette.getVibrantColor(Color.parseColor("#33ffffff"));
+                            holder.palette.setBackgroundColor(ColorUtils.setAlphaComponent(color, 20));
                         }
                     });
             holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
@@ -245,6 +244,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         .build();
                 QueueFragment.gifView.setController(controller);
                 QueueFragment.gifView.setVisibility(View.VISIBLE);
+                QueueFragment.progressBar.setVisibility(View.VISIBLE);
             }
         };
 
@@ -263,6 +263,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    QueueFragment.progressBar.setVisibility(View.GONE);
                     return true;
 
                 } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -271,6 +272,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    QueueFragment.progressBar.setVisibility(View.GONE);
                     return true;
 
                 } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
@@ -279,6 +281,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    QueueFragment.progressBar.setVisibility(View.GONE);
                     return true;
                 } else
                     return false;

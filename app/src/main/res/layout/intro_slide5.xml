@@ -12,14 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/statusBarHeight"
-        android:paddingTop="15dp"
+        android:paddingTop="25dp"
         android:gravity="center"
         android:paddingLeft="32dp"
         android:textColor="#ffffff"
         android:paddingRight="32dp"
-        android:textSize="23sp"
+        android:textSize="24sp"
         typeface:typeface="HelveticaNeue-Light"
-        android:text="Upvote the video by seeing its trailer tailored in a GIF"/>
+        android:text="Chestream is a Social Network around Video Streaming"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -29,24 +29,24 @@
         android:layout_weight="9">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:src="@drawable/screen_stream"/>
+            android:src="@mipmap/ic_launcher"/>
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="15dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:textColor="#ffffff"
         android:paddingLeft="64dp"
         android:paddingRight="64dp"
         android:textSize="18sp"
-        android:text="Long press the video to view its trailer.You can upvote or downvote the video."/>
+        android:text="Express yourself and explore the world through videos"/>
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="64dp" />

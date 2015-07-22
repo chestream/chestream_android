@@ -71,6 +71,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Comme
         commentsRowHolder.comment.setText(comment.getString(ParseTables.Comments.TEXT));
         ParseFile image = comment.getParseFile(ParseTables.Comments.IMAGE);
         if (image != null) {
+            commentsRowHolder.commentPhoto.setVisibility(View.VISIBLE);
             commentsRowHolder.commentPhoto.setImageURI(Uri.parse(image.getUrl()));
             Log.d(TAG, "URL = " + image.getUrl());
         }

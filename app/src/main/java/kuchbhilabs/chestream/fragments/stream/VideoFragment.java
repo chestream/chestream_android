@@ -250,12 +250,13 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                                         Random random=new Random();
                                         int rndInt = random.nextInt(patternImages.length);
+                                        if (getActivity()!=null) {
+                                            BitmapDrawable pattern = new BitmapDrawable(BitmapFactory.decodeResource(getActivity().getResources(), patternImages[rndInt]));
+                                            pattern.setTileModeX(Shader.TileMode.REPEAT);
+                                            pattern.setTileModeY(Shader.TileMode.REPEAT);
 
-                                        BitmapDrawable pattern = new BitmapDrawable(BitmapFactory.decodeResource(getActivity().getResources(),patternImages[rndInt]));
-                                        pattern.setTileModeX(Shader.TileMode.REPEAT);
-                                        pattern.setTileModeY(Shader.TileMode.REPEAT);
-
-                                        patternView.setImageBitmap(pattern.getBitmap());
+                                            patternView.setImageBitmap(pattern.getBitmap());
+                                        }
 
                                         Interpolator interpolator=new LinearInterpolator();
                                         RandomTransitionGenerator
