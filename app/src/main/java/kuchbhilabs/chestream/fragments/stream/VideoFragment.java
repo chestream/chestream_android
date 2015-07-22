@@ -693,6 +693,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         }
         Log.d(TAG, "choosing " + minSize.width + "x" + minSize.height);
         parameters.setPictureSize(minSize.width, minSize.height);
+        parameters.setRotation(270);
     }
 
     private void finalizeCamera() {
