@@ -13,6 +13,8 @@ public class ParseTables {
         public static final String EMAIL = "email_id";
         public static final String DOB = "DOB";
         public static final String CITY = "CITY";
+        public static final String UPVOTED = "upvoted";
+        public static final String DOWNVOTED = "downvoted";
     }
 
     public static class Videos {

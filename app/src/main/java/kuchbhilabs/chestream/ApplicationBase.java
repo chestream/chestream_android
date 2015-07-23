@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.facebook.FacebookSdk;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -60,5 +62,8 @@ public class ApplicationBase extends Application {
         });
 
         Fresco.initialize(this);
+
+        ImageLoaderConfiguration localImageLoaderConfiguration = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(localImageLoaderConfiguration);
     }
 }

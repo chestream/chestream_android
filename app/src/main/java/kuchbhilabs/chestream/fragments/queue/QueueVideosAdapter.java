@@ -1,38 +1,49 @@
 package kuchbhilabs.chestream.fragments.queue;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
-import android.support.v7.widget.CardView;
+import android.os.Handler;
+import android.support.v4.graphics.ColorUtils;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.helpers.CircularRevealView;
-import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.parse.ParseVideo;
 
 
@@ -47,10 +58,16 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     AlertDialog.Builder builder;
     AlertDialog dialog;
-    Context context;
-
+    Activity activity;
 
     private static final String BLANK_AVATAR = "http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg";
+
+    private List<ParseVideo> upVotedVideos;
+    private List<ParseVideo> downVotedVideos;
+
+    ParseUser currentUser;
+
+    Handler handler;
 
     public static class QVHolder extends RecyclerView.ViewHolder {
         TextView videoTitle;
@@ -59,13 +76,12 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         ImageButton upVote;
         ImageButton downVote;
         TextView totalVotes;
-        CardView rootLayout;
-        CircularRevealView revealView;
+        FrameLayout rootLayout;
         SimpleDraweeView draweeView,thumbnail;
+        View palette;
 
         QVHolder(final View itemView) {
             super(itemView);
-
 
             videoTitle = (TextView) itemView.findViewById(R.id.video_title);
             location = (TextView) itemView.findViewById(R.id.video_location);
@@ -73,17 +89,32 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             totalVotes = (TextView) itemView.findViewById(R.id.video_score);
             upVote = (ImageButton) itemView.findViewById(R.id.up_vote);
             downVote = (ImageButton) itemView.findViewById(R.id.down_vote);
-            rootLayout = (CardView) itemView.findViewById(R.id.root_layout);
-            revealView = (CircularRevealView) itemView.findViewById(R.id.reveal);
+            rootLayout = (FrameLayout) itemView.findViewById(R.id.root_layout);
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.profile_picture);
             thumbnail=(SimpleDraweeView) itemView.findViewById(R.id.thumbnail);
+            palette=(View) itemView.findViewById(R.id.pallete);
         }
     }
 
 
-    public QueueVideosAdapter(Context context, final List<ParseVideo> videos) {
+    public QueueVideosAdapter(Activity activity, final List<ParseVideo> videos) {
         this.videos = videos;
-        this.context = context;
+        this.activity = activity;
+        currentUser = ParseUser.getCurrentUser();
+        ParseRelation<ParseVideo> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
+        try {
+            upVotedVideos = relation.getQuery().find();
+            relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
+            downVotedVideos = relation.getQuery().find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                handler = new Handler();
+            }
+        });
     }
 
     public void updateDataSet(List<ParseVideo> list) {
@@ -107,9 +138,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     @Override
     public QVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         if (viewType == 0) {
-
             View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_current_item, parent, false);
             QVHolder cvh = new QVHolder(v1);
             return cvh;
@@ -118,22 +147,33 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             QVHolder qvh = new QVHolder(v2);
             return qvh;
         }
-
-
     }
 
     @Override
     public void onBindViewHolder(final QVHolder holder, final int position) {
 
-
-        final ParseObject video = videos.get(position);
+        final ParseVideo video = videos.get(position);
+        Log.d(TAG, "Video voting = " + video.isVoted);
         holder.videoTitle.setText(video.getString(ParseTables.Videos.TITLE));
 
-        ParseUser user = video.getParseUser(ParseTables.Videos.USER);
         holder.username.setText(video.getString(ParseTables.Videos.USER_USERNAME));
         try {
+            ImageLoader.getInstance().displayImage(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL), holder.thumbnail,
+                    new DisplayImageOptions.Builder().cacheInMemory(true)
+                            .cacheOnDisk(true)
+
+                            .resetViewBeforeLoading(true)
+                            .displayer(new FadeInBitmapDisplayer(400))
+                            .build(),new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            Palette palette=Palette.generate(loadedImage);
+                            int color=palette.getVibrantColor(Color.parseColor("#33ffffff"));
+                            holder.palette.setBackgroundColor(ColorUtils.setAlphaComponent(color, 20));
+                        }
+                    });
             holder.draweeView.setImageURI(Uri.parse(video.getString(ParseTables.Videos.USER_AVATAR)));
-            holder.thumbnail.setImageURI(Uri.parse(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
+//            holder.thumbnail.setImageURI(Uri.parse(video.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -141,41 +181,60 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
         holder.location.setText(video.getString(ParseTables.Videos.LOCATION));
         holder.totalVotes.setText(String.valueOf(video.getInt(ParseTables.Videos.UPVOTE)));
-        final int[] total_votes = {Integer.parseInt(holder.totalVotes.getText().toString())};
 
-        holder.upVote.setOnClickListener(new View.OnClickListener() {
+        if (video.isVoted == -2) {
+            Log.d(TAG, "searching for the first time");
+            if (upVotedVideos.contains(video)) {
+                video.isVoted = 1;
+            } else if (downVotedVideos.contains(video)) {
+                video.isVoted = -1;
+            } else {
+                video.isVoted = 0;
+            }
+        }
+        setVoteButtons(video.isVoted, holder.upVote, holder.downVote);
+
+        holder.upVote.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                int votes = total_votes[0] + 1;
-                if (Math.abs(total_votes[0] - votes) == 1) {
-                    holder.totalVotes.setText(votes + "");
-                    //  holder.upVote.getBackground().setAlpha(165);
-                    //  holder.downVote.getBackground().setAlpha(65);
-                    final int color = Color.parseColor("#00bcd4");
-                    final Point p = Helper.getLocationInView(holder.revealView, v);
-
-                    holder.revealView.reveal(p.x, p.y, color, v.getHeight() / 10, 440, null);
-                    upvote(position);
+                int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
+                if (video.isVoted == 1) {
+                    holder.totalVotes.setText(String.valueOf(currentVotes - 1));
+                    video.isVoted = 0;
+                    downvote(position, 1);
+                } else if (video.isVoted == -1) {
+                    holder.totalVotes.setText(String.valueOf(currentVotes + 2));
+                    video.isVoted = 1;
+                    upvote(position, 2);
                 } else {
+                    holder.totalVotes.setText(String.valueOf(currentVotes + 1));
+                    video.isVoted = 1;
+                    upvote(position, 1);
                 }
+                setVoteButtons(video.isVoted, holder.upVote, holder.downVote);
             }
         });
         holder.downVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int votes = total_votes[0] - 1;
-                if (Math.abs(total_votes[0] - votes) == 1) {
-                    holder.totalVotes.setText(votes + "");
-                    final int color = Color.TRANSPARENT;
-                    final Point p = Helper.getLocationInView(holder.revealView, v);
-                    holder.revealView.hide(p.x, p.y, color, v.getHeight() / 20, 440, null);
-                    downvote(position);
+                int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
+                if (video.isVoted == 1) {
+                    holder.totalVotes.setText(String.valueOf(currentVotes - 2));
+                    video.isVoted = -1;
+                    downvote(position, 2);
+                } else if (video.isVoted == -1) {
+                    holder.totalVotes.setText(String.valueOf(currentVotes + 1));
+                    video.isVoted = 0;
+                    upvote(position, 1);
                 } else {
+                    holder.totalVotes.setText(String.valueOf(currentVotes - 1));
+                    video.isVoted = -1;
+                    downvote(position, 1);
                 }
+                setVoteButtons(video.isVoted, holder.upVote, holder.downVote);
             }
         });
 
-        final android.os.Handler handler = new android.os.Handler();
         final Runnable mLongPressed = new Runnable() {
             public void run() {
                 Log.i("", "Long press!");
@@ -185,6 +244,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         .build();
                 QueueFragment.gifView.setController(controller);
                 QueueFragment.gifView.setVisibility(View.VISIBLE);
+                QueueFragment.progressBar.setVisibility(View.VISIBLE);
             }
         };
 
@@ -203,6 +263,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    QueueFragment.progressBar.setVisibility(View.GONE);
                     return true;
 
                 } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -211,6 +272,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    QueueFragment.progressBar.setVisibility(View.GONE);
                     return true;
 
                 } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
@@ -219,6 +281,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
                     QueueFragment.gifView.setVisibility(View.INVISIBLE);
+                    QueueFragment.progressBar.setVisibility(View.GONE);
                     return true;
                 } else
                     return false;
@@ -242,21 +305,42 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         return videos.size();
     }
 
-    private void upvote(int position) {
+    private void upvote(int position, int amount) {
         ParseObject video = videos.get(position);
         int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
         String objectId = video.getObjectId();
-        video.put(ParseTables.Videos.UPVOTE, currentVotes + 1);
+        video.put(ParseTables.Videos.UPVOTE, currentVotes + amount);
         video.saveInBackground();
         notifyVotes(objectId);
+
+        //Add to parse relations
+        if (currentUser != null) {
+            ParseRelation<ParseObject> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
+            relation.add(video);
+            relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
+            relation.remove(video);
+            currentUser.saveInBackground();
+        } else {
+            Log.e(TAG, "Did not add to the relation because the user is null");
+        }
     }
 
-    private void downvote(int position) {
+    private void downvote(int position, int amount) {
         ParseObject video = videos.get(position);
         int currentVotes = video.getInt(ParseTables.Videos.UPVOTE);
         if (currentVotes > 0) {
-            video.put(ParseTables.Videos.UPVOTE, currentVotes - 1);
+            video.put(ParseTables.Videos.UPVOTE, currentVotes - amount);
             video.saveInBackground();
+            if (currentUser != null) {
+                Log.d(TAG, "Doing shit with PArse");
+                ParseRelation<ParseObject> relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
+                relation.add(video);
+                relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
+                relation.remove(video);
+                currentUser.saveInBackground();
+            } else {
+                Log.e(TAG, "Did not add to the relation because current user is null");
+            }
         }
     }
 
@@ -279,6 +363,21 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         videos.remove(i);
     }
 
+    private void setVoteButtons(int isVoted, ImageButton upVote, ImageButton downVote) {
+        switch (isVoted) {
+            case 0:
+                upVote.setImageResource(R.drawable.ic_expand_less_white_24dp);
+                downVote.setImageResource(R.drawable.ic_expand_more_white_24dp);
+                break;
+            case 1:
+                upVote.setImageResource(R.drawable.ic_expand_less_yellow_24dp);
+                downVote.setImageResource(R.drawable.ic_expand_more_white_24dp);
+                break;
+            case -1:
+                upVote.setImageResource(R.drawable.ic_expand_less_white_24dp);
+                downVote.setImageResource(R.drawable.ic_expand_more_yellow_24dp);
+        }
+    }
 
     @Override
     public int getItemViewType(int position) {
