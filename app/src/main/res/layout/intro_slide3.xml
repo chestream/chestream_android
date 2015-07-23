@@ -34,7 +34,7 @@
             android:layout_gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:src="@drawable/screen_upload"/>
+            android:src="@drawable/screen_upload2"/>
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
