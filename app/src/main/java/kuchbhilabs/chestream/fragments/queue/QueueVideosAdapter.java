@@ -106,7 +106,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             upVotedVideos = relation.getQuery().find();
             relation = currentUser.getRelation(ParseTables.Users.DOWNVOTED);
             downVotedVideos = relation.getQuery().find();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         activity.runOnUiThread(new Runnable() {
@@ -184,9 +184,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
         if (video.isVoted == -2) {
             Log.d(TAG, "searching for the first time");
-            if (upVotedVideos.contains(video)) {
+            if (upVotedVideos != null && upVotedVideos.contains(video)) {
                 video.isVoted = 1;
-            } else if (downVotedVideos.contains(video)) {
+            } else if (downVotedVideos != null && downVotedVideos.contains(video)) {
                 video.isVoted = -1;
             } else {
                 video.isVoted = 0;
@@ -376,6 +376,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             case -1:
                 upVote.setImageResource(R.drawable.ic_expand_less_white_24dp);
                 downVote.setImageResource(R.drawable.ic_expand_more_yellow_24dp);
+                break;
         }
     }
 
