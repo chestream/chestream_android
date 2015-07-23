@@ -20,7 +20,7 @@ public class AppIntroActivity extends IntroActivity {
         addSlide(new Slide1(), getApplicationContext());
         addSlide(new Slide2(), getApplicationContext());
         addSlide(new Slide3(), getApplicationContext());
-        addSlide(new Slide5(),getApplicationContext());
+//        addSlide(new Slide5(),getApplicationContext());
 
     }
 
