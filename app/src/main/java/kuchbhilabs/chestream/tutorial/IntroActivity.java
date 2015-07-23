@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -173,10 +172,10 @@ public abstract class IntroActivity extends AppCompatActivity {
         skipText.setText(text);
     }
 
-    public void setDoneText(final String text){
-        TextView doneText = (TextView) findViewById(R.id.done);
-        doneText.setText(text);
-    }
+//    public void setDoneText(final String text){
+//        ImageButton doneText = (ImageButton) findViewById(R.id.done);
+//        doneText.setText(text);
+//    }
 
     public void showSkipButton(boolean showButton){
         this.showSkip = showButton;
