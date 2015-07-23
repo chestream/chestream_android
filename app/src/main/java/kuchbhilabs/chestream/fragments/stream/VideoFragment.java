@@ -174,6 +174,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
         audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(activity, this);
 
+        dialog = new Dialog(getActivity());
+
         tvideoTitle = (TextView) rootView.findViewById(R.id.video_title);
         tlocation = (TextView) rootView.findViewById(R.id.video_location);
         tusername = (TextView) rootView.findViewById(R.id.username);
@@ -230,7 +232,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                 TextView username ;
                 SimpleDraweeView profile;
 
-                dialog = new Dialog(getActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //before
                 dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                 dialog.setContentView(R.layout.fragment_profile);
