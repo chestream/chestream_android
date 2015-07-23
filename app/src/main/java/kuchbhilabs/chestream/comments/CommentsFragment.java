@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ import kuchbhilabs.chestream.NotificationReceiver;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.stream.VideoFragment;
+import kuchbhilabs.chestream.helpers.Helper;
 
 /**
  * Created by naman on 20/06/15.
@@ -162,7 +164,7 @@ public class CommentsFragment extends Fragment {
                             @Override
                             public void done(ParseException e) {
                                 Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
-                                setUpComments();
+                                commentsAdapter.notifyDataSetChanged();
                             }
                         });
                     } else {
