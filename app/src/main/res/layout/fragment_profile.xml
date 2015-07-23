@@ -5,6 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="250dp"
@@ -58,14 +65,17 @@
 
     </FrameLayout>
 
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/recycler_view"
-        android:paddingTop="250dp"
         android:clipToPadding="false"
         android:paddingBottom="10dp"
         />
+
+    </LinearLayout>
+
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

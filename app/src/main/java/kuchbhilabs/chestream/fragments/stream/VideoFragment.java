@@ -1,6 +1,7 @@
 package kuchbhilabs.chestream.fragments.stream;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,10 +31,13 @@ import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +69,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -74,12 +81,14 @@ import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.helpers.Helper;
+import kuchbhilabs.chestream.parse.ParseVideo;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
         View.OnTouchListener {
 
+    Dialog dialog;
     String url = "";
     String upvotes = "";
     String location = "";
@@ -88,6 +97,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     String avatar = "";
     public static ParseObject currentVideo;
 
+    ParseUser currentParseUser;
+
+    OtherUserProfileAdapter adapter;
+    RecyclerView recyclerView;
+    LinearLayout userLayout;
+
+    public static SimpleDraweeView gifView;
+
+
+    ParseUser pUser;
     TextView tvideoTitle;
     TextView tlocation;
     TextView tusername,tusernameComments;
@@ -207,6 +226,56 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
         exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
+        userLayout = (LinearLayout)rootView.findViewById(R.id.user_details);
+        userLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                FrameLayout header;
+                TextView username ;
+                SimpleDraweeView profile;
+
+                dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //before
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                dialog.setContentView(R.layout.fragment_profile);
+
+                profile=(SimpleDraweeView) dialog.findViewById(R.id.profile_picture);
+                header=(FrameLayout) dialog.findViewById(R.id.header);
+                recyclerView=(RecyclerView) dialog.findViewById(R.id.recycler_view);
+                username=(TextView) dialog.findViewById(R.id.username);
+                gifView = (SimpleDraweeView) dialog.findViewById(R.id.preview_gif);
+
+                    username.setText(tusername.getText().toString());
+                    profile.setImageURI(Uri.parse(avatar));
+
+                    ParseQuery<ParseVideo> query = ParseQuery.getQuery(ParseVideo.class);
+                    query.orderByDescending(ParseTables.Videos.UPVOTE);
+                    query.whereEqualTo(ParseTables.Videos.COMPILED, true);
+                    query.whereEqualTo("user", currentParseUser);
+                    query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+                    query.findInBackground(new FindCallback<ParseVideo>() {
+                        @Override
+                        public void done(List<ParseVideo> parseObjects, ParseException e) {
+                            if(parseObjects.isEmpty())
+                            {
+                                Log.d(TAG, "Empty");
+                            }
+                            else {
+                                adapter = new OtherUserProfileAdapter(getActivity(), new ArrayList<ParseVideo>());
+                                adapter.updateDataSet(parseObjects);
+                                adapter.notifyDataSetChanged();
+                                recyclerView.setAdapter(adapter);
+                            }
+                        }
+                    });
+
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                recyclerView.setHasFixedSize(true);
+
+                dialog.show();
+            }
+        });
         return rootView;
     }
 
@@ -267,6 +336,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                 generator = new RandomTransitionGenerator(4000, interpolator);
                                         patternView.setTransitionGenerator(generator);
 
+                                        dialog.dismiss();
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
                                         location = currentVideo.getString(ParseTables.Videos.LOCATION);
                                         title = currentVideo.getString(ParseTables.Videos.TITLE);
@@ -274,6 +344,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                 .fetchIfNeededInBackground(new GetCallback<ParseUser>() {
                                                     @Override
                                                     public void done(ParseUser parseObject, ParseException e) {
+                                                        currentParseUser = parseObject;
                                                         username = parseObject.getUsername();
                                                         avatar = parseObject.getString(ParseTables.Users.AVATAR);
                                                         setVideoDetails();
