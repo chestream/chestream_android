@@ -1,6 +1,9 @@
 package kuchbhilabs.chestream;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.util.Base64;
 import android.util.Log;
 
@@ -23,7 +26,7 @@ import kuchbhilabs.chestream.parse.ParseVideo;
 /**
  * Created by root on 20/6/15.
  */
-public class ApplicationBase extends Application {
+public class ApplicationBase extends MultiDexApplication {
 
     public static final boolean LOG_DEBUG = true;
     public static final boolean LOG_INFO = true;
@@ -65,5 +68,13 @@ public class ApplicationBase extends Application {
 
         ImageLoaderConfiguration localImageLoaderConfiguration = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(localImageLoaderConfiguration);
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context base)
+    {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }
