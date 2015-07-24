@@ -61,8 +61,8 @@ public class SignUpFragment extends Fragment {
         usernameEditText = (EditText) rootView.findViewById(R.id.username_edit_text);
 
         b = getArguments();
-        if (b.getString(ParseTables.Users.NAME) != null) {
-            usernameEditText.setText(b.getString(ParseTables.Users.NAME));
+        if (b.getString(ParseTables.Users.USERNAME) != null) {
+            usernameEditText.setText(b.getString(ParseTables.Users.USERNAME));
         }
 
         userAvatar = (SimpleDraweeView) rootView.findViewById(R.id.user_avatar_sign_up);
