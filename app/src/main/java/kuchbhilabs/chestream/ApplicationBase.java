@@ -44,6 +44,8 @@ public class ApplicationBase extends MultiDexApplication {
         Parse.initialize(this, getString(R.string.i),
                 getString(R.string.p));
 
+        ParseUser.enableRevocableSessionInBackground();
+
         ParseFacebookUtils.initialize(this);
         ParseTwitterUtils.initialize("JdSrIpONnSYiOichfx59MNdlP",
                 "iH3md4EEpHkcfjyT0Yz0LyuFFrE7N9ys3cTc3pdq5iYz31qYLu");

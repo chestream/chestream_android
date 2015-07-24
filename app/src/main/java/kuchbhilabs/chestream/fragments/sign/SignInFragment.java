@@ -363,6 +363,8 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                                     final Person currentPerson = Plus.PeopleApi
                                                             .getCurrentPerson(mGoogleApiClient);
                                                     b.putString(ParseTables.Users.NAME, currentPerson.getDisplayName());
+                                                    b.putString(ParseTables.Users.USERNAME,
+                                                            currentPerson.getDisplayName().replace(" ", ""));
                                                     b.putString(ParseTables.Users.EMAIL, Plus.AccountApi.getAccountName(mGoogleApiClient));
                                                     if (currentPerson.getBirthday() != null) {
                                                         String reverseDate = new StringBuffer(currentPerson.getBirthday()).reverse().toString();
