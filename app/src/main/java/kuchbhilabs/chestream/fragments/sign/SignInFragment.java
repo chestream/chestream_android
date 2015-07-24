@@ -403,6 +403,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                             activity.startActivity(intent);
                                         }
                                     } else if (e != null) {
+                                        Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
                                         e.printStackTrace();
                                         mGoogleApiClient.disconnect();
                                     } else
