@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Shader;
 import android.graphics.SurfaceTexture;
@@ -56,6 +57,10 @@ import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
 import com.google.android.exoplayer.util.Util;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -234,18 +239,29 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             @Override
             public void onClick(View view) {
 
-                FrameLayout header;
+                final FrameLayout header;
                 TextView username ;
-                SimpleDraweeView profile;
+                ImageView profile;
 
-                profile=(SimpleDraweeView) dialog.findViewById(R.id.profile_picture);
+                profile=(ImageView) dialog.findViewById(R.id.profile_picture);
                 header=(FrameLayout) dialog.findViewById(R.id.header);
                 recyclerView=(RecyclerView) dialog.findViewById(R.id.recycler_view);
                 username=(TextView) dialog.findViewById(R.id.username);
                 gifView = (SimpleDraweeView) dialog.findViewById(R.id.preview_gif);
 
                     username.setText(tusername.getText().toString());
-                    profile.setImageURI(Uri.parse(avatar));
+                ImageLoader.getInstance().displayImage(avatar, profile,
+                        new DisplayImageOptions.Builder().cacheInMemory(true)
+                                .cacheOnDisk(true)
+                                .resetViewBeforeLoading(true)
+                                .displayer(new FadeInBitmapDisplayer(400))
+                                .build(),new SimpleImageLoadingListener() {
+                            @Override
+                            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                header.setBackground(Helper.createBlurredImageFromBitmap(loadedImage,getActivity()));
+                            }
+                        });
+//                    profile.setImageURI(Uri.parse(avatar));
 
                     ParseQuery<ParseVideo> query = ParseQuery.getQuery(ParseVideo.class);
                     query.orderByDescending(ParseTables.Videos.UPVOTE);
