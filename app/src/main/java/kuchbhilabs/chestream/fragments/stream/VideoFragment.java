@@ -255,10 +255,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                 .cacheOnDisk(true)
                                 .resetViewBeforeLoading(true)
                                 .displayer(new FadeInBitmapDisplayer(400))
-                                .build(),new SimpleImageLoadingListener() {
+                                .build(), new SimpleImageLoadingListener() {
                             @Override
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                                header.setBackground(Helper.createBlurredImageFromBitmap(loadedImage,getActivity()));
+                                header.setBackground(Helper.createBlurredImageFromBitmap(loadedImage, getActivity()));
                             }
                         });
 //                    profile.setImageURI(Uri.parse(avatar));
@@ -322,6 +322,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                             JSONObject responseObject = new JSONObject(response);
                             responseObject = responseObject.getJSONObject("data");
                             final String videoId = responseObject.getString("video_id");
+                            final long playEpoch = Long.parseLong(responseObject.getString("play_epoch"));
                             ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseTables.Videos._NAME);
                             query.whereEqualTo("objectId", videoId);
                             query.findInBackground(new FindCallback<ParseObject>() {
@@ -336,7 +337,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         }
                                         bufferScreen.setVisibility(View.VISIBLE);
 
-                                        Random random=new Random();
+                                        Random random = new Random();
                                         int rndInt = random.nextInt(patternImages.length);
                                         if (getActivity()!=null) {
                                             BitmapDrawable pattern = new BitmapDrawable(BitmapFactory.decodeResource(getActivity().getResources(), patternImages[rndInt]));
@@ -370,12 +371,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                                                         bufferScreenProfile.setImageURI(Uri.parse(avatar));
                                                         bufferScreenUsername.setText(username);
-
-
                                                     }
                                                 });
                                         bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
-
                                         bufferScreenTitle.setText(title);
 
                                         bufferStartTime = System.currentTimeMillis();
@@ -384,7 +382,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
 
                                         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
-                                                ExoPlayerHandler.MSG_SET_RENDERER_BUILDER));
+                                                ExoPlayerHandler.MSG_SET_RENDERER_BUILDER, playEpoch));
                                         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
                                                 ExoPlayerHandler.MSG_PREPARE));
                                     } else {
@@ -392,7 +390,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                     }
                                 }
                             });
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -471,7 +469,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                     releasePlayer();
                     break;
                 case MSG_SET_RENDERER_BUILDER:
-                    setRendererBuilder();
+                    int playEpoch = msg.what;
+                    setRendererBuilder(playEpoch);
                     break;
                 default:
                     throw new UnsupportedOperationException();
@@ -479,10 +478,15 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         }
     }
 
-    private void setRendererBuilder() {
+    private void setRendererBuilder(int playEpoch) {
         if (player != null) {
+            long currentEpochSec = System.currentTimeMillis()/1000;
             player.updateRendererBuilder(getRendererBuilder());
-            player.seekTo(0);
+            if (currentEpochSec - playEpoch > 5) {
+                player.seekTo(currentEpochSec - playEpoch);
+            } else {
+                player.seekTo(0);
+            }
         }
         playerNeedsPrepare = true;
     }
