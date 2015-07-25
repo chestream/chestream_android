@@ -211,6 +211,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                         Log.d(TAG, "Welcome back old user");
                         Intent intent = new Intent(activity, MainActivity.class);
                         activity.startActivity(intent);
+                        activity.finish();
                     }
                 }
             }
@@ -294,6 +295,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                         Log.d(TAG, "Welcome back old user");
                         Intent intent = new Intent(activity, MainActivity.class);
                         activity.startActivity(intent);
+                        activity.finish();
                     }
                 }
             }
@@ -355,6 +357,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                             Log.d(TAG, "Welcome back old user");
                                             Intent intent = new Intent(activity, MainActivity.class);
                                             activity.startActivity(intent);
+                                            activity.finish();
                                         }
 
                                         if (user.isNew() || (!fullyRegistered)) {
@@ -403,6 +406,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                             Log.d(TAG, "Welcome back old user");
                                             Intent intent = new Intent(activity, MainActivity.class);
                                             activity.startActivity(intent);
+                                            activity.finish();
                                         }
                                     } else if (e != null) {
                                         Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
