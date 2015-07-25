@@ -42,6 +42,7 @@ public class FacebookApi {
                             fgdc.gotData(b);
                         } catch (JSONException e1) {
                             e1.printStackTrace();
+                            fgdc.gotData(b);
                         }
                     }
                 });
