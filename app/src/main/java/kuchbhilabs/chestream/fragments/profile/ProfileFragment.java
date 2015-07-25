@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -28,6 +30,7 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.Helper;
@@ -48,6 +51,8 @@ public class ProfileFragment extends Fragment {
     MyVideosAdapter adapter;
     TextView username ;
     ParseUser pUser;
+    LinearLayout emptyLayout;
+    Button uploadVideo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,8 +63,10 @@ public class ProfileFragment extends Fragment {
         toolbar=(Toolbar) rootView.findViewById(R.id.toolbar);
         profile=(ImageView) rootView.findViewById(R.id.profile_picture);
         header=(FrameLayout) rootView.findViewById(R.id.header);
+        emptyLayout=(LinearLayout) rootView.findViewById(R.id.emptyLayout);
         recyclerView=(RecyclerView) rootView.findViewById(R.id.recycler_view);
         username=(TextView) rootView.findViewById(R.id.username);
+        uploadVideo=(Button) rootView.findViewById(R.id.uploadVideo);
         gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
 
         pUser = ParseUser.getCurrentUser() ;
@@ -95,8 +102,14 @@ public class ProfileFragment extends Fragment {
                     if(parseObjects.isEmpty())
                     {
                         Log.d(TAG, "Empty");
+                        recyclerView.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+
                     }
                     else {
+                        emptyLayout.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+
                         adapter = new MyVideosAdapter(getActivity(), new ArrayList<ParseVideo>());
                         adapter.updateDataSet(parseObjects);
                         adapter.notifyDataSetChanged();
@@ -117,6 +130,13 @@ public class ProfileFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+
+        uploadVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.movetoQueueAndUploadVideo();
+            }
+        });
 
         return rootView;
     }
