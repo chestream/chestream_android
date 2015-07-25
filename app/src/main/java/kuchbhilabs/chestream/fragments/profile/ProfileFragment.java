@@ -1,5 +1,6 @@
 package kuchbhilabs.chestream.fragments.profile;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import kuchbhilabs.chestream.LoginActivity;
 import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
@@ -52,7 +54,8 @@ public class ProfileFragment extends Fragment {
     TextView username ;
     ParseUser pUser;
     LinearLayout emptyLayout;
-    Button uploadVideo;
+    Button emptyLayoutButton;
+    TextView emptyLayoutText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,9 +67,10 @@ public class ProfileFragment extends Fragment {
         profile=(ImageView) rootView.findViewById(R.id.profile_picture);
         header=(FrameLayout) rootView.findViewById(R.id.header);
         emptyLayout=(LinearLayout) rootView.findViewById(R.id.emptyLayout);
+        emptyLayoutText=(TextView) rootView.findViewById(R.id.emptyLayoutText);
         recyclerView=(RecyclerView) rootView.findViewById(R.id.recycler_view);
         username=(TextView) rootView.findViewById(R.id.username);
-        uploadVideo=(Button) rootView.findViewById(R.id.uploadVideo);
+        emptyLayoutButton=(Button) rootView.findViewById(R.id.emptyLayoutButton);
         gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
 
         pUser = ParseUser.getCurrentUser() ;
@@ -117,10 +121,27 @@ public class ProfileFragment extends Fragment {
                     }
                 }
             });
+            emptyLayoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MainActivity.movetoQueueAndUploadVideo();
+                }
+            });
+
         }
         else{
-            username.setText("Login to view profile.");
-//            profile.setImageURI(Uri.parse("http://www.loanstreet.in/loanstreet-b2c-theme/img/avatar-blank.jpg"));
+            recyclerView.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+            username.setText("");
+            emptyLayoutText.setText("Login to view your Profile and upload videos.");
+            emptyLayoutButton.setText("Login");
+            emptyLayoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
         }
 
 
@@ -131,12 +152,6 @@ public class ProfileFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        uploadVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.movetoQueueAndUploadVideo();
-            }
-        });
 
         return rootView;
     }
