@@ -2,6 +2,7 @@ package kuchbhilabs.chestream;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,7 +17,7 @@ import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
-    ViewPager mViewPager;
+    static ViewPager mViewPager;
     PagerAdapter mPagerAdapter;
 
     VideoFragment videoFragment;
@@ -143,10 +144,20 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         } else if (VideoFragment.slidingUpPanelLayout.isPanelExpanded()){
               VideoFragment.slidingUpPanelLayout.collapsePanel();
 
-//        } else if (VideoFragment.slidingUpPanelLayout2.isPanelExpanded()) {
-//              VideoFragment.slidingUpPanelLayout2.collapsePanel();
     } else {
             super.onBackPressed();
         }
+    }
+
+    public static void movetoQueueAndUploadVideo(){
+        mViewPager.setCurrentItem(2);
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                QueueFragment.upload.performClick();
+            }
+        },500);
+
     }
 }

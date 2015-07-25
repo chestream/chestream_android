@@ -70,7 +70,7 @@ public class QueueFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
-    private static FloatingActionButton upload;
+    public static FloatingActionButton upload;
     private CircularRevealView revealView;
     private View selectedView;
     android.os.Handler handler;

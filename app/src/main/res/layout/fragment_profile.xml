@@ -2,77 +2,116 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:typeface='http://schemas.android.com/apk/res-auto'
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_gravity="top"
-        android:elevation="5dp"
         android:orientation="vertical">
 
+
         <FrameLayout
-            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:background="@drawable/background" />
+            android:layout_gravity="top"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:translationZ="4dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical">
+            <FrameLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/bitmappattern1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <kuchbhilabs.chestream.helpers.CircularImageView
+                    android:id="@+id/profile_picture"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/avatar_blank" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:ellipsize="end"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:paddingTop="7dp"
+                    android:text="Username"
+                    android:textColor="#ffffff"
+                    android:textSize="17sp" />
+
+            </LinearLayout>
 
             <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/profile_picture"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                fresco:placeholderImage="@drawable/zombie_icon"
-                fresco:roundAsCircle="true" />
+                android:id="@+id/preview_gif"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"
+                fresco:progressBarAutoRotateInterval="1000"
+                fresco:progressBarImage="@drawable/loading" />
 
-            <TextView
-                android:id="@+id/username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:ellipsize="end"
-                android:maxLength="25"
-                android:text="Username"
-                android:maxLines="1"
-                android:textColor="#ffffff"
-                android:textSize="17sp" />
+        </FrameLayout>
 
-        </LinearLayout>
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/preview_gif"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"
-            fresco:progressBarImage="@drawable/loading"
-            fresco:progressBarAutoRotateInterval="1000"
-            />
+            android:layout_height="match_parent">
 
-    </FrameLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="10dp" />
 
+            <LinearLayout
+                android:id="@+id/emptyLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="30dp"
+                android:gravity="center_horizontal"
+                android:layout_margin="10dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/recycler_view"
-        android:clipToPadding="false"
-        android:paddingBottom="10dp"
-        />
+                <kuchbhilabs.chestream.helpers.TypefaceTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:gravity="center_horizontal"
+                    android:textSize="25sp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:id="@+id/emptyLayoutText"
+                    android:text="You haven't uploaded any videos yet."
+                    typeface:typeface="HelveticaNeue-Light"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorAccent"
+                    android:padding="10dp"
+                    android:id="@+id/emptyLayoutButton"
+                    android:layout_marginTop="15dp"
+                    android:textSize="15sp"
+                    android:text="Upload your first video"
+                    android:textColor="#ffffff" />
+            </LinearLayout>
+
+        </FrameLayout>
 
     </LinearLayout>
 
