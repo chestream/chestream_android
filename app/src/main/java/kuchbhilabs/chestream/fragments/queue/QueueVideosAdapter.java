@@ -263,6 +263,18 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
         final Runnable mLongPressed = new Runnable() {
             public void run() {
+
+                Tracker mTracker;
+                ApplicationBase application = (ApplicationBase) activity.getApplication();
+                mTracker = application.getDefaultTracker();
+                mTracker.setScreenName("QueueFragment");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("GIF")
+                        .setAction("preview")
+                        .setLabel(Utilities.getUserEmail(activity))
+                        .build());
+
+
                 Log.i("", "Long press!");
                 DraweeController controller = Fresco.newDraweeControllerBuilder()
                         .setUri(Uri.parse(video.getString(ParseTables.Videos.GIF)))

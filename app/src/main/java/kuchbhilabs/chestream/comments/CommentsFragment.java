@@ -24,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -34,12 +36,14 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.LoginActivity;
 import kuchbhilabs.chestream.NotificationReceiver;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 import kuchbhilabs.chestream.helpers.Helper;
+import kuchbhilabs.chestream.helpers.Utilities;
 
 /**
  * Created by naman on 20/06/15.
@@ -102,6 +106,17 @@ public class CommentsFragment extends Fragment {
         sendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Tracker mTracker;
+                ApplicationBase application = (ApplicationBase) getActivity().getApplication();
+                mTracker = application.getDefaultTracker();
+                mTracker.setScreenName("CommentsFragment");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Comments")
+                        .setAction("sent")
+                        .setLabel(Utilities.getUserEmail(activity))
+                        .build());
+
                 view.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
                 ParseObject currentVideoObjectComment = VideoFragment.currentVideo ;
                 if (currentVideoObjectComment!=null) {
@@ -144,6 +159,18 @@ public class CommentsFragment extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     //TODO: Add a new comment to the current video
+
+                    Tracker mTracker;
+                    ApplicationBase application = (ApplicationBase) getActivity().getApplication();
+                    mTracker = application.getDefaultTracker();
+                    mTracker.setScreenName("CommentsFragment");
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory("Comments")
+                            .setAction("sent")
+                            .setLabel(Utilities.getUserEmail(activity))
+                            .build());
+
+
                     ParseUser pUser = ParseUser.getCurrentUser();
                     if ((pUser != null)
                             && (pUser.isAuthenticated())

@@ -58,6 +58,17 @@ public class SignUpFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_sign_up, null);
         activity = getActivity();
 
+        Tracker mTracker;
+        ApplicationBase application = (ApplicationBase) activity.getApplication();
+        mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("SignUpFragment");
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("OnCreate")
+                .setAction("opened")
+                .setLabel(Utilities.getUserEmail(activity))
+                .build());
+
+
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setCancelable(false);
 

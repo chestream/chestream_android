@@ -116,7 +116,7 @@ public class QueueFragment extends Fragment {
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("OnCreate")
                 .setAction("opened")
-                .setLabel("fragment")
+                .setLabel(Utilities.getUserEmail(activity))
                 .build());
 
 

@@ -57,6 +57,8 @@ import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
 import com.google.android.exoplayer.util.Util;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -79,6 +81,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.exoplayer.DemoPlayer;
@@ -87,6 +90,7 @@ import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.helpers.Helper;
+import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 
@@ -238,6 +242,17 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         userLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Tracker mTracker;
+                ApplicationBase application = (ApplicationBase) activity.getApplication();
+                mTracker = application.getDefaultTracker();
+                mTracker.setScreenName("ProfileFragment");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("UploaderProfile")
+                        .setAction("preview")
+                        .setLabel(Utilities.getUserEmail(activity))
+                        .build());
+
 
                 final FrameLayout header;
                 TextView username ;
