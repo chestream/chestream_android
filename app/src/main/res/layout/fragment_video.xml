@@ -12,7 +12,7 @@
     sothree:panelHeight="200dp"
     sothree:shadowHeight="0dp">
 
-    <FrameLayout
+    <kuchbhilabs.chestream.fragments.stream.HackyFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#009688"
@@ -132,7 +132,7 @@
             android:layout_gravity="top|right"
             android:visibility="gone" />
 
-    </FrameLayout>
+    </kuchbhilabs.chestream.fragments.stream.HackyFrameLayout>
 
     <include layout="@layout/layout_panel_bottom" />
 
