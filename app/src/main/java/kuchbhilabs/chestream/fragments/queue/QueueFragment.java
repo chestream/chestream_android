@@ -36,11 +36,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import org.mockito.internal.util.reflection.Fields;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +53,7 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.CompressionUploadService;
 import kuchbhilabs.chestream.LoginActivity;
 import kuchbhilabs.chestream.NotificationReceiver;
@@ -85,6 +91,8 @@ public class QueueFragment extends Fragment {
     private BroadcastReceiver receiver;
     private static Activity activity;
 
+    Tracker mTracker;
+
     public QueueFragment() {
         // Required empty public constructor
     }
@@ -100,6 +108,16 @@ public class QueueFragment extends Fragment {
         gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
 
         activity = getActivity();
+
+        ApplicationBase application = (ApplicationBase) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("QueueFragment");
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("OnCreate")
+                .setAction("opened")
+                .setLabel("fragment")
+                .build());
+
 
         toolbar=(Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);

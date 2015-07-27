@@ -21,6 +21,7 @@ import java.io.IOException;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.sign.SignInFragment;
 import kuchbhilabs.chestream.tutorial.AppIntroActivity;
+import  com.parse.ParseAnalytics;
 
 public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -53,6 +54,10 @@ public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Ca
         }
 
         setContentView(R.layout.activity_login);
+
+
+        ParseAnalytics.trackAppOpenedInBackground(getIntent());
+
 
         surfaceView = (SurfaceView) findViewById(R.id.login_surface_view);
         surfaceHolder = surfaceView.getHolder();

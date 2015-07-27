@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
@@ -27,6 +29,7 @@ import com.parse.SignUpCallback;
 
 import java.util.List;
 
+import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.FacebookApi;
@@ -205,6 +208,7 @@ public class SignUpFragment extends Fragment {
             }
 
             currentUser.put(ParseTables.Users.FULLY_REGISTERED, true);
+
 
             try {
                 if (currentUser.getSessionToken() != null) {

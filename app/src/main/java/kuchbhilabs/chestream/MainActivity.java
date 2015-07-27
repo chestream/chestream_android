@@ -8,8 +8,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import kuchbhilabs.chestream.fragments.profile.ProfileFragment;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
@@ -21,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     PagerAdapter mPagerAdapter;
 
     VideoFragment videoFragment;
+    Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +33,17 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         setContentView(R.layout.activity_main);
 
+        ApplicationBase application = (ApplicationBase) getApplication();
+        mTracker = application.getDefaultTracker();
+
+
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(1);
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.addOnPageChangeListener(this);
+
     }
 
 //    @Override
@@ -68,8 +78,25 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     @Override
     public void onPageSelected(int position) {
+
+
+
+        if (position==0){
+            Log.i("MainActivity", "Setting screen name: " + "ProfileFragment");
+            mTracker.setScreenName("Image~" + "ProfileFragment");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());        }
+
+        if (position==1){
+            Log.i("MainActivity", "Setting screen name: " + "VideoFragment");
+            mTracker.setScreenName("Image~" + "VideoFragment");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());        }
+
+
         if (position==2){
             QueueFragment.bounceUploadButton();
+            Log.i("MainActivity", "Setting screen name: " + "QueueFragment");
+            mTracker.setScreenName("Image~" + "QueueFragment");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 
