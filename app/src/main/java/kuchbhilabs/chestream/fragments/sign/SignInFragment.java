@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.ConnectionResult;
@@ -38,6 +40,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.FacebookApi;
@@ -102,6 +105,17 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Tracker mTracker;
+                ApplicationBase application = (ApplicationBase) getActivity().getApplication();
+                mTracker = application.getDefaultTracker();
+                mTracker.setScreenName("SignInFragment");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Signup")
+                        .setAction("skip")
+                        .setLabel(Utilities.getUserEmail(getActivity()))
+                        .build());
+
                 Intent intent = new Intent(activity, MainActivity.class);
                 startActivity(intent);
                 activity.finish();

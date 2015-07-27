@@ -62,6 +62,7 @@ import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.AppLocationService;
 import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
+import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
 
 /**
@@ -155,6 +156,17 @@ public class QueueFragment extends Fragment {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
+
+                Tracker mTracker;
+                ApplicationBase application = (ApplicationBase) getActivity().getApplication();
+                mTracker = application.getDefaultTracker();
+                mTracker.setScreenName("QueueFragment");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Upload")
+                        .setAction("click")
+                        .setLabel(Utilities.getUserEmail(getActivity()))
+                        .build());
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Choose Video Source");
                 builder.setItems(new CharSequence[]{"Gallery", "Camera"},

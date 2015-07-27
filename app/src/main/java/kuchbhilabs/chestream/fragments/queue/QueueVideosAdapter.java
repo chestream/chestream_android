@@ -22,6 +22,8 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -38,8 +40,10 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
 
 
@@ -193,6 +197,17 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.upVote.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+
+                Tracker mTracker;
+                ApplicationBase application = (ApplicationBase) activity.getApplication();
+                mTracker = application.getDefaultTracker();
+                mTracker.setScreenName("QueueFragment");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Upvote")
+                        .setAction("click")
+                        .setLabel(Utilities.getUserEmail(activity))
+                        .build());
+
                 int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
                 v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
                 holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
@@ -215,6 +230,17 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         holder.downVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Tracker mTracker;
+                ApplicationBase application = (ApplicationBase) activity.getApplication();
+                mTracker = application.getDefaultTracker();
+                mTracker.setScreenName("QueueFragment");
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Downvote")
+                        .setAction("click")
+                        .setLabel(Utilities.getUserEmail(activity))
+                        .build());
+
                 int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
                 v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
                 holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));

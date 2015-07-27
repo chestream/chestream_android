@@ -209,6 +209,16 @@ public class SignUpFragment extends Fragment {
 
             currentUser.put(ParseTables.Users.FULLY_REGISTERED, true);
 
+            Tracker mTracker;
+            ApplicationBase application = (ApplicationBase) getActivity().getApplication();
+            mTracker = application.getDefaultTracker();
+            mTracker.setScreenName("SignUpFragment");
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Signup")
+                    .setAction("click")
+                    .setLabel(ParseTables.Users.USERNAME)
+                    .build());
+
 
             try {
                 if (currentUser.getSessionToken() != null) {
