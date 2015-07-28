@@ -83,6 +83,7 @@ import java.util.Random;
 
 import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.VolleySingleton;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
@@ -136,6 +137,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private static TextView commentFloating;
     private static TimerCommentText timerCommentText;
     private FrameLayout bufferScreen;
+    private Bitmap previewBitmap = null;
 
     private static final String TAG = "VideoFragment";
 
@@ -403,6 +405,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                         bufferScreenTitle.setText(title);
                                         bufferStartTime = System.currentTimeMillis();
 
+                                        downloadBackgroundBitmap(currentVideo.getString(
+                                                ParseTables.Videos.VIDEO_THUMBNAIL));
+
                                         CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
 
@@ -444,6 +449,21 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                 Uri uri = Uri.parse(avatar);
                 tdraweeView.setImageURI(uri);
                 tdraweeViewComments.setImageURI(uri);
+            }
+        });
+    }
+
+    private void downloadBackgroundBitmap(String url) {
+        VolleySingleton.getInstance(activity).getImageLoader().get(url,
+                new com.android.volley.toolbox.ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(com.android.volley.toolbox.ImageLoader.ImageContainer response, boolean isImmediate) {
+                previewBitmap = response.getBitmap();
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
             }
         });
     }
