@@ -253,7 +253,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                         .setLabel(Utilities.getUserEmail(activity))
                         .build());
 
-
                 final FrameLayout header;
                 TextView username ;
                 ImageView profile;
@@ -390,7 +389,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                 });
                                         bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
                                         bufferScreenTitle.setText(title);
-
                                         bufferStartTime = System.currentTimeMillis();
 
                                         CommentsFragment.setUpComments();
