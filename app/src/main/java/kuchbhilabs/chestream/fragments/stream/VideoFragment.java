@@ -673,7 +673,21 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                         TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
                     }
                     bufferScreen.setVisibility(View.GONE);
-
+                    if (previewBitmap != null) {
+                        Toast.makeText(activity, "Bitmap is not null", Toast.LENGTH_SHORT).show();
+                        videoFrame.setBackground(new BitmapDrawable(activity.getResources(), previewBitmap));
+                    } else {
+                        Log.d(TAG, "PREVIEW BITMAPP IS NULL");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (previewBitmap != null)
+                                    videoFrame.setBackground(new BitmapDrawable(activity.getResources(), previewBitmap));
+                                else
+                                    Log.d(TAG, "This shit is still null");
+                            }
+                        }, 3000);
+                    }
                 }
             });
         } catch (InterruptedException e) {
