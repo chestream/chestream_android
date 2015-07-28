@@ -126,7 +126,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
 
-    AspectRatioFrameLayout videoFrame;
+    public static AspectRatioFrameLayout videoFrame;
     SurfaceView surfaceView;
     SurfaceHolder holder;
     private static TextView commentFloating;
@@ -166,6 +166,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private Handler uiHandler;
     float fingerDownX, fingerDownY;
 
+    FrameLayout dragCommentsView;
+
     int[] patternImages = {R.drawable.pattern1, R.drawable.pattern2,R.drawable.pattern3,R.drawable.pattern4,R.drawable.pattern5,R.drawable.pattern6,R.drawable.pattern7,R.drawable.pattern8};
 
     @Override
@@ -173,7 +175,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_video, null);
-        rootView.setOnTouchListener(this);
 
         activity = getActivity();
         receiver = new CommentsBroadcastReceiver();
@@ -201,6 +202,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         bufferScreenUsername = (TextView) rootView.findViewById(R.id.buffer_screen_username);
         bufferScreenProfile = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_profile_picture);
         patternView=(KenBurnsView) rootView.findViewById(R.id.patternView);
+        dragCommentsView=(FrameLayout) rootView.findViewById(R.id.dragCommentsView);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
@@ -289,6 +291,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                 dialog.show();
             }
+        });
+        videoFrame.setOnTouchListener(this);
+        dragCommentsView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                videoFrame.dispatchTouchEvent(motionEvent);
+                return true;
+            }
+
         });
         return rootView;
     }
@@ -863,6 +875,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                 //TODO: we're not receiving ACTION_MOVE. Move this logic somewhere else
                 Log.d(TAG, "gap x = " + Math.abs(e.getX() - fingerDownX));
                 Log.d(TAG, "gap y = " + Math.abs(e.getY() - fingerDownY));
+                Log.d(TAG,String.valueOf(e.getY())+" , "+String.valueOf(fingerDownY));
                 if (Math.abs(e.getX() - fingerDownX) > 20 || Math.abs(e.getY() - fingerDownY) > 20) {
                     //It's a swipe. Fall back.
                     uiHandler.removeCallbacksAndMessages(null);
