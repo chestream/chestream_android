@@ -24,6 +24,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ScrollView;
 
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 
 public class SlidingUpPanelLayout extends ViewGroup {
 
@@ -1463,6 +1464,9 @@ public class SlidingUpPanelLayout extends ViewGroup {
             mPrevMotionX = x;
             mPrevMotionY = y;
 
+            //TODO Probably not a good idea,think something else
+            //Temporary solution to recieve ACTION_MOVE in VideoFragment
+            VideoFragment.videoFrame.dispatchTouchEvent(ev);
 
             if (!isScrollViewUnder((int) x, (int) y))
                 return this.onTouchEvent(ev);

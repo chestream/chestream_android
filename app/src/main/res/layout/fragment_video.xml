@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     sothree:dragViewClickable="true"
-    sothree:panelHeight="200dp"
+    sothree:panelHeight="140dp"
     sothree:shadowHeight="0dp">
 
     <FrameLayout
@@ -22,7 +22,8 @@
             android:id="@+id/video_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" >
+            android:layout_gravity="center"
+            android:clickable="true">
 
             <SurfaceView
                 android:id="@+id/main_surface_view"
