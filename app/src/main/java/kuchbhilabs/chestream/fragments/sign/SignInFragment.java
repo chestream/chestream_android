@@ -124,11 +124,14 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                         .setLabel(Utilities.getUserEmail(getActivity()))
                         .build());
 
-                final ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
-                parseInstallation.put("local_email", Utilities.getUserEmail(getActivity()));
-                parseInstallation.saveInBackground();
+
 
                 final String localEmail =  Utilities.getUserEmail(getActivity());
+
+                ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+                parseInstallation.put("local_email",localEmail);
+                parseInstallation.saveInBackground();
+
                 PackageManager manager = getActivity().getPackageManager();
                 PackageInfo info = null;
                 try {
@@ -141,14 +144,20 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
 
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("SkipUsers");
                 query.whereEqualTo("local_email", localEmail);
-                query.getFirstInBackground(new GetCallback<ParseObject>() {
+                query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
-                    public void done(ParseObject parseObject, ParseException e) {
-                        if(parseObject==null)
-                        {
+                    public void done(List<ParseObject> list, ParseException e) {
+                        if(list.isEmpty()) {
+
+                            String APPVERSION = version;
+                            if(APPVERSION==null)
+                            {
+                                APPVERSION = " - ";
+                            }
+
                             ParseObject parseObjectNew = new ParseObject("SkipUsers");
                             parseObjectNew.put("email", localEmail);
-                            parseObjectNew.put("app_version", version);
+                            parseObjectNew.put("app_version", APPVERSION);
                             parseObjectNew.saveInBackground();
                         }
                     }
