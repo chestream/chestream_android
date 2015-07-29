@@ -32,6 +32,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 
@@ -95,6 +96,10 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setCancelable(false);
 
+        ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+        parseInstallation.put("email", Utilities.getUserEmail(getActivity()));
+        parseInstallation.saveInBackground();
+
         fbLogin = (Button) rootView.findViewById(R.id.btn_fb);
         twLogin = (Button) rootView.findViewById(R.id.btn_tw);
         gpLogin = (Button) rootView.findViewById(R.id.btn_gp);
@@ -115,6 +120,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                         .setAction("skip")
                         .setLabel(Utilities.getUserEmail(getActivity()))
                         .build());
+
 
                 Intent intent = new Intent(activity, MainActivity.class);
                 startActivity(intent);
