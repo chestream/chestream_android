@@ -7,6 +7,8 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,12 +29,16 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.parse.FindCallback;
 import com.parse.FunctionCallback;
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 
@@ -47,6 +53,7 @@ import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.FacebookApi;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.externalapi.TwitterApi;
+import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 import kuchbhilabs.chestream.helpers.Utilities;
 
 /**
@@ -96,7 +103,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setCancelable(false);
 
-        ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+        final ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
         parseInstallation.put("email", Utilities.getUserEmail(getActivity()));
         parseInstallation.saveInBackground();
 
@@ -121,6 +128,31 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                         .setLabel(Utilities.getUserEmail(getActivity()))
                         .build());
 
+                final String localEmail =  Utilities.getUserEmail(getActivity());
+                PackageManager manager = getActivity().getPackageManager();
+                PackageInfo info = null;
+                try {
+                    info = manager.getPackageInfo(
+                            getActivity().getPackageName(), 0);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                final String version = info.versionName;
+
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("SkipUsers");
+                query.whereEqualTo("local_email", localEmail);
+                query.getFirstInBackground(new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject parseObject, ParseException e) {
+                        if(parseObject==null)
+                        {
+                            ParseObject parseObjectNew = new ParseObject("SkipUsers");
+                            parseObjectNew.put("email", localEmail);
+                            parseObjectNew.put("app_version", version);
+                            parseObjectNew.saveInBackground();
+                        }
+                    }
+                });
 
                 Intent intent = new Intent(activity, MainActivity.class);
                 startActivity(intent);
