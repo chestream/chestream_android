@@ -103,10 +103,6 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setCancelable(false);
 
-        final ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
-        parseInstallation.put("email", Utilities.getUserEmail(getActivity()));
-        parseInstallation.saveInBackground();
-
         fbLogin = (Button) rootView.findViewById(R.id.btn_fb);
         twLogin = (Button) rootView.findViewById(R.id.btn_tw);
         gpLogin = (Button) rootView.findViewById(R.id.btn_gp);
@@ -127,6 +123,10 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                         .setAction("skip")
                         .setLabel(Utilities.getUserEmail(getActivity()))
                         .build());
+
+                final ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+                parseInstallation.put("local_email", Utilities.getUserEmail(getActivity()));
+                parseInstallation.saveInBackground();
 
                 final String localEmail =  Utilities.getUserEmail(getActivity());
                 PackageManager manager = getActivity().getPackageManager();
