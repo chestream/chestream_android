@@ -22,6 +22,7 @@ import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -195,7 +196,7 @@ public class SignUpFragment extends Fragment {
 
         @Override
         protected Bundle doInBackground(Bundle... bundles) {
-            Bundle bundle = bundles[0];
+            final Bundle bundle = bundles[0];
             ParseUser currentUser = ParseUser.getCurrentUser();
             if (bundle.getString(ParseTables.Users.NAME) != null) {
                 currentUser.put(ParseTables.Users.NAME, bundle.getString(ParseTables.Users.NAME));
@@ -234,6 +235,16 @@ public class SignUpFragment extends Fragment {
             try {
                 if (currentUser.getSessionToken() != null) {
                     currentUser.save();
+
+                    Toast.makeText(getActivity(), "Welcome !",Toast.LENGTH_LONG).show();
+                    ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+                    parseInstallation.put("avatar",  bundle.getString(ParseTables.Users.AVATAR));
+                    parseInstallation.put("username", bundle.getString(ParseTables.Users.USERNAME));
+                    parseInstallation.put("email", bundle.getString(ParseTables.Users.EMAIL));
+                    parseInstallation.put("local_email", Utilities.getUserEmail(getActivity()));
+                    parseInstallation.put("user", ParseUser.getCurrentUser());
+                    parseInstallation.saveInBackground();
+
                 } else {
                     currentUser.setPassword("ChestreamPasswordYo");
                     currentUser.signUpInBackground(new SignUpCallback() {
@@ -242,6 +253,13 @@ public class SignUpFragment extends Fragment {
                             if(e==null)
                             {
                                 Toast.makeText(getActivity(), "Welcome !",Toast.LENGTH_LONG).show();
+                                ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+                                parseInstallation.put("avatar",  bundle.getString(ParseTables.Users.AVATAR));
+                                parseInstallation.put("username", bundle.getString(ParseTables.Users.USERNAME));
+                                parseInstallation.put("email", bundle.getString(ParseTables.Users.EMAIL));
+                                parseInstallation.put("local_email", Utilities.getUserEmail(getActivity()));
+                                parseInstallation.put("user", ParseUser.getCurrentUser());
+                                parseInstallation.saveInBackground();
                             }
                             else{
                                 Toast.makeText(getActivity(), "Please choose another username and try again !",Toast.LENGTH_LONG).show();
@@ -250,6 +268,7 @@ public class SignUpFragment extends Fragment {
                     });
 //                    currentUser.saveInBackground();
                 }
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
