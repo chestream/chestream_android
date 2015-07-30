@@ -106,6 +106,8 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
         fbLogin = (Button) rootView.findViewById(R.id.btn_fb);
         twLogin = (Button) rootView.findViewById(R.id.btn_tw);
         gpLogin = (Button) rootView.findViewById(R.id.btn_gp);
+
+        gpLogin.setVisibility(View.GONE);
         skip = (Button) rootView.findViewById(R.id.btn_skip);
 
         Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/HelveticaNeue-UltraLight.ttf");
@@ -156,7 +158,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                             }
 
                             ParseObject parseObjectNew = new ParseObject("SkipUsers");
-                            parseObjectNew.put("email", localEmail);
+                            parseObjectNew.put("local_email", localEmail);
                             parseObjectNew.put("app_version", APPVERSION);
                             parseObjectNew.saveInBackground();
                         }
