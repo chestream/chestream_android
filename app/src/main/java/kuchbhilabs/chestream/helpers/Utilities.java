@@ -35,7 +35,7 @@ public class Utilities {
                 return possibleEmail;
             }
         }
-        return "";
+        return " - ";
     }
 
     public static Bitmap downloadBitmap(String sUrl) {
