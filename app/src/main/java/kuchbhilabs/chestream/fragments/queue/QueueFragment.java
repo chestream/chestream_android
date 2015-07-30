@@ -224,7 +224,6 @@ public class QueueFragment extends Fragment {
                                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                                     startActivity(intent);
                                 }
-
                             }
                         });
                 builder.show();

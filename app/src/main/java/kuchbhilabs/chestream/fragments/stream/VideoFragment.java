@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Shader;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.BitmapDrawable;
@@ -230,7 +231,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
         setPanelSlideListeners();
 
-        commentFloating = (TextView) rootView.findViewById(R.id.commentText);
+//        commentFloating = (TextView) rootView.findViewById(R.id.commentText);
 
         CommentsFragment commentsFragment = new CommentsFragment();
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
@@ -674,8 +675,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                     }
                     bufferScreen.setVisibility(View.GONE);
                     if (previewBitmap != null) {
-                        Toast.makeText(activity, "Bitmap is not null", Toast.LENGTH_SHORT).show();
-                        videoFrame.setBackground(new BitmapDrawable(activity.getResources(), previewBitmap));
+                        //TODO: Blur the image and apply to the background
                     } else {
                         Log.d(TAG, "PREVIEW BITMAPP IS NULL");
                         new Handler().postDelayed(new Runnable() {
