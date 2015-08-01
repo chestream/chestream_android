@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Shader;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.BitmapDrawable;
@@ -95,6 +94,7 @@ import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
+import kuchbhilabs.chestream.widgets.FrameLayoutWithHole;
 
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
@@ -321,6 +321,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             }
 
         });
+
+//        setupOverlay();
         return rootView;
     }
 
@@ -1006,5 +1008,11 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             fingerDown = false;
             uiHandler.removeCallbacksAndMessages(null);
         }
+    }
+
+    private void setupOverlay(){
+        FrameLayoutWithHole childLayout = new FrameLayoutWithHole(getActivity(),tdraweeView);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        ((ViewGroup) getActivity().getWindow().getDecorView()).addView(childLayout, params);
     }
 }
