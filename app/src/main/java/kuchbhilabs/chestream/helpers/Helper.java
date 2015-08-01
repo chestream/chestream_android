@@ -82,11 +82,11 @@ public class Helper {
 
         return dr;
     }
-    public static Drawable createBlurredImageFromBitmap(Bitmap bitmap,Context context) {
+    public static Drawable createBlurredImageFromBitmap(Bitmap bitmap,Context context,int inSampleSize) {
 
         RenderScript rs=RenderScript.create(context);
         final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 8;
+        options.inSampleSize = inSampleSize;
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);

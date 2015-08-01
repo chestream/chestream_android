@@ -279,7 +279,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                 .build(), new SimpleImageLoadingListener() {
                             @Override
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                                header.setBackground(Helper.createBlurredImageFromBitmap(loadedImage, getActivity()));
+                                header.setBackground(Helper.createBlurredImageFromBitmap(loadedImage, getActivity(),8));
                             }
                         });
 //                    profile.setImageURI(Uri.parse(avatar));
@@ -322,7 +322,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
         });
 
-//        setupOverlay();
+        setupOverlay();
         return rootView;
     }
 
@@ -680,14 +680,14 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                     bufferScreen.setVisibility(View.GONE);
                     if (previewBitmap != null) {
                         //TODO: Blur the image and apply to the background
-                        videoBackground.setBackground(Helper.createBlurredImageFromBitmap(previewBitmap,activity));
+                        videoBackground.setBackground(Helper.createBlurredImageFromBitmap(previewBitmap,activity,12));
                     } else {
                         Log.d(TAG, "PREVIEW BITMAPP IS NULL");
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 if (previewBitmap != null)
-                                    videoBackground.setBackground(Helper.createBlurredImageFromBitmap(previewBitmap,activity));
+                                    videoBackground.setBackground(Helper.createBlurredImageFromBitmap(previewBitmap,activity,12));
                                 else
                                     Log.d(TAG, "This shit is still null");
                             }

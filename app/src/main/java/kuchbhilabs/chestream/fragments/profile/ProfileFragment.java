@@ -90,7 +90,7 @@ public class ProfileFragment extends Fragment {
                             .build(),new SimpleImageLoadingListener() {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            header.setBackground(Helper.createBlurredImageFromBitmap(loadedImage,getActivity()));
+                            header.setBackground(Helper.createBlurredImageFromBitmap(loadedImage,getActivity(),8));
                         }
                     });
 //            profile.setImageURI(Uri.parse(pUser.getString("avatar")));
