@@ -174,6 +174,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     float fingerDownX, fingerDownY;
 
     FrameLayout dragCommentsView;
+    FrameLayout videoBackground;
 
     int[] patternImages = {R.drawable.pattern1, R.drawable.pattern2,R.drawable.pattern3,R.drawable.pattern4,R.drawable.pattern5,R.drawable.pattern6,R.drawable.pattern7,R.drawable.pattern8};
 
@@ -210,6 +211,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         bufferScreenProfile = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_profile_picture);
         patternView=(KenBurnsView) rootView.findViewById(R.id.patternView);
         dragCommentsView=(FrameLayout) rootView.findViewById(R.id.dragCommentsView);
+        videoBackground=(FrameLayout) rootView.findViewById(R.id.videoBackground);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
@@ -457,16 +459,16 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private void downloadBackgroundBitmap(String url) {
         VolleySingleton.getInstance(activity).getImageLoader().get(url,
                 new com.android.volley.toolbox.ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(com.android.volley.toolbox.ImageLoader.ImageContainer response, boolean isImmediate) {
-                previewBitmap = response.getBitmap();
-            }
+                    @Override
+                    public void onResponse(com.android.volley.toolbox.ImageLoader.ImageContainer response, boolean isImmediate) {
+                        previewBitmap = response.getBitmap();
+                    }
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
     }
 
     @Override
@@ -676,13 +678,14 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                     bufferScreen.setVisibility(View.GONE);
                     if (previewBitmap != null) {
                         //TODO: Blur the image and apply to the background
+                        videoBackground.setBackground(Helper.createBlurredImageFromBitmap(previewBitmap,activity));
                     } else {
                         Log.d(TAG, "PREVIEW BITMAPP IS NULL");
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 if (previewBitmap != null)
-                                    videoFrame.setBackground(new BitmapDrawable(activity.getResources(), previewBitmap));
+                                    videoBackground.setBackground(Helper.createBlurredImageFromBitmap(previewBitmap,activity));
                                 else
                                     Log.d(TAG, "This shit is still null");
                             }
