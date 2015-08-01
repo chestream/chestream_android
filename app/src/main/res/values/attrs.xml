@@ -63,4 +63,9 @@
         <attr name="jumpHeight" format="integer" />
         <attr name="autoplay" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="FrameLayoutWithHole">
+        <attr name="holeView" format="reference" />
+
+    </declare-styleable>
 </resources>
