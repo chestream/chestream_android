@@ -34,8 +34,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -50,8 +48,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.flaviofaria.kenburnsview.KenBurnsView;
-import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
+import com.facebook.rebound.SimpleSpringListener;
+import com.facebook.rebound.Spring;
+import com.facebook.rebound.SpringConfig;
+import com.facebook.rebound.SpringSystem;
+import com.facebook.rebound.SpringUtil;
 import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
@@ -95,6 +96,7 @@ import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
 import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 import kuchbhilabs.chestream.widgets.FrameLayoutWithHole;
+import kuchbhilabs.chestream.widgets.RippleBackground;
 
 public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
@@ -117,6 +119,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     public static SimpleDraweeView gifView;
 
+    private SpringSystem mSpringSystem1,mSpringSystem2;
+    private Spring mSpring1,mSpring2;
+    private static double TENSION = 400;
+    private static double DAMPER = 20; //friction
 
     ParseUser pUser;
     TextView tvideoTitle;
@@ -127,7 +133,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private SimpleDraweeView bufferScreenProfile;
     private ImageView bufferScreenPreview;
     private TextView bufferScreenTitle,bufferScreenUsername;
-    private KenBurnsView patternView;
+    private ImageView patternView;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
@@ -149,7 +155,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     private int i = 0;
 
-    View loadingLayout;
+//    View loadingLayout;
     static View loadingFrame,dividerView;
     public static TextView commentsCount;
 
@@ -175,6 +181,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     FrameLayout dragCommentsView;
     FrameLayout videoBackground;
+    RippleBackground rippleBackground;
 
     int[] patternImages = {R.drawable.pattern1, R.drawable.pattern2,R.drawable.pattern3,R.drawable.pattern4,R.drawable.pattern5,R.drawable.pattern6,R.drawable.pattern7,R.drawable.pattern8};
 
@@ -203,20 +210,23 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         ttotalVotesComments = (TextView) rootView.findViewById(R.id.video_score_comments);
         tdraweeView = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture);
         tdraweeViewComments = (SimpleDraweeView) rootView.findViewById(R.id.profile_picture_comments);
-        loadingLayout = rootView.findViewById(R.id.loading_layout);
+//        loadingLayout = rootView.findViewById(R.id.loading_layout);
         bufferScreen = (FrameLayout) rootView.findViewById(R.id.buffer_screen);
         bufferScreenPreview = (ImageView) rootView.findViewById(R.id.buffer_screen_preview);
         bufferScreenTitle = (TextView) rootView.findViewById(R.id.buffer_screen_video_title);
         bufferScreenUsername = (TextView) rootView.findViewById(R.id.buffer_screen_username);
         bufferScreenProfile = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_profile_picture);
-        patternView=(KenBurnsView) rootView.findViewById(R.id.patternView);
+        patternView=(ImageView) rootView.findViewById(R.id.patternView);
         dragCommentsView=(FrameLayout) rootView.findViewById(R.id.dragCommentsView);
         videoBackground=(FrameLayout) rootView.findViewById(R.id.videoBackground);
+        rippleBackground=(RippleBackground) rootView.findViewById(R.id.ripple);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
         loadingFrame=(View) rootView.findViewById(R.id.loading_frame);
         dividerView=rootView.findViewById(R.id.dividerView);
+
+        setUpBufferScreen();
 
         cameraPreview = (TextureView) rootView.findViewById(R.id.camera_preview);
         cameraPreview.setSurfaceTextureListener(this);
@@ -224,6 +234,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         handlerThread.start();
         cameraHandler = new CameraHandler(handlerThread.getLooper());
         cameraHandler.sendMessage(cameraHandler.obtainMessage(CameraHandler.MSG_INITIALIZE));
+
+        setupSpringSystem();
 
         sendNextRequest();
 
@@ -322,7 +334,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
         });
 
-        setupOverlay();
+//        setupOverlay();
+
         return rootView;
     }
 
@@ -364,26 +377,11 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                     if (list != null) {
                                         currentVideo = list.get(0);
 
-                                        loadingLayout.setVisibility(View.GONE);
-                                        if (Helper.isKitkat()) {
-                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
-                                        }
+//                                        loadingLayout.setVisibility(View.GONE);
+//                                        if (Helper.isKitkat()) {
+//                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+//                                        }
                                         bufferScreen.setVisibility(View.VISIBLE);
-
-                                        Random random = new Random();
-                                        int rndInt = random.nextInt(patternImages.length);
-                                        if (getActivity()!=null) {
-                                            BitmapDrawable pattern = new BitmapDrawable(BitmapFactory.decodeResource(getActivity().getResources(), patternImages[rndInt]));
-                                            pattern.setTileModeX(Shader.TileMode.REPEAT);
-                                            pattern.setTileModeY(Shader.TileMode.REPEAT);
-
-                                            patternView.setImageBitmap(pattern.getBitmap());
-                                        }
-
-                                        Interpolator interpolator=new LinearInterpolator();
-                                        RandomTransitionGenerator
-                                                generator = new RandomTransitionGenerator(4000, interpolator);
-                                        patternView.setTransitionGenerator(generator);
 
                                         dialog.dismiss();
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
@@ -398,16 +396,33 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                         avatar = parseObject.getString(ParseTables.Users.AVATAR);
                                                         setVideoDetails();
 
-                                                        if (Helper.isKitkat()) {
-                                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
-                                                        }
+//                                                        if (Helper.isKitkat()) {
+//                                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+//                                                        }
 
                                                         bufferScreenProfile.setImageURI(Uri.parse(avatar));
                                                         bufferScreenUsername.setText(username);
                                                     }
                                                 });
+                                        ImageLoader.getInstance().displayImage(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL), bufferScreenPreview,
+                                                new DisplayImageOptions.Builder().cacheInMemory(true)
+                                                        .cacheOnDisk(true)
+                                                        .resetViewBeforeLoading(true)
+                                                        .displayer(new FadeInBitmapDisplayer(400))
+                                                        .build(),new SimpleImageLoadingListener() {
+                                                    @Override
+                                                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                                        mSpring2.setEndValue(1);
+                                                    }
+                                                });
                                         bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
+
                                         bufferScreenTitle.setText(title);
+                                        mSpring1.setEndValue(1);
+
+//                                        float mOrigY = bufferScreenTitle.getY();
+//                                        mSpring.setEndValue(mOrigY - 500f);
+
                                         bufferStartTime = System.currentTimeMillis();
 
                                         downloadBackgroundBitmap(currentVideo.getString(
@@ -456,6 +471,79 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                 tdraweeViewComments.setImageURI(uri);
             }
         });
+    }
+
+    private void setUpBufferScreen(){
+        Random random = new Random();
+        int rndInt = random.nextInt(patternImages.length);
+        if (getActivity()!=null) {
+            BitmapDrawable pattern = new BitmapDrawable(BitmapFactory.decodeResource(getActivity().getResources(), patternImages[rndInt]));
+            pattern.setTileModeX(Shader.TileMode.REPEAT);
+            pattern.setTileModeY(Shader.TileMode.REPEAT);
+
+            patternView.setImageBitmap(pattern.getBitmap());
+        }
+
+//        Interpolator interpolator=new LinearInterpolator();
+//        RandomTransitionGenerator
+//                generator = new RandomTransitionGenerator(4000, interpolator);
+//        patternView.setTransitionGenerator(generator);
+
+        rippleBackground.startRippleAnimation();
+    }
+
+    private void setupSpringSystem(){
+
+        mSpringSystem1 = SpringSystem.create();
+
+        mSpring1 = mSpringSystem1.createSpring();
+        mSpring1.addListener(new SimpleSpringListener(){
+
+            @Override
+            public void onSpringUpdate(Spring spring) {
+               renderTitles();
+            }
+        });
+
+        SpringConfig config = new SpringConfig(TENSION, DAMPER);
+        mSpring1.setSpringConfig(config);
+
+        mSpringSystem2 = SpringSystem.create();
+
+        mSpring2 = mSpringSystem2.createSpring();
+        mSpring2.addListener(new SimpleSpringListener(){
+
+            @Override
+            public void onSpringUpdate(Spring spring) {
+                renderPreviewImage();
+            }
+        });
+
+        SpringConfig config2 = new SpringConfig(TENSION, DAMPER);
+        mSpring2.setSpringConfig(config2);
+
+        renderTitles();
+        renderPreviewImage();
+    }
+
+    private void renderTitles() {
+        double value = mSpring1.getCurrentValue();
+
+//        float barPosition2 =
+//                (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, bufferScreenUsername.getHeight(), 0);
+//        bufferScreenUsername.setTranslationY(barPosition2);
+        float barPosition =
+                (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, bufferScreenTitle.getHeight(), 0);
+        bufferScreenTitle.setTranslationY(barPosition);
+
+    }
+
+    private void renderPreviewImage(){
+        double value = mSpring2.getCurrentValue();
+
+        float barPosition =
+                (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, bufferScreenPreview.getHeight(), 0);
+        bufferScreenPreview.setTranslationY(barPosition);
     }
 
     private void downloadBackgroundBitmap(String url) {

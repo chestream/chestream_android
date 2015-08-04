@@ -6,4 +6,7 @@
         <dimen name="toolbarElevation">4dp</dimen>
         <dimen name="appBarTopMargin">0dp</dimen>
         <dimen name="statusBarHeight">0dp</dimen>
+
+    <dimen name="rippleStrokeWidth">2dp</dimen>
+    <dimen name="rippleRadius">34dp</dimen>
 </resources>

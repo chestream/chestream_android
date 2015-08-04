@@ -57,6 +57,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:7.3.0'
     compile 'com.flaviofaria:kenburnsview:1.0.6'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-
+    compile 'com.facebook.rebound:rebound:0.3.8'
     compile 'com.android.support:multidex:1.0.0'
 }

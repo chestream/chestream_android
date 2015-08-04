@@ -121,8 +121,8 @@
 
         </LinearLayout>
 
-        <include layout="@layout/loading_layout"
-            android:id="@+id/loading_layout"/>
+        <!--<include layout="@layout/loading_layout"-->
+            <!--android:id="@+id/loading_layout"/>-->
 
         <include layout="@layout/buffer_screen_layout"/>
 
