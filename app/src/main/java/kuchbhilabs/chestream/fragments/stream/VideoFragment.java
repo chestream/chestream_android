@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Shader;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.BitmapDrawable;
@@ -91,6 +93,7 @@ import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
+import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
@@ -119,10 +122,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
     public static SimpleDraweeView gifView;
 
-    private SpringSystem mSpringSystem1,mSpringSystem2;
-    private Spring mSpring1,mSpring2;
-    private static double TENSION = 400;
-    private static double DAMPER = 20; //friction
+    private SpringSystem mSpringSystem1,mSpringSystem2,mSpringSystem3;
+    private Spring mSpring1,mSpring2,mSpring3;
+    private double TENSION = 300;
+    private double DAMPER = 15; //friction
 
     ParseUser pUser;
     TextView tvideoTitle;
@@ -134,6 +137,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private ImageView bufferScreenPreview;
     private TextView bufferScreenTitle,bufferScreenUsername;
     private ImageView patternView;
+    CircularRevealView revealView;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
@@ -220,6 +224,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         dragCommentsView=(FrameLayout) rootView.findViewById(R.id.dragCommentsView);
         videoBackground=(FrameLayout) rootView.findViewById(R.id.videoBackground);
         rippleBackground=(RippleBackground) rootView.findViewById(R.id.ripple);
+        revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
@@ -522,6 +527,20 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         SpringConfig config2 = new SpringConfig(TENSION, DAMPER);
         mSpring2.setSpringConfig(config2);
 
+        mSpringSystem3 = SpringSystem.create();
+
+        mSpring3 = mSpringSystem3.createSpring();
+        mSpring3.addListener(new SimpleSpringListener(){
+
+            @Override
+            public void onSpringUpdate(Spring spring) {
+
+            }
+        });
+
+        SpringConfig config3 = new SpringConfig(TENSION, DAMPER);
+        mSpring3.setSpringConfig(config3);
+
         renderTitles();
         renderPreviewImage();
     }
@@ -762,10 +781,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (Helper.isKitkat()) {
-                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
-                    }
-                    bufferScreen.setVisibility(View.GONE);
+//                    if (Helper.isKitkat()) {
+//                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
+//                    }
+                    hideWithReveal();
                     if (previewBitmap != null) {
                         //TODO: Blur the image and apply to the background
                         videoBackground.setBackground(Helper.createBlurredImageFromBitmap(previewBitmap,activity,12));
@@ -786,6 +805,44 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private void hideWithReveal(){
+
+        final int color = getActivity().getResources().getColor(R.color.colorAccent);
+        final Point p = Helper.getLocationInView(revealView, bufferScreenProfile);
+
+        revealView.reveal(p.x, p.y, color, bufferScreenProfile.getHeight() / 2, 550, null);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (Helper.isKitkat()){
+                    TransitionManager.beginDelayedTransition(bufferScreen);
+                }
+                bufferScreen.setVisibility(View.GONE);
+            }
+        }, 700);
+
+//        int cx = (bufferScreen.getLeft() + bufferScreen.getRight()) / 2;
+//        int cy = (bufferScreen.getBottom());
+//
+//
+//        int initialRadius = bufferScreen.getWidth();
+//
+//        Animator anim =
+//                ViewAnimationUtils.createCircularReveal(bufferScreen, cx, cy, initialRadius, 0);
+//
+//        anim.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                super.onAnimationEnd(animation);
+//                bufferScreen.setVisibility(View.INVISIBLE);
+//            }
+//        });
+//
+//        anim.start();
     }
 
     @Override
