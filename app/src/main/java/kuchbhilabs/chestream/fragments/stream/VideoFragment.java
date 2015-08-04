@@ -1,5 +1,7 @@
 package kuchbhilabs.chestream.fragments.stream;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -8,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Shader;
 import android.graphics.SurfaceTexture;
@@ -33,6 +34,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -93,7 +95,6 @@ import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
-import kuchbhilabs.chestream.helpers.CircularRevealView;
 import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
@@ -137,7 +138,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private ImageView bufferScreenPreview;
     private TextView bufferScreenTitle,bufferScreenUsername;
     private ImageView patternView;
-    CircularRevealView revealView;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
@@ -224,7 +224,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         dragCommentsView=(FrameLayout) rootView.findViewById(R.id.dragCommentsView);
         videoBackground=(FrameLayout) rootView.findViewById(R.id.videoBackground);
         rippleBackground=(RippleBackground) rootView.findViewById(R.id.ripple);
-        revealView=(CircularRevealView) rootView.findViewById(R.id.reveal);
 
         commentsCount=(TextView) rootView.findViewById(R.id.commentsCount);
 //        loadingProgress=(LoadingProgress) rootView.findViewById(R.id.loading_progress);
@@ -418,9 +417,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                                                     @Override
                                                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                                                         mSpring2.setEndValue(1);
+                                                        previewBitmap=loadedImage;
                                                     }
                                                 });
-                                        bufferScreenPreview.setImageURI(Uri.parse(currentVideo.getString(ParseTables.Videos.VIDEO_THUMBNAIL)));
 
                                         bufferScreenTitle.setText(title);
                                         mSpring1.setEndValue(1);
@@ -430,8 +429,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
                                         bufferStartTime = System.currentTimeMillis();
 
-                                        downloadBackgroundBitmap(currentVideo.getString(
-                                                ParseTables.Videos.VIDEO_THUMBNAIL));
+//                                        downloadBackgroundBitmap(currentVideo.getString(
+//                                                ParseTables.Videos.VIDEO_THUMBNAIL));
 
                                         CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
@@ -781,9 +780,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-//                    if (Helper.isKitkat()) {
-//                        TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
-//                    }
+
                     hideWithReveal();
                     if (previewBitmap != null) {
                         //TODO: Blur the image and apply to the background
@@ -808,41 +805,33 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     }
 
     private void hideWithReveal(){
+        if (Helper.isLollipop()) {
+            int cx = (bufferScreen.getLeft() + bufferScreen.getRight()) / 2;
+            int cy = (bufferScreen.getBottom());
 
-        final int color = getActivity().getResources().getColor(R.color.colorAccent);
-        final Point p = Helper.getLocationInView(revealView, bufferScreenProfile);
 
-        revealView.reveal(p.x, p.y, color, bufferScreenProfile.getHeight() / 2, 550, null);
+            int initialRadius = bufferScreen.getWidth();
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (Helper.isKitkat()){
-                    TransitionManager.beginDelayedTransition(bufferScreen);
+            Point point=Helper.getLocationInView(bufferScreen,tdraweeView);
+
+            Animator anim =
+                    ViewAnimationUtils.createCircularReveal(bufferScreen, point.x, point.y, initialRadius, 0);
+
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    bufferScreen.setVisibility(View.GONE);
                 }
-                bufferScreen.setVisibility(View.GONE);
+            });
+            anim.setDuration(500);
+            anim.start();
+        } else {
+            if (Helper.isKitkat()){
+                TransitionManager.beginDelayedTransition(bufferScreen);
             }
-        }, 700);
-
-//        int cx = (bufferScreen.getLeft() + bufferScreen.getRight()) / 2;
-//        int cy = (bufferScreen.getBottom());
-//
-//
-//        int initialRadius = bufferScreen.getWidth();
-//
-//        Animator anim =
-//                ViewAnimationUtils.createCircularReveal(bufferScreen, cx, cy, initialRadius, 0);
-//
-//        anim.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                super.onAnimationEnd(animation);
-//                bufferScreen.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//
-//        anim.start();
+            bufferScreen.setVisibility(View.GONE);
+        }
     }
 
     @Override
