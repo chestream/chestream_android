@@ -481,23 +481,29 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     }
 
     private void setUpBufferScreen(){
-        bufferScreen.setVisibility(View.VISIBLE);
-        Random random = new Random();
-        int rndInt = random.nextInt(patternImages.length);
-        if (getActivity()!=null) {
-            BitmapDrawable pattern = new BitmapDrawable(BitmapFactory.decodeResource(getActivity().getResources(), patternImages[rndInt]));
-            pattern.setTileModeX(Shader.TileMode.REPEAT);
-            pattern.setTileModeY(Shader.TileMode.REPEAT);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                bufferScreen.setVisibility(View.VISIBLE);
+                Random random = new Random();
+                int rndInt = random.nextInt(patternImages.length);
+                if (getActivity()!=null) {
+                    BitmapDrawable pattern = new BitmapDrawable(BitmapFactory.decodeResource(getActivity().getResources(), patternImages[rndInt]));
+                    pattern.setTileModeX(Shader.TileMode.REPEAT);
+                    pattern.setTileModeY(Shader.TileMode.REPEAT);
 
-            patternView.setImageBitmap(pattern.getBitmap());
-        }
+                    patternView.setImageBitmap(pattern.getBitmap());
+                }
 
-        Interpolator interpolator=new LinearInterpolator();
-        RandomTransitionGenerator
-                generator = new RandomTransitionGenerator(4000, interpolator);
-        patternView.setTransitionGenerator(generator);
+                Interpolator interpolator=new LinearInterpolator();
+                RandomTransitionGenerator
+                        generator = new RandomTransitionGenerator(4000, interpolator);
+                patternView.setTransitionGenerator(generator);
 
-        rippleBackground.startRippleAnimation();
+                rippleBackground.startRippleAnimation();
+            }
+        });
+
     }
 
     private void setupSpringSystem(){
