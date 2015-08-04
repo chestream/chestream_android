@@ -38,6 +38,8 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -57,6 +59,8 @@ import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringSystem;
 import com.facebook.rebound.SpringUtil;
+import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
@@ -137,7 +141,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     private SimpleDraweeView bufferScreenProfile;
     private ImageView bufferScreenPreview;
     private TextView bufferScreenTitle,bufferScreenUsername;
-    private ImageView patternView;
+    private KenBurnsView patternView;
 
     Activity activity;
     public static SlidingUpPanelLayout slidingUpPanelLayout; //slidingUpPanelLayout2;
@@ -220,7 +224,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         bufferScreenTitle = (TextView) rootView.findViewById(R.id.buffer_screen_video_title);
         bufferScreenUsername = (TextView) rootView.findViewById(R.id.buffer_screen_username);
         bufferScreenProfile = (SimpleDraweeView) rootView.findViewById(R.id.buffer_screen_profile_picture);
-        patternView=(ImageView) rootView.findViewById(R.id.patternView);
+        patternView=(KenBurnsView) rootView.findViewById(R.id.patternView);
         dragCommentsView=(FrameLayout) rootView.findViewById(R.id.dragCommentsView);
         videoBackground=(FrameLayout) rootView.findViewById(R.id.videoBackground);
         rippleBackground=(RippleBackground) rootView.findViewById(R.id.ripple);
@@ -230,7 +234,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         loadingFrame=(View) rootView.findViewById(R.id.loading_frame);
         dividerView=rootView.findViewById(R.id.dividerView);
 
-        setUpBufferScreen();
 
         cameraPreview = (TextureView) rootView.findViewById(R.id.camera_preview);
         cameraPreview.setSurfaceTextureListener(this);
@@ -362,6 +365,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     }
 
     private void sendNextRequest() {
+        setUpBufferScreen();
         RequestQueue queue = Volley.newRequestQueue(activity);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, NEXT_URL,
                 new Response.Listener<String>() {
@@ -385,7 +389,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 //                                        if (Helper.isKitkat()) {
 //                                            TransitionManager.beginDelayedTransition(slidingUpPanelLayout);
 //                                        }
-                                        bufferScreen.setVisibility(View.VISIBLE);
 
                                         dialog.dismiss();
                                         upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
@@ -478,6 +481,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     }
 
     private void setUpBufferScreen(){
+        bufferScreen.setVisibility(View.VISIBLE);
         Random random = new Random();
         int rndInt = random.nextInt(patternImages.length);
         if (getActivity()!=null) {
@@ -488,10 +492,10 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             patternView.setImageBitmap(pattern.getBitmap());
         }
 
-//        Interpolator interpolator=new LinearInterpolator();
-//        RandomTransitionGenerator
-//                generator = new RandomTransitionGenerator(4000, interpolator);
-//        patternView.setTransitionGenerator(generator);
+        Interpolator interpolator=new LinearInterpolator();
+        RandomTransitionGenerator
+                generator = new RandomTransitionGenerator(4000, interpolator);
+        patternView.setTransitionGenerator(generator);
 
         rippleBackground.startRippleAnimation();
     }
@@ -805,6 +809,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     }
 
     private void hideWithReveal(){
+        rippleBackground.stopRippleAnimation();
         if (Helper.isLollipop()) {
             int cx = (bufferScreen.getLeft() + bufferScreen.getRight()) / 2;
             int cy = (bufferScreen.getBottom());
