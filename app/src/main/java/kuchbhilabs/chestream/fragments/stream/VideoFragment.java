@@ -635,7 +635,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                     releasePlayer();
                     break;
                 case MSG_SET_RENDERER_BUILDER:
-                    int playEpoch = msg.what;
+                    long playEpoch = (long)msg.obj;
                     setRendererBuilder(playEpoch);
                     break;
                 default:
@@ -644,7 +644,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         }
     }
 
-    private void setRendererBuilder(int playEpoch) {
+    private void setRendererBuilder(long playEpoch) {
         if (player != null) {
             long currentEpochSec = System.currentTimeMillis()/1000;
             player.updateRendererBuilder(getRendererBuilder());
