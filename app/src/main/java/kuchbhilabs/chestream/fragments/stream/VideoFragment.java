@@ -833,6 +833,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     bufferScreen.setVisibility(View.GONE);
+                    if (activity!=null)
+                    bufferScreenProfile.setImageDrawable(activity.getResources().getDrawable(R.mipmap.ic_launcher));
+                    bufferScreenPreview.setImageDrawable(null);
                 }
             });
             anim.setDuration(500);
@@ -842,6 +845,9 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                 TransitionManager.beginDelayedTransition(bufferScreen);
             }
             bufferScreen.setVisibility(View.GONE);
+            if (activity!=null)
+            bufferScreenProfile.setImageDrawable(activity.getResources().getDrawable(R.mipmap.ic_launcher));
+            bufferScreenPreview.setImageDrawable(null);
         }
     }
 
