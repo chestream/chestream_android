@@ -119,7 +119,21 @@
                 android:textSize="22sp"
                 typeface:typeface="HelveticaNeue-Light" />
 
+
         </LinearLayout>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="top"
+            android:layout_marginTop="450dp"
+            android:text="Go to channel"
+            android:textColor="#ffffff"
+            android:background="#000000"
+            android:id="@+id/goTo_channel_button"
+
+            />
 
         <!--<include layout="@layout/loading_layout"-->
             <!--android:id="@+id/loading_layout"/>-->

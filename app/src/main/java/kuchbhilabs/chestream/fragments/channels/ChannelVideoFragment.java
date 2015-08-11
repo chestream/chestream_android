@@ -107,7 +107,7 @@ import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 import kuchbhilabs.chestream.widgets.FrameLayoutWithHole;
 import kuchbhilabs.chestream.widgets.RippleBackground;
 
-public class channelVideoFragment extends Fragment implements SurfaceHolder.Callback,
+public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
         View.OnTouchListener {
 
@@ -1106,7 +1106,7 @@ public class channelVideoFragment extends Fragment implements SurfaceHolder.Call
                     camera.takePicture(null, null, null, new Camera.PictureCallback() {
                         @Override
                         public void onPictureTaken(final byte[] data, Camera camera) {
-                            channelVideoFragment.this.onPictureTaken(data, camera);
+                            ChannelVideoFragment.this.onPictureTaken(data, camera);
                         }
                     });
                 }
