@@ -277,7 +277,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                 Fragment nextFrag= new ChannelVideoFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.videoBackground, nextFrag);
-//                ft.addToBackStack(null);
+                ft.addToBackStack(null);
                 ft.commit();
             }
         });
