@@ -1,4 +1,4 @@
-package kuchbhilabs.chestream.fragments.stream;
+package kuchbhilabs.chestream.fragments.channels;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -24,7 +24,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
@@ -41,7 +40,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -100,8 +98,8 @@ import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.fragments.channels.ChannelVideoFragment;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
+import kuchbhilabs.chestream.fragments.stream.OtherUserProfileAdapter;
 import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
@@ -109,7 +107,7 @@ import kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout;
 import kuchbhilabs.chestream.widgets.FrameLayoutWithHole;
 import kuchbhilabs.chestream.widgets.RippleBackground;
 
-public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
+public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener, TextureView.SurfaceTextureListener,
         View.OnTouchListener {
 
@@ -121,8 +119,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     String username = "";
     String avatar = "";
     public static ParseObject currentVideo;
-
-    Button goToChannel;
 
     ParseUser currentParseUser;
 
@@ -202,7 +198,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.fragment_video, null);
+        View rootView = inflater.inflate(R.layout.fragment_channel, null);
 
         activity = getActivity();
         receiver = new CommentsBroadcastReceiver();
@@ -214,7 +210,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //before
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         dialog.setContentView(R.layout.fragment_profile);
-        goToChannel = (Button)rootView.findViewById(R.id.goTo_channel_button);
 
         tvideoTitle = (TextView) rootView.findViewById(R.id.video_title);
         tlocation = (TextView) rootView.findViewById(R.id.video_location);
@@ -269,18 +264,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         holder.addCallback(this);
 
         exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
-
-        goToChannel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("yo","clicked channel");
-                Fragment nextFrag= new ChannelVideoFragment();
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.videoBackground, nextFrag);
-                ft.addToBackStack(null);
-                ft.commit();
-            }
-        });
 
         userLayout = (LinearLayout)rootView.findViewById(R.id.user_details);
         userLayout.setOnClickListener(new View.OnClickListener() {
@@ -360,7 +343,6 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
         });
 
 //        setupOverlay();
-
 
         return rootView;
     }
@@ -1124,7 +1106,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
                     camera.takePicture(null, null, null, new Camera.PictureCallback() {
                         @Override
                         public void onPictureTaken(final byte[] data, Camera camera) {
-                            VideoFragment.this.onPictureTaken(data, camera);
+                            ChannelVideoFragment.this.onPictureTaken(data, camera);
                         }
                     });
                 }
