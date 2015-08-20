@@ -55,7 +55,7 @@ public class AllChannelFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(activity,3));
+        recyclerView.setLayoutManager(new GridLayoutManager(activity,2));
 
         getChannels();
 

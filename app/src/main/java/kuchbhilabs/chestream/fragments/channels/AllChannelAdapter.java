@@ -1,6 +1,7 @@
 package kuchbhilabs.chestream.fragments.channels;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.activities.ChannelsActivity;
 import kuchbhilabs.chestream.helpers.CircularImageView;
 
 /**
@@ -84,7 +86,8 @@ public class AllChannelAdapter extends RecyclerView.Adapter<AllChannelAdapter.Al
 
         @Override
         public void onClick(View v) {
-
+            Intent intent=new Intent(mContext,ChannelsActivity.class);
+            mContext.startActivity(intent);
         }
     }
 }

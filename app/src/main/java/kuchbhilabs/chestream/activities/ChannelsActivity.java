@@ -16,7 +16,7 @@ public class ChannelsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channels);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container,new ChannelFragment());
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,new ChannelFragment()).commit();
 
     }
 }

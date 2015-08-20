@@ -41,9 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/recycler_view_channels"
-        android:paddingTop="?attr/actionBarSize"
-        android:clipToPadding="false"
-        android:paddingBottom="100dp"
         />
 
 </LinearLayout>

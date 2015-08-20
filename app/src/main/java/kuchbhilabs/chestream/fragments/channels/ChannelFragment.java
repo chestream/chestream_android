@@ -1,15 +1,24 @@
 package kuchbhilabs.chestream.fragments.channels;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
@@ -23,6 +32,8 @@ public class ChannelFragment extends Fragment {
     Activity activity;
     ViewPager mViewPager;
     PagerAdapter mPagerAdapter;
+    Toolbar toolbar;
+    ImageView preview;
 
     public static ChannelFragment newInstance(long id) {
         ChannelFragment fragment = new ChannelFragment();
@@ -37,6 +48,13 @@ public class ChannelFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_channels, null);
         activity=getActivity();
 
+
+        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        preview=(ImageView) rootView.findViewById(R.id.preview);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Fantastic Four");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
         mPagerAdapter = new PagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
@@ -44,6 +62,18 @@ public class ChannelFragment extends Fragment {
         mViewPager.setOffscreenPageLimit(2);
 
 
+        ImageLoader.getInstance().displayImage("http://104.131.207.33/chestream_raw/11785415_805808706184034_1008859156_n/thumbnail.png", preview,
+                new DisplayImageOptions.Builder().cacheInMemory(true)
+                        .cacheOnDisk(true)
+                        .resetViewBeforeLoading(true)
+                        .displayer(new FadeInBitmapDisplayer(400))
+                        .build(),new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    }
+                });
+
+        CommentsFragment.setUpComments();
         return rootView;
 
     }
