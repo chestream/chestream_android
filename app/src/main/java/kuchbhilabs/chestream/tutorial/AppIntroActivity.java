@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import kuchbhilabs.chestream.LoginActivity;
+import kuchbhilabs.chestream.activities.LoginActivity;
 
 
 /**

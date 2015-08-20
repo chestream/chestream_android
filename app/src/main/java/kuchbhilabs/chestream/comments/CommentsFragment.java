@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -37,12 +36,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.ApplicationBase;
-import kuchbhilabs.chestream.LoginActivity;
+import kuchbhilabs.chestream.activities.LoginActivity;
 import kuchbhilabs.chestream.NotificationReceiver;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.stream.VideoFragment;
-import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.helpers.Utilities;
 
 /**

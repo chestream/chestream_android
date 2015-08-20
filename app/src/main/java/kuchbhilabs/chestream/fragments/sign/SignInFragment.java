@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -31,7 +30,6 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.parse.FindCallback;
 import com.parse.FunctionCallback;
-import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
@@ -48,12 +46,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import kuchbhilabs.chestream.ApplicationBase;
-import kuchbhilabs.chestream.MainActivity;
+import kuchbhilabs.chestream.activities.MainActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.FacebookApi;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.externalapi.TwitterApi;
-import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 import kuchbhilabs.chestream.helpers.Utilities;
 
 /**

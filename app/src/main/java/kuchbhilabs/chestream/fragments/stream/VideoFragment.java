@@ -100,7 +100,7 @@ import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.fragments.channels.ChannelVideoFragment;
+import kuchbhilabs.chestream.fragments.channels.ChannelFragment;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.helpers.Utilities;
@@ -274,7 +274,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             @Override
             public void onClick(View view) {
                 Log.d("yo","clicked channel");
-                Fragment nextFrag= new ChannelVideoFragment();
+                Fragment nextFrag= new ChannelFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.videoBackground, nextFrag);
                 ft.addToBackStack(null);
