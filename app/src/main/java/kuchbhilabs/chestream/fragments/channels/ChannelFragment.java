@@ -114,7 +114,7 @@ public class ChannelFragment extends Fragment {
             switch (position) {
 
                 case 0:
-                    fragment = new AboutChannelFragment();
+                    fragment = new AboutChannelFragment().newInstance(channel);
                     break;
                 case 1:
                     fragment = new ChannelQueueFragment().newInstance(channel.videoIds);
