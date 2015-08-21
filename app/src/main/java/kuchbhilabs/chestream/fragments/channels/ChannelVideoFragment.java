@@ -42,7 +42,6 @@ import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.fragments.stream.OtherUserProfileAdapter;
 import kuchbhilabs.chestream.widgets.RippleBackground;
 
@@ -91,6 +90,7 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
     RippleBackground rippleBackground;
 
     List<String> videoIDS;
+    int videoPosition =0;
 
     int[] patternImages = {R.drawable.pattern1, R.drawable.pattern2,R.drawable.pattern3,R.drawable.pattern4,R.drawable.pattern5,R.drawable.pattern6,R.drawable.pattern7,R.drawable.pattern8};
 
@@ -164,7 +164,7 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
     }
 
     private void sendNextRequest() {
-                            final String videoId = videoIDS.get(0);
+                            final String videoId = videoIDS.get(videoPosition);
                             ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseTables.Videos._NAME);
                             query.whereEqualTo("objectId", videoId);
                             query.findInBackground(new FindCallback<ParseObject>() {
@@ -266,8 +266,11 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
         if (playbackState == ExoPlayer.STATE_ENDED) {
             currentVideo.put(ParseTables.Videos.PLAYED, true);
             currentVideo.saveInBackground();
-            sendNextRequest();
-            QueueFragment.updateCurrentlyPlaying();
+            if (videoPosition<videoIDS.size()) {
+                videoPosition += 1;
+                sendNextRequest();
+            }
+//            QueueFragment.updateCurrentlyPlaying();
         }
         String text = "playWhenReady=" + playWhenReady + ", playbackState=";
         switch(playbackState) {
