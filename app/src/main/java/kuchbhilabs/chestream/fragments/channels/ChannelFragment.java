@@ -120,7 +120,7 @@ public class ChannelFragment extends Fragment {
                     fragment = new ChannelQueueFragment().newInstance(channel.videoIds);
                     break;
                 case 2:
-                    fragment = new CommentsFragment();
+                    fragment = new CommentsFragment().newInstance(channel);
                     break;
             }
             return fragment;

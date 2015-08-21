@@ -39,5 +39,7 @@ public class ParseTables {
         public static final String USER = "user";
         public static final String IMAGE = "image";
         public static final String VIDEO = "video_object";
+        public static final String CHANNELS = "channel_object";
+
     }
 }

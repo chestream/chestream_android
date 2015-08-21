@@ -40,6 +40,7 @@ import kuchbhilabs.chestream.activities.LoginActivity;
 import kuchbhilabs.chestream.NotificationReceiver;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.fragments.channels.ChannelModel;
 import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 import kuchbhilabs.chestream.helpers.Utilities;
 
@@ -53,6 +54,8 @@ public class CommentsFragment extends Fragment {
     private List<ParseObject> commentsList = new ArrayList<>();
     EditText editText;
 
+    String channelId;
+
     static CommentsAdapter commentsAdapter;
     ImageView sendComment;
     SimpleDraweeView avatar;
@@ -64,6 +67,14 @@ public class CommentsFragment extends Fragment {
     private BroadcastReceiver receiver;
     private Activity activity;
     ParseUser pUser;
+
+    public static CommentsFragment newInstance(ChannelModel channel) {
+        CommentsFragment fragment = new CommentsFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("channel",channel);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
@@ -78,6 +89,9 @@ public class CommentsFragment extends Fragment {
 //        addCommentFab=(FloatingActionButton) v.findViewById(R.id.addCommentFab);
 
         sendComment  =(ImageView) v.findViewById(R.id.send);
+
+         final ChannelModel channel=(ChannelModel) getArguments().getSerializable("channel");
+        channelId = channel.id;
 
         activity = getActivity();
 
@@ -132,7 +146,8 @@ public class CommentsFragment extends Fragment {
                         ParseObject postComment = new ParseObject("Comments");
                         postComment.put(ParseTables.Comments.USER, pUser);
                         postComment.put(ParseTables.Comments.TEXT, editText.getText().toString());
-                        postComment.put(ParseTables.Comments.VIDEO, currentVideoObjectComment);
+//                        postComment.put(ParseTables.Comments.VIDEO, currentVideoObjectComment);
+                        postComment.put(ParseTables.Comments.CHANNELS, channel.id);
                         commentsArrray.add(postComment);
                         currentVideoObjectComment.put("comments", commentsArrray);
                         editText.setText("");
@@ -181,7 +196,8 @@ public class CommentsFragment extends Fragment {
                         ParseObject postComment = new ParseObject("Comments");
                         postComment.put("user", pUser);
                         postComment.put("comment", editText.getText().toString());
-                        postComment.put("video_object", currentVideoObjectComment);
+//                        postComment.put(ParseTables.Comments.VIDEO, currentVideoObjectComment);
+                        postComment.put(ParseTables.Comments.CHANNELS, channel.id);
                         commentsArrray.add(postComment);
                         currentVideoObjectComment.put("comments", commentsArrray);
                         editText.setText("");
@@ -240,12 +256,12 @@ public class CommentsFragment extends Fragment {
         super.onDestroy();
     }
 
-    public static void setUpComments(){
+    public  void setUpComments(){
 
         ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
-        query.whereEqualTo("video_object", currentVideoObjectComment);
+        query.whereEqualTo("channel_object", channelId);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {
