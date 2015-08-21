@@ -87,6 +87,7 @@ public class AllChannelAdapter extends RecyclerView.Adapter<AllChannelAdapter.Al
         @Override
         public void onClick(View v) {
             Intent intent=new Intent(mContext,ChannelsActivity.class);
+            intent.putExtra("channel",arrayList.get(getAdapterPosition()));
             mContext.startActivity(intent);
         }
     }

@@ -11,22 +11,31 @@
         android:background="#000000"
         android:elevation="4dp"/>
 
-    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/toolbar"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#B3000000"
-        android:elevation="5dp"
-        android:layout_gravity="top"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_height="wrap_content">
 
-    </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="230dp"
+        android:layout_height="250dp"
         android:id="@+id/video_container">
+
+        <com.google.android.exoplayer.AspectRatioFrameLayout
+            android:id="@+id/video_frame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight = "1"
+            android:layout_gravity="center"
+            android:clickable="true">
+
+            <SurfaceView
+                android:id="@+id/main_surface_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center" />
+
+        </com.google.android.exoplayer.AspectRatioFrameLayout>
 
         <ImageView
             android:layout_width="match_parent"
@@ -35,6 +44,23 @@
             android:id="@+id/preview"/>
 
     </FrameLayout>
+        <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            android:elevation="5dp"
+            android:layout_gravity="top"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        </android.support.v7.widget.Toolbar>
+
+    </FrameLayout>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <android.support.v4.view.ViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"

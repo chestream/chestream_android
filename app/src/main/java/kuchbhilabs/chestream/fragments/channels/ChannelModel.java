@@ -1,11 +1,12 @@
 package kuchbhilabs.chestream.fragments.channels;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by naman on 20/08/15.
  */
-public class ChannelModel {
+public class ChannelModel implements Serializable {
 
     public final String picture;
     public final String name;

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.fragments.channels.ChannelFragment;
+import kuchbhilabs.chestream.fragments.channels.ChannelModel;
 
 /**
  * Created by naman on 20/08/15.
@@ -16,7 +17,9 @@ public class ChannelsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channels);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container,new ChannelFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                new ChannelFragment().newInstance((ChannelModel) getIntent().getSerializableExtra("channel")))
+                .commit();
 
     }
 }

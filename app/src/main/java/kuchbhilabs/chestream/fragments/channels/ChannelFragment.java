@@ -3,6 +3,7 @@ package kuchbhilabs.chestream.fragments.channels;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -35,9 +36,11 @@ public class ChannelFragment extends Fragment {
     Toolbar toolbar;
     ImageView preview;
 
-    public static ChannelFragment newInstance(long id) {
+
+    public static ChannelFragment newInstance(ChannelModel channelModel) {
         ChannelFragment fragment = new ChannelFragment();
         Bundle args = new Bundle();
+        args.putSerializable("channel",channelModel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,11 +51,12 @@ public class ChannelFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_channels, null);
         activity=getActivity();
 
+        ChannelModel channel= (ChannelModel)getArguments().getSerializable("channel");
 
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         preview=(ImageView) rootView.findViewById(R.id.preview);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Fantastic Four");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(channel.name);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
@@ -60,6 +64,9 @@ public class ChannelFragment extends Fragment {
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(1);
         mViewPager.setOffscreenPageLimit(2);
+
+        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
 
 
         ImageLoader.getInstance().displayImage("http://104.131.207.33/chestream_raw/11785415_805808706184034_1008859156_n/thumbnail.png", preview,
@@ -74,6 +81,8 @@ public class ChannelFragment extends Fragment {
                 });
 
         CommentsFragment.setUpComments();
+
+        getChildFragmentManager().beginTransaction().replace(R.id.video_container,new ChannelVideoFragment().newInstance(channel.videoIds)).commit();
         return rootView;
 
     }
