@@ -23,7 +23,6 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
-import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 
 /**
  * Created by naman on 20/08/15.
@@ -36,6 +35,7 @@ public class ChannelFragment extends Fragment {
     Toolbar toolbar;
     ImageView preview;
 
+    ChannelModel channel;
 
     public static ChannelFragment newInstance(ChannelModel channelModel) {
         ChannelFragment fragment = new ChannelFragment();
@@ -51,7 +51,7 @@ public class ChannelFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_channels, null);
         activity=getActivity();
 
-        ChannelModel channel= (ChannelModel)getArguments().getSerializable("channel");
+        channel= (ChannelModel)getArguments().getSerializable("channel");
 
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         preview=(ImageView) rootView.findViewById(R.id.preview);
@@ -114,10 +114,10 @@ public class ChannelFragment extends Fragment {
             switch (position) {
 
                 case 0:
-                    fragment = new QueueFragment();
+                    fragment = new AboutChannelFragment();
                     break;
                 case 1:
-                    fragment = new QueueFragment();
+                    fragment = new ChannelQueueFragment().newInstance(channel.videoIds);
                     break;
                 case 2:
                     fragment = new CommentsFragment();
