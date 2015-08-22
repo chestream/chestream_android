@@ -8,13 +8,15 @@ import java.util.List;
  */
 public class ChannelModel implements Serializable {
 
+    public final String id;
     public final String picture;
     public final String name;
     public final String info;
     public final int activeUsers;
     public final List<String> videoIds;
 
-    public ChannelModel(String picture,String name,String info,int activeUsers,List<String> videoIds){
+    public ChannelModel(String id,String picture,String name,String info,int activeUsers,List<String> videoIds){
+        this.id =id;
         this.picture=picture;
         this.name=name;
         this.info=info;

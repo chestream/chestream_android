@@ -54,7 +54,7 @@ public class CommentsFragment extends Fragment {
     private List<ParseObject> commentsList = new ArrayList<>();
     EditText editText;
 
-    String channelId;
+    private static String channelId;
 
     static CommentsAdapter commentsAdapter;
     ImageView sendComment;
@@ -256,12 +256,14 @@ public class CommentsFragment extends Fragment {
         super.onDestroy();
     }
 
-    public  void setUpComments(){
+    public static void setUpComments(){
 
-        ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
+//        ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
-        query.whereEqualTo("channel_object", channelId);
+//        if(channelId!=null) {
+//            query.whereEqualTo("channel_object", channelId);
+//        }
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> list, ParseException e) {

@@ -81,13 +81,14 @@ public class AllChannelFragment extends Fragment {
                                 String name = responseArray.getJSONObject(i).getString("name");
                                 String info = responseArray.getJSONObject(i).getString("info");
                                 String picture = responseArray.getJSONObject(i).getString("picture");
+                                String id = responseArray.getJSONObject(i).getString("channel_id");
                                 int activeUsers =responseArray.getJSONObject(i).getInt("active_users");
                                 JSONArray videoIds = responseArray.getJSONObject(i).getJSONArray("video_ids");
                                 List<String> arr=new ArrayList<>();
                                 for(int j=0;j<videoIds.length();j++)
                                     arr.add(videoIds.getString(j));
 
-                                channelList.add(new ChannelModel(picture,name,info,activeUsers,arr));
+                                channelList.add(new ChannelModel(id,picture,name,info,activeUsers,arr));
                             }
 
                             AsyncTask.execute(new Runnable() {
