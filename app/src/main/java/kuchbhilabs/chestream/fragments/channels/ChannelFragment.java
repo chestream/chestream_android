@@ -80,7 +80,7 @@ public class ChannelFragment extends Fragment {
                     }
                 });
 
-        CommentsFragment.setUpComments();
+        CommentsFragment.setUpComments(channel.id);
 
         getChildFragmentManager().beginTransaction().replace(R.id.video_container,new ChannelVideoFragment().newInstance(channel.videoIds)).commit();
         return rootView;

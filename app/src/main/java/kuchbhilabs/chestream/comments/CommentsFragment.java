@@ -93,6 +93,7 @@ public class CommentsFragment extends Fragment {
 
          final ChannelModel channel=(ChannelModel) getArguments().getSerializable("channel");
         channelId = channel.id;
+        CommentsFragment.setUpComments(channelId);
 
         activity = getActivity();
 
@@ -145,7 +146,7 @@ public class CommentsFragment extends Fragment {
                     @Override
                     public void run() {
                         Toast.makeText(activity, "Comment photo uploaded.", Toast.LENGTH_SHORT).show();
-                        setUpComments();
+                        setUpComments(channelId);
                     }
                 });
             }
@@ -172,12 +173,12 @@ public class CommentsFragment extends Fragment {
         super.onDestroy();
     }
 
-    public static void setUpComments(){
+    public static void setUpComments(String channelID){
 
 //        ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Channels");
-        query.getInBackground(channelId, new GetCallback<ParseObject>() {
+        query.getInBackground(channelID, new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
                 if (e == null) {
 
@@ -252,7 +253,7 @@ public class CommentsFragment extends Fragment {
                                 @Override
                                 public void done(ParseException e) {
                                     Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
-                                    setUpComments();
+                                    setUpComments(channelId);
                                 }
                             });
                         } else {
