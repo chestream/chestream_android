@@ -101,6 +101,7 @@ import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.channels.ChannelFragment;
+import kuchbhilabs.chestream.fragments.channels.ChannelModel;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.helpers.Utilities;
@@ -260,7 +261,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
 //        commentFloating = (TextView) rootView.findViewById(R.id.commentText);
 
-        CommentsFragment commentsFragment = new CommentsFragment();
+        ChannelModel channelGlobal =  new ChannelModel("O4xopsCg4Y","","global","GLOBAL",0,null);
+        CommentsFragment commentsFragment = new CommentsFragment().newInstance(channelGlobal);
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
 
         videoFrame = (AspectRatioFrameLayout) rootView.findViewById(R.id.video_frame);

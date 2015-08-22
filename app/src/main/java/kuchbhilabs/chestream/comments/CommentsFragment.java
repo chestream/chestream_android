@@ -119,52 +119,7 @@ public class CommentsFragment extends Fragment {
         sendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Tracker mTracker;
-                ApplicationBase application = (ApplicationBase) getActivity().getApplication();
-                mTracker = application.getDefaultTracker();
-                mTracker.setScreenName("CommentsFragment");
-                mTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Comments")
-                        .setAction("sent")
-                        .setLabel(Utilities.getUserEmail(activity))
-                        .build());
-
-                view.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
-                ParseObject currentVideoObjectComment = VideoFragment.currentVideo ;
-                if (currentVideoObjectComment!=null) {
-                    if ((pUser != null)
-                            && (pUser.isAuthenticated())
-                            && (pUser.getSessionToken() != null)
-                            ) {
-                        Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
-
-
-                        List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
-                        if (commentsArrray == null) {
-                            commentsArrray = new ArrayList<>();
-                        }
-                        ParseObject postComment = new ParseObject("Comments");
-                        postComment.put(ParseTables.Comments.USER, pUser);
-                        postComment.put(ParseTables.Comments.TEXT, editText.getText().toString());
-//                        postComment.put(ParseTables.Comments.VIDEO, currentVideoObjectComment);
-                        postComment.put(ParseTables.Comments.CHANNELS, channel.id);
-                        commentsArrray.add(postComment);
-                        currentVideoObjectComment.put("comments", commentsArrray);
-                        editText.setText("");
-                        currentVideoObjectComment.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
-                                setUpComments();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        startActivity(intent);
-                    }
-                }
+                sendComment(view);
             }
         });
 
@@ -174,47 +129,7 @@ public class CommentsFragment extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     //TODO: Add a new comment to the current video
 
-                    Tracker mTracker;
-                    ApplicationBase application = (ApplicationBase) getActivity().getApplication();
-                    mTracker = application.getDefaultTracker();
-                    mTracker.setScreenName("CommentsFragment");
-                    mTracker.send(new HitBuilders.EventBuilder()
-                            .setCategory("Comments")
-                            .setAction("sent")
-                            .setLabel(Utilities.getUserEmail(activity))
-                            .build());
-
-
-                    ParseUser pUser = ParseUser.getCurrentUser();
-                    if ((pUser != null)
-                            && (pUser.isAuthenticated())
-                            && (pUser.getSessionToken() != null)
-                            ){
-                        Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
-
-                        ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
-                        List<ParseObject> commentsArrray = (List<ParseObject>) currentVideoObjectComment.get("comments");
-                        ParseObject postComment = new ParseObject("Comments");
-                        postComment.put("user", pUser);
-                        postComment.put("comment", editText.getText().toString());
-//                        postComment.put(ParseTables.Comments.VIDEO, currentVideoObjectComment);
-                        postComment.put(ParseTables.Comments.CHANNELS, channel.id);
-                        commentsArrray.add(postComment);
-                        currentVideoObjectComment.put("comments", commentsArrray);
-                        editText.setText("");
-                        currentVideoObjectComment.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
-                                commentsAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        startActivity(intent);
-                    }
-
+                    sendComment(null);
                 }
 
                 return false;
@@ -283,6 +198,69 @@ public class CommentsFragment extends Fragment {
                             }
                         }
                     });
+
+                    // object will be your game score
+                } else {
+                    // something went wrong
+                }
+            }
+        });
+
+    }
+
+    public void sendComment(View view){
+        Tracker mTracker;
+        ApplicationBase application = (ApplicationBase) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("CommentsFragment");
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Comments")
+                .setAction("sent")
+                .setLabel(Utilities.getUserEmail(activity))
+                .build());
+
+        if(view!=null) {
+            view.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
+        }
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Channels");
+        query.getInBackground(channelId, new GetCallback<ParseObject>() {
+            public void done(ParseObject object, ParseException e) {
+                if (e == null) {
+
+                    if (object!=null) {
+                        if ((pUser != null)
+                                && (pUser.isAuthenticated())
+                                && (pUser.getSessionToken() != null)
+                                ) {
+                            Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
+
+
+                            List<ParseObject> commentsArrray = (List<ParseObject>) object.get("comments");
+                            if (commentsArrray == null) {
+                                commentsArrray = new ArrayList<>();
+                            }
+                            ParseObject postComment = new ParseObject("Comments");
+                            postComment.put(ParseTables.Comments.USER, pUser);
+                            postComment.put(ParseTables.Comments.TEXT, editText.getText().toString());
+//                        postComment.put(ParseTables.Comments.VIDEO, currentVideoObjectComment);
+                            postComment.put(ParseTables.Comments.CHANNELS, object);
+                            commentsArrray.add(postComment);
+                            object.put("comments", commentsArrray);
+                            editText.setText("");
+                            object.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
+                                    setUpComments();
+                                }
+                            });
+                        } else {
+                            Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getActivity(), LoginActivity.class);
+                            startActivity(intent);
+                        }
+                    }
 
                     // object will be your game score
                 } else {
