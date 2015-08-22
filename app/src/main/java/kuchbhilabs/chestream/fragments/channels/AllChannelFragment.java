@@ -88,7 +88,9 @@ public class AllChannelFragment extends Fragment {
                                 for(int j=0;j<videoIds.length();j++)
                                     arr.add(videoIds.getString(j));
 
-                                channelList.add(new ChannelModel(id,picture,name,info,activeUsers,arr));
+                                if(!name.equals("global")) {
+                                    channelList.add(new ChannelModel(id, picture, name, info, activeUsers, arr));
+                                }
                             }
 
                             AsyncTask.execute(new Runnable() {
