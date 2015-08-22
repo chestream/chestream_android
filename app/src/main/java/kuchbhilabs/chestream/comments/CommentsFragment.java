@@ -26,6 +26,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -260,26 +261,35 @@ public class CommentsFragment extends Fragment {
 
 //        ParseObject currentVideoObjectComment = VideoFragment.currentVideo;
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
-//        if(channelId!=null) {
-//            query.whereEqualTo("channel_object", channelId);
-//        }
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> list, ParseException e) {
-                Log.d(TAG, "Updating comments dataset");
-                commentsAdapter.updateDataSet(list);
-                commentsAdapter.notifyDataSetChanged();
-                commentsLoading.setVisibility(View.GONE);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Channels");
+        query.getInBackground(channelId, new GetCallback<ParseObject>() {
+            public void done(ParseObject object, ParseException e) {
+                if (e == null) {
 
-                VideoFragment.setCommentsCount(list.size() + " Comments");
-                if (list.size()==0){
-                    commentsLoading.setVisibility(View.VISIBLE);
-                    commentsLoading.setText("Be the first to comment.");
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
+                    query.whereEqualTo("channel_object", object);
+                    query.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> list, ParseException e) {
+                            Log.d(TAG, "Updating comments dataset");
+                            commentsAdapter.updateDataSet(list);
+                            commentsAdapter.notifyDataSetChanged();
+                            commentsLoading.setVisibility(View.GONE);
+
+                            VideoFragment.setCommentsCount(list.size() + " Comments");
+                            if (list.size()==0){
+                                commentsLoading.setVisibility(View.VISIBLE);
+                                commentsLoading.setText("Be the first to comment.");
+                            }
+                        }
+                    });
+
+                    // object will be your game score
+                } else {
+                    // something went wrong
                 }
             }
         });
-
 
     }
 }
