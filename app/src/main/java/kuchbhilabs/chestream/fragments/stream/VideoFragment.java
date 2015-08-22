@@ -456,7 +456,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 //                                        downloadBackgroundBitmap(currentVideo.getString(
 //                                                ParseTables.Videos.VIDEO_THUMBNAIL));
 
-                                        CommentsFragment.setUpComments();
+//                                        CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
 
                                         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
