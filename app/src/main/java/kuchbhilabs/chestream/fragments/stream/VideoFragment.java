@@ -100,7 +100,8 @@ import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.fragments.channels.ChannelVideoFragment;
+import kuchbhilabs.chestream.fragments.channels.ChannelFragment;
+import kuchbhilabs.chestream.fragments.channels.ChannelModel;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.helpers.Helper;
 import kuchbhilabs.chestream.helpers.Utilities;
@@ -260,7 +261,8 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
 //        commentFloating = (TextView) rootView.findViewById(R.id.commentText);
 
-        CommentsFragment commentsFragment = new CommentsFragment();
+        ChannelModel channelGlobal =  new ChannelModel("O4xopsCg4Y","","global","GLOBAL",0,null);
+        CommentsFragment commentsFragment = new CommentsFragment().newInstance(channelGlobal);
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
 
         videoFrame = (AspectRatioFrameLayout) rootView.findViewById(R.id.video_frame);
@@ -274,7 +276,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
             @Override
             public void onClick(View view) {
                 Log.d("yo","clicked channel");
-                Fragment nextFrag= new ChannelVideoFragment();
+                Fragment nextFrag= new ChannelFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.videoBackground, nextFrag);
                 ft.addToBackStack(null);
@@ -454,7 +456,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 //                                        downloadBackgroundBitmap(currentVideo.getString(
 //                                                ParseTables.Videos.VIDEO_THUMBNAIL));
 
-                                        CommentsFragment.setUpComments();
+//                                        CommentsFragment.setUpComments();
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
 
                                         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(

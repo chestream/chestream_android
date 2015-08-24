@@ -1,4 +1,4 @@
-package kuchbhilabs.chestream;
+package kuchbhilabs.chestream.activities;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -13,15 +13,17 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.parse.ParseAnalytics;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 import java.io.IOException;
 
+import kuchbhilabs.chestream.ApplicationBase;
+import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.sign.SignInFragment;
 import kuchbhilabs.chestream.tutorial.AppIntroActivity;
-import  com.parse.ParseAnalytics;
 
 public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 

@@ -31,8 +31,8 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import kuchbhilabs.chestream.LoginActivity;
-import kuchbhilabs.chestream.MainActivity;
+import kuchbhilabs.chestream.activities.LoginActivity;
+import kuchbhilabs.chestream.activities.MainActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.Helper;
