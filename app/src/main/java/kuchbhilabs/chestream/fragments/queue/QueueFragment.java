@@ -36,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.melnykov.fab.FloatingActionButton;
@@ -43,6 +44,8 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import org.mockito.internal.util.reflection.Fields;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,7 +55,7 @@ import java.util.Locale;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.CompressionUploadService;
-import kuchbhilabs.chestream.activities.LoginActivity;
+import kuchbhilabs.chestream.LoginActivity;
 import kuchbhilabs.chestream.NotificationReceiver;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;

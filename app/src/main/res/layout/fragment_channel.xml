@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:typeface="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    sothree:dragViewClickable="true"
+    sothree:panelHeight="140dp"
+    sothree:shadowHeight="0dp" >
 
     <FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000"
@@ -32,7 +42,123 @@
 
         </com.google.android.exoplayer.AspectRatioFrameLayout>
 
-</LinearLayout>
+        <!--
+        <TextView
+            android:id="@+id/commentText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="50dp"
+            android:gravity="center_horizontal|top"
+            android:text="Great Video"
+            android:textColor="#ffffff"
+            android:textSize="25sp"
+            android:visibility="gone" />  -->
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                >
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_details"
+            android:orientation="horizontal"
+            android:gravity="top|left"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="@dimen/statusBarHeight"
+            android:background="@drawable/bg_gradient_down_overlay">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/profile_picture"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center_vertical"
+                    fresco:roundAsCircle="true" />
+
+                <kuchbhilabs.chestream.helpers.TypefaceTextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="#ffffff"
+                    android:maxLines="1"
+                    android:maxLength="12"
+                    android:ellipsize="end"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    typeface:typeface="HelveticaNeue-Light"/>
+
+                <kuchbhilabs.chestream.helpers.TypefaceTextView
+                    android:id="@+id/video_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    typeface:typeface="HelveticaNeue-Light"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/video_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp"
+                    android:paddingBottom="40dp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <kuchbhilabs.chestream.helpers.TypefaceTextView
+                android:id="@+id/video_title"
+                android:layout_width="wrap_content"
+                android:paddingRight="10dp"
+                android:paddingLeft="5dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="#ffffff"
+                android:textSize="22sp"
+                typeface:typeface="HelveticaNeue-Light" />
+
+        </LinearLayout>
+
+        <!--<include layout="@layout/loading_layout"-->
+            <!--android:id="@+id/loading_layout"/>-->
+
+        <include layout="@layout/buffer_screen_layout"/>
+
+        <TextureView
+            android:id="@+id/camera_preview"
+            android:layout_width="120dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="@dimen/statusBarHeight"
+            android:gravity="right|top"
+            android:layout_gravity="top|right"
+            android:visibility="gone" />
+
     </FrameLayout>
 
+    <include layout="@layout/layout_panel_bottom" />
 
+</kuchbhilabs.chestream.slidinguppanel.SlidingUpPanelLayout>

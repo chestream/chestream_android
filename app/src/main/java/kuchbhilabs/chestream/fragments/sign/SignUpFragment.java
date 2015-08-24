@@ -19,9 +19,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -29,8 +31,9 @@ import com.parse.SignUpCallback;
 import java.util.List;
 
 import kuchbhilabs.chestream.ApplicationBase;
-import kuchbhilabs.chestream.activities.MainActivity;
+import kuchbhilabs.chestream.MainActivity;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.externalapi.FacebookApi;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.Utilities;
 

@@ -1,4 +1,4 @@
-package kuchbhilabs.chestream.activities;
+package kuchbhilabs.chestream;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,9 +16,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import kuchbhilabs.chestream.ApplicationBase;
-import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.fragments.channels.AllChannelFragment;
+import kuchbhilabs.chestream.fragments.profile.ProfileFragment;
 import kuchbhilabs.chestream.fragments.queue.QueueFragment;
 import kuchbhilabs.chestream.fragments.stream.VideoFragment;
 
@@ -136,13 +134,13 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             switch (position) {
 
                 case 0:
-                    fragment = new QueueFragment();
+                    fragment = new ProfileFragment();
                     break;
                 case 1:
                     fragment = new VideoFragment();
                     break;
                 case 2:
-                    fragment = new AllChannelFragment();
+                    fragment = new QueueFragment();
                     break;
             }
             return fragment;

@@ -9,6 +9,4 @@
 
     <dimen name="rippleStrokeWidth">2dp</dimen>
     <dimen name="rippleRadius">34dp</dimen>
-
-    <dimen name="spacing_channel_grid">8dp</dimen>
 </resources>

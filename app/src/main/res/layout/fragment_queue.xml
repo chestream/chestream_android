@@ -43,7 +43,6 @@
         android:layout_marginLeft="16dp"
         android:src="@drawable/ic_videocam_white_24dp"
         android:scaleType="centerInside"
-        android:visibility="gone"
         />
 
         <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"

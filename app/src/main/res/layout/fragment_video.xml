@@ -131,7 +131,6 @@
             android:text="Go to channel"
             android:textColor="#ffffff"
             android:background="#000000"
-            android:visibility="gone"
             android:id="@+id/goTo_channel_button"
 
             />
