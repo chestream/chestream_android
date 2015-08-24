@@ -1,7 +1,6 @@
 package kuchbhilabs.chestream.fragments.channels;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,12 +13,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
@@ -33,7 +26,6 @@ public class ChannelFragment extends Fragment {
     ViewPager mViewPager;
     PagerAdapter mPagerAdapter;
     Toolbar toolbar;
-    ImageView preview;
 
     ChannelModel channel;
 
@@ -54,7 +46,6 @@ public class ChannelFragment extends Fragment {
         channel= (ChannelModel)getArguments().getSerializable("channel");
 
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        preview=(ImageView) rootView.findViewById(R.id.preview);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(channel.name);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -69,16 +60,6 @@ public class ChannelFragment extends Fragment {
         tabLayout.setupWithViewPager(mViewPager);
 
 
-        ImageLoader.getInstance().displayImage("http://104.131.207.33/chestream_raw/11785415_805808706184034_1008859156_n/thumbnail.png", preview,
-                new DisplayImageOptions.Builder().cacheInMemory(true)
-                        .cacheOnDisk(true)
-                        .resetViewBeforeLoading(true)
-                        .displayer(new FadeInBitmapDisplayer(400))
-                        .build(),new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    }
-                });
 
         CommentsFragment.setUpComments(channel.id);
 

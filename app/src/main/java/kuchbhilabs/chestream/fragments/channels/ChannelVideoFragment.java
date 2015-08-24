@@ -9,17 +9,13 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.exoplayer.AspectRatioFrameLayout;
@@ -42,7 +38,6 @@ import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.fragments.stream.OtherUserProfileAdapter;
 import kuchbhilabs.chestream.widgets.RippleBackground;
 
 public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Callback,
@@ -58,10 +53,6 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
     public static ParseObject currentVideo;
 
     ParseUser currentParseUser;
-
-    OtherUserProfileAdapter adapter;
-    RecyclerView recyclerView;
-    LinearLayout userLayout;
 
     Activity activity;
 
@@ -114,11 +105,6 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
 
         videoIDS=getArguments().getStringArrayList("ids");
 
-        dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //before
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        dialog.setContentView(R.layout.fragment_profile);
-
 
         dragCommentsView=(FrameLayout) rootView.findViewById(R.id.dragCommentsView);
         videoBackground=(FrameLayout) rootView.findViewById(R.id.videoBackground);
@@ -128,11 +114,6 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
         handlerThread = new HandlerThread("HandlerThread");
         handlerThread.start();
 
-        sendNextRequest();
-
-
-//        commentFloating = (TextView) rootView.findViewById(R.id.commentText);
-
         videoFrame = (AspectRatioFrameLayout) rootView.findViewById(R.id.video_frame);
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
@@ -140,7 +121,7 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
 
         exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
-
+        sendNextRequest();
 
         return rootView;
     }
@@ -223,6 +204,7 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
                     releasePlayer();
                     break;
                 case MSG_SET_RENDERER_BUILDER:
+                    setRendererBuilder();
                     break;
                 default:
                     throw new UnsupportedOperationException();
@@ -230,6 +212,13 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
         }
     }
 
+    private void setRendererBuilder() {
+        if (player != null) {
+            player.updateRendererBuilder(getRendererBuilder());
+            player.seekTo(0);
+        }
+        playerNeedsPrepare = true;
+    }
 
     @Override
     public void onAudioCapabilitiesChanged(AudioCapabilities audioCapabilities) {
@@ -287,6 +276,9 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
                 text += "preparing";
                 break;
             case ExoPlayer.STATE_READY:
+                if (player != null) {
+                    player.setPlayWhenReady(true);
+                }
                 text += "ready";
                 break;
             default:
@@ -301,14 +293,14 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
 //        shutterView.setVisibility(View.GONE);
 //        surfaceView.setVideoWidthHeightRatio(
 //                height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
-        Log.d(TAG, "width = " + width + " height = " + height);
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                videoFrame.setAspectRatio(
-                        height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
-            }
-        });
+//        Log.d(TAG, "width = " + width + " height = " + height);
+//        activity.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                videoFrame.setAspectRatio(
+//                        height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
+//            }
+//        });
     }
 
     public DemoPlayer.RendererBuilder getRendererBuilder() {

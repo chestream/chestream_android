@@ -21,28 +21,6 @@
         android:layout_height="250dp"
         android:id="@+id/video_container">
 
-        <com.google.android.exoplayer.AspectRatioFrameLayout
-            android:id="@+id/video_frame"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight = "1"
-            android:layout_gravity="center"
-            android:clickable="true">
-
-            <SurfaceView
-                android:id="@+id/main_surface_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center" />
-
-        </com.google.android.exoplayer.AspectRatioFrameLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:id="@+id/preview"/>
-
     </FrameLayout>
         <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/toolbar"
