@@ -16,7 +16,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#B3000000"
+        android:background="#000000"
         android:elevation="5dp"
         android:layout_gravity="top"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -36,6 +36,14 @@
 
 
     </android.support.v7.widget.Toolbar>
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        style="@style/GNowProgressBar"
+        android:indeterminate="true" />
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

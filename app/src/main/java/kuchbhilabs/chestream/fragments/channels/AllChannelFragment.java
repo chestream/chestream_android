@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.R;
 
 /**
@@ -42,6 +43,7 @@ public class AllChannelFragment extends Fragment {
     RecyclerView recyclerView;
     Activity activity;
     AllChannelAdapter adapter;
+    SmoothProgressBar progressBar;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -50,6 +52,8 @@ public class AllChannelFragment extends Fragment {
         activity=getActivity();
 
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        progressBar=(SmoothProgressBar) rootView.findViewById(R.id.progress);
+        progressBar.setVisibility(View.VISIBLE);
         recyclerView=(RecyclerView) rootView.findViewById(R.id.recycler_view_channels);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
@@ -103,6 +107,7 @@ public class AllChannelFragment extends Fragment {
                                             recyclerView.setAdapter(adapter);
                                             int spacingInPixels = getActivity().getResources().getDimensionPixelSize(R.dimen.spacing_channel_grid);
                                             recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+                                            progressBar.setVisibility(View.GONE);
                                         }
                                     });
                                 }
