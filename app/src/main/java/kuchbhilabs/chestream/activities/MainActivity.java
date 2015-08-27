@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         if (videoFragment == null) {
-            videoFragment = (VideoFragment) mPagerAdapter.getRegisteredFragment(1);
+            videoFragment = (VideoFragment) mPagerAdapter.getRegisteredFragment(2);
         }
         videoFragment.onPageScrolled(position, positionOffset, positionOffsetPixels);
     }
@@ -139,10 +139,10 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                     fragment = new QueueFragment();
                     break;
                 case 1:
-                    fragment = new VideoFragment();
+                    fragment = new AllChannelFragment();
                     break;
                 case 2:
-                    fragment = new AllChannelFragment();
+                    fragment = new VideoFragment();
                     break;
             }
             return fragment;
