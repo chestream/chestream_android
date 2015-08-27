@@ -31,6 +31,7 @@ import java.util.List;
 import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.activities.MainActivity;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.activities.MainActivity2;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.helpers.Utilities;
 
@@ -144,7 +145,7 @@ public class SignUpFragment extends Fragment {
                                             if (user != null) {
                                                 // Hooray! The user is logged in.
                                                 mProgressDialog.dismiss();
-                                                Intent intent = new Intent(activity, MainActivity.class);
+                                                Intent intent = new Intent(activity, MainActivity2.class);
                                                 activity.startActivity(intent);
                                                 activity.finish();
                                             } else {
@@ -275,7 +276,7 @@ public class SignUpFragment extends Fragment {
         @Override
         protected void onPostExecute(Bundle b) {
             mProgressDialog.dismiss();
-            Intent intent = new Intent(activity, MainActivity.class);
+            Intent intent = new Intent(activity, MainActivity2.class);
             activity.startActivity(intent);
             activity.finish();
         }

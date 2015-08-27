@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Ca
                 && (pUser.getSessionToken() != null)
                 && (pUser.getBoolean(ParseTables.Users.FULLY_REGISTERED))) {
             Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
-            Intent i = new Intent(this, MainActivity.class);
+            Intent i = new Intent(this, MainActivity2.class);
             startActivity(i);
 
             finish();

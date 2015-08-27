@@ -29,7 +29,6 @@ public class AppIntroActivity extends IntroActivity {
         startActivity(intent);
         finish();
     }
-
     @Override
     public void onSkipPressed() {
         prefs = getSharedPreferences("chestream", MODE_PRIVATE);

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
@@ -33,6 +34,7 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
@@ -42,6 +44,9 @@ import kuchbhilabs.chestream.widgets.RippleBackground;
 
 public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener {
+
+    public static SmoothProgressBar progressBar;
+    public static SimpleDraweeView gifView;
 
     Dialog dialog;
     String url = "";
@@ -105,6 +110,9 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
 
         videoIDS=getArguments().getStringArrayList("ids");
 
+
+        progressBar=(SmoothProgressBar) rootView.findViewById(R.id.progress);
+        gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
 
         dragCommentsView=(FrameLayout) rootView.findViewById(R.id.dragCommentsView);
         videoBackground=(FrameLayout) rootView.findViewById(R.id.videoBackground);

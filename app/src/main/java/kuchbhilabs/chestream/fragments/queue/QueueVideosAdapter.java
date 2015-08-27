@@ -43,6 +43,8 @@ import java.util.List;
 import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
+import kuchbhilabs.chestream.fragments.channels.ChannelFragment;
+import kuchbhilabs.chestream.fragments.channels.ChannelVideoFragment;
 import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
 
@@ -280,9 +282,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         .setUri(Uri.parse(video.getString(ParseTables.Videos.GIF)))
                         .setAutoPlayAnimations(true)
                         .build();
-                QueueFragment.gifView.setController(controller);
-                QueueFragment.gifView.setVisibility(View.VISIBLE);
-                QueueFragment.progressBar.setVisibility(View.VISIBLE);
+                ChannelVideoFragment.gifView.setController(controller);
+                ChannelVideoFragment.gifView.setVisibility(View.VISIBLE);
+                ChannelVideoFragment.progressBar.setVisibility(View.VISIBLE);
             }
         };
 
@@ -300,8 +302,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     Log.d("press", "release");
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
-                    QueueFragment.gifView.setVisibility(View.INVISIBLE);
-                    QueueFragment.progressBar.setVisibility(View.GONE);
+                    ChannelVideoFragment.gifView.setVisibility(View.INVISIBLE);
+                    ChannelVideoFragment.progressBar.setVisibility(View.GONE);
                     return true;
 
                 } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -309,8 +311,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     Log.d("press", "release");
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
-                    QueueFragment.gifView.setVisibility(View.INVISIBLE);
-                    QueueFragment.progressBar.setVisibility(View.GONE);
+                    ChannelVideoFragment.gifView.setVisibility(View.INVISIBLE);
+                    ChannelVideoFragment.progressBar.setVisibility(View.GONE);
                     return true;
 
                 } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
@@ -318,8 +320,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     Log.d("press", "release");
 //                    dialog.dismiss();
                     handler.removeCallbacks(mLongPressed);
-                    QueueFragment.gifView.setVisibility(View.INVISIBLE);
-                    QueueFragment.progressBar.setVisibility(View.GONE);
+                    ChannelVideoFragment.gifView.setVisibility(View.INVISIBLE);
+                    ChannelVideoFragment.progressBar.setVisibility(View.GONE);
                     return true;
                 } else
                     return false;

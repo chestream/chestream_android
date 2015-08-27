@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ public class ChannelFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable("channel",channelModel);
         fragment.setArguments(args);
+        Log.d("newAA", "hi");
         return fragment;
     }
 
@@ -42,6 +44,9 @@ public class ChannelFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_channels, null);
         activity=getActivity();
+
+        Log.d("newAA", "hi2");
+
 
         channel= (ChannelModel)getArguments().getSerializable("channel");
 
@@ -81,6 +86,8 @@ public class ChannelFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
+            Log.d("newAA", "hi3");
+
             return TITLES[position];
         }
 

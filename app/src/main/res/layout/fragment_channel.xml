@@ -33,6 +33,23 @@
         </com.google.android.exoplayer.AspectRatioFrameLayout>
 
 </LinearLayout>
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        style="@style/GNowProgressBar"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        android:paddingTop="?attr/actionBarSize"/>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/preview_gif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+
     </FrameLayout>
 
 

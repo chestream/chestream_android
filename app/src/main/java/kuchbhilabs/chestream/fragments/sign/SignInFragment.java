@@ -48,6 +48,7 @@ import java.util.List;
 import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.activities.MainActivity;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.activities.MainActivity2;
 import kuchbhilabs.chestream.externalapi.FacebookApi;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.externalapi.TwitterApi;
@@ -162,7 +163,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                     }
                 });
 
-                Intent intent = new Intent(activity, MainActivity.class);
+                Intent intent = new Intent(activity, MainActivity2.class);
                 startActivity(intent);
                 activity.finish();
             }

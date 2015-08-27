@@ -82,6 +82,9 @@ public class CommentsFragment extends Fragment {
          super.onCreateView(inflater, container, savedInstanceState);
         View v=inflater.inflate(R.layout.fragment_comments,null);
 
+        Log.d("newAA", "hi4");
+
+
         recyclerView=(RecyclerView) v.findViewById(R.id.comments_recycler_view);
         editText=(EditText) v.findViewById(R.id.commentEditText);
         commentsLoading=(TextView) v.findViewById(R.id.commentsLoading);
@@ -100,7 +103,7 @@ public class CommentsFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         recyclerView.setHasFixedSize(true);
 
-        VideoFragment.slidingUpPanelLayout.setScrollView(recyclerView);
+//        VideoFragment.slidingUpPanelLayout.setScrollView(recyclerView);
 
         commentsAdapter = new CommentsAdapter(getActivity(), new ArrayList<ParseObject>());
         recyclerView.setAdapter(commentsAdapter);
@@ -192,7 +195,6 @@ public class CommentsFragment extends Fragment {
                             commentsAdapter.notifyDataSetChanged();
                             commentsLoading.setVisibility(View.GONE);
 
-                            VideoFragment.setCommentsCount(list.size() + " Comments");
                             if (list.size()==0){
                                 commentsLoading.setVisibility(View.VISIBLE);
                                 commentsLoading.setText("Be the first to comment.");
