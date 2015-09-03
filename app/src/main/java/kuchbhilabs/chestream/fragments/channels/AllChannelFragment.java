@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -21,12 +22,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.parse.ParseAnalytics;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.R;
@@ -44,6 +48,8 @@ public class AllChannelFragment extends Fragment {
     Activity activity;
     AllChannelAdapter adapter;
     SmoothProgressBar progressBar;
+
+    long startTime = 0;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -150,5 +156,25 @@ public class AllChannelFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        startTime = System.currentTimeMillis();
+        Toast.makeText(getActivity(), TAG + "start", Toast.LENGTH_LONG).show();
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Map<String, String> dimensions = new HashMap<String, String>();
+        dimensions.put("time", String.valueOf(getElapsedTimeSecs()));
+        ParseAnalytics.trackEventInBackground(TAG, dimensions);
+        Toast.makeText(getActivity(), TAG + "closed" + String.valueOf(getElapsedTimeSecs()), Toast.LENGTH_LONG).show();
+    }
+
+    public long getElapsedTimeSecs() {
+        long elapsed = 0;
+        elapsed = ((System.currentTimeMillis() - startTime) / 1000) % 60;
+        return elapsed;
+    }
 }

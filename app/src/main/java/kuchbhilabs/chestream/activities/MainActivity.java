@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.parse.ParseAnalytics;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.R;
@@ -38,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         ApplicationBase application = (ApplicationBase) getApplication();
         mTracker = application.getDefaultTracker();
-
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
