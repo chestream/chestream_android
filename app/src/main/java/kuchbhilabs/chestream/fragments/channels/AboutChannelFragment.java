@@ -1,11 +1,13 @@
 package kuchbhilabs.chestream.fragments.channels;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -26,6 +28,8 @@ public class AboutChannelFragment extends Fragment {
     TextView name,details,active_users;
     View header;
 
+    Button share;
+
     public static AboutChannelFragment newInstance(ChannelModel channel) {
         AboutChannelFragment fragment = new AboutChannelFragment();
         Bundle args = new Bundle();
@@ -44,8 +48,9 @@ public class AboutChannelFragment extends Fragment {
         details=(TextView) rootView.findViewById(R.id.details);
         active_users=(TextView) rootView.findViewById(R.id.active_users);
         header=rootView.findViewById(R.id.header);
+        share=(Button) rootView.findViewById(R.id.share);
 
-        ChannelModel channel=(ChannelModel) getArguments().getSerializable("channel");
+        final ChannelModel channel=(ChannelModel) getArguments().getSerializable("channel");
 
         name.setText(channel.name);
         details.setText(channel.info);
@@ -62,6 +67,18 @@ public class AboutChannelFragment extends Fragment {
                         header.setBackground(Helper.createBlurredImageFromBitmap(loadedImage, getActivity(), 8));
                     }
                 });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_SUBJECT, "Chestream");
+                String sAux = "Watch "+channel.name+" on Chestream app - http://goo.gl/qNN5w6";
+                i.putExtra(Intent.EXTRA_TEXT, sAux);
+                startActivity(Intent.createChooser(i, "Share Channel"));
+            }
+        });
 
         return rootView;
     }

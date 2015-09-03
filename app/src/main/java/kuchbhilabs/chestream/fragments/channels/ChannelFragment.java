@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +74,7 @@ public class ChannelFragment extends Fragment {
         //Note: Change Fragment to WeakReference<Fragment> in case of more than 3 fragments
         SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
-        private final String[] TITLES = { "About","Chat","Videos" };
+        private final String[] TITLES = { "About","Discuss","Videos" };
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -83,7 +82,6 @@ public class ChannelFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Log.d("newAA", "hi3");
 
             return TITLES[position];
         }
