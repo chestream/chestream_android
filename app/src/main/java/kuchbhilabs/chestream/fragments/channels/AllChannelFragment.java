@@ -167,7 +167,39 @@ public class AllChannelFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Map<String, String> dimensions = new HashMap<String, String>();
-        dimensions.put("time", String.valueOf(getElapsedTimeSecs()));
+        long elapsedTime = getElapsedTimeSecs();
+        String time = " - ";
+        if(elapsedTime<15){
+            time = "0-15";
+        }
+        if(elapsedTime>=15 && elapsedTime<30){
+            time = "15-30";
+        }
+        if(elapsedTime>=30 && elapsedTime<60){
+            time = "30-60";
+        }
+        if(elapsedTime>=60 && elapsedTime<90){
+            time = "60-90";
+        }
+        if(elapsedTime>=90 && elapsedTime<120){
+            time = "90-120";
+        }
+        if(elapsedTime>=120 && elapsedTime<150){
+            time = "120-150";
+        }
+        if(elapsedTime>=150 && elapsedTime<180){
+            time = "150-180";
+        }
+        if(elapsedTime>=180 && elapsedTime<210){
+            time = "180-210";
+        }
+        if(elapsedTime>=210 && elapsedTime<240){
+            time = "210-240";
+        }
+        else {
+            time = ">240";
+        }
+        dimensions.put("time", time);
         ParseAnalytics.trackEventInBackground(TAG, dimensions);
         Toast.makeText(getActivity(), TAG + "closed" + String.valueOf(getElapsedTimeSecs()), Toast.LENGTH_LONG).show();
     }
