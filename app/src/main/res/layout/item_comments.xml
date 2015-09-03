@@ -54,7 +54,7 @@
         android:layout_gravity="center_vertical"
         android:paddingLeft="13dp"
         android:textColor="@android:color/black"
-        android:textSize="15sp"
+        android:textSize="16sp"
         typeface:typeface="HelveticaNeue-Light"/>
 
     <com.facebook.drawee.view.SimpleDraweeView

@@ -1,78 +1,36 @@
-package kuchbhilabs.chestream.fragments.channels;
+package kuchbhilabs.chestream.activities;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
 import com.google.android.exoplayer.util.Util;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.activities.FullscreenPlayerActivity;
 import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
-import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.widgets.RippleBackground;
 
-public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Callback,
+/**
+ * Created by naman on 02/09/15.
+ */
+public class FullscreenPlayerActivity extends AppCompatActivity implements SurfaceHolder.Callback,
         DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener {
-
-    public static SmoothProgressBar progressBar;
-    public static SimpleDraweeView gifView;
-
-    Dialog dialog;
-    String url = "";
-    String upvotes = "";
-    String location = "";
-    String title = "";
-    String username = "";
-    String avatar = "";
-    public static ParseObject currentVideo;
-
-    ParseUser currentParseUser;
-
-    Activity activity;
 
     public static AspectRatioFrameLayout videoFrame;
     SurfaceView surfaceView;
     SurfaceHolder holder;
-
-
-    private static final String TAG = "VideoFragment";
-
-    private static final String TEST_URL = "http://128.199.128.227/chestream_raw/video_1434859043/video_1434859043.mp4";
-    private static final String NEXT_URL = "http://104.131.207.33:8800/";
 
     private DemoPlayer player;
     private AudioCapabilities audioCapabilities;
@@ -83,72 +41,37 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
     private HandlerThread handlerThread;
     private ExoPlayerHandler exoPlayerHandler;
 
-    ImageView fullscreen;
-
-    FrameLayout dragCommentsView;
-    FrameLayout videoBackground;
-    RippleBackground rippleBackground;
-
-    List<String> videoIDS;
-    int videoPosition =0;
-
-    int[] patternImages = {R.drawable.pattern1, R.drawable.pattern2,R.drawable.pattern3,R.drawable.pattern4,R.drawable.pattern5,R.drawable.pattern6,R.drawable.pattern7,R.drawable.pattern8};
-
-    public static ChannelVideoFragment newInstance(List<String> videoIds) {
-        ChannelVideoFragment fragment = new ChannelVideoFragment();
-        Bundle args = new Bundle();
-        args.putStringArrayList("ids",new ArrayList<String>(videoIds));
-        fragment.setArguments(args);
-        return fragment;
-    }
+    String url = "";
+    long position;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
-        View rootView = inflater.inflate(R.layout.fragment_channel, null);
-
-        activity = getActivity();
-
-        audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(activity, this);
-
-        videoIDS=getArguments().getStringArrayList("ids");
-
-
-        progressBar=(SmoothProgressBar) rootView.findViewById(R.id.progress);
-        gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
-        fullscreen=(ImageView) rootView.findViewById(R.id.fullscreen);
-
-        dragCommentsView=(FrameLayout) rootView.findViewById(R.id.dragCommentsView);
-        videoBackground=(FrameLayout) rootView.findViewById(R.id.videoBackground);
-        rippleBackground=(RippleBackground) rootView.findViewById(R.id.ripple);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.player_fullscreen);
+        audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(FullscreenPlayerActivity.this, this);
 
 
         handlerThread = new HandlerThread("HandlerThread");
         handlerThread.start();
 
-        videoFrame = (AspectRatioFrameLayout) rootView.findViewById(R.id.video_frame);
-        surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
+        videoFrame = (AspectRatioFrameLayout) findViewById(R.id.video_frame);
+        surfaceView = (SurfaceView) findViewById(R.id.main_surface_view);
         holder = surfaceView.getHolder();
         holder.addCallback(this);
 
         exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
-        sendNextRequest();
+        url = getIntent().getExtras().getString("url");
+        position=getIntent().getExtras().getLong("position");
+        Log.d("lol",url);
+        Log.d("lol",String.valueOf(position));
 
-        fullscreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(activity, FullscreenPlayerActivity.class);
-                intent.putExtra("url",url);
-                if (player!=null)
-                intent.putExtra("position",player.getCurrentPosition());
-                else intent.putExtra("position",0);
-                startActivity(intent);
-            }
-        });
 
-        return rootView;
+        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
+                ExoPlayerHandler.MSG_SET_RENDERER_BUILDER));
+        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
+                ExoPlayerHandler.MSG_PREPARE));
+
     }
 
     @Override
@@ -168,47 +91,6 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
             player.blockingClearSurface();
         }
     }
-
-    private void sendNextRequest() {
-                            final String videoId = videoIDS.get(videoPosition);
-                            ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseTables.Videos._NAME);
-                            query.whereEqualTo("objectId", videoId);
-                            query.findInBackground(new FindCallback<ParseObject>() {
-                                @Override
-                                public void done(List<ParseObject> list, ParseException e) {
-                                    if (list != null) {
-                                        currentVideo = list.get(0);
-                                        upvotes = currentVideo.getString(ParseTables.Videos.UPVOTE);
-                                        location = currentVideo.getString(ParseTables.Videos.LOCATION);
-                                        title = currentVideo.getString(ParseTables.Videos.TITLE);
-                                        currentVideo.getParseUser(ParseTables.Videos.USER)
-                                                .fetchIfNeededInBackground(new GetCallback<ParseUser>() {
-                                                    @Override
-                                                    public void done(ParseUser parseObject, ParseException e) {
-                                                        currentParseUser = parseObject;
-                                                        username = parseObject.getUsername();
-                                                        avatar = parseObject.getString(ParseTables.Users.AVATAR);
-
-                                                    }
-                                                });
-
-
-
-                                        url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
-
-                                        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
-                                                ExoPlayerHandler.MSG_SET_RENDERER_BUILDER));
-                                        exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
-                                                ExoPlayerHandler.MSG_PREPARE));
-                                    } else {
-                                        Toast.makeText(activity, "Shit Happened!", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-
-    }
-
-
 
     private class ExoPlayerHandler extends Handler {
         public static final int MSG_PREPARE = 0;
@@ -240,7 +122,7 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
     private void setRendererBuilder() {
         if (player != null) {
             player.updateRendererBuilder(getRendererBuilder());
-            player.seekTo(0);
+            player.seekTo(position);
         }
         playerNeedsPrepare = true;
     }
@@ -252,7 +134,6 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
             this.audioCapabilities = audioCapabilities;
             releasePlayer();
             preparePlayer();
-            Log.d(TAG, "AUDIO CAPABILITIES");
         } else if (player != null) {
             player.setBackgrounded(false);
         }
@@ -278,13 +159,14 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
     @Override
     public void onStateChanged(boolean playWhenReady, int playbackState) {
         if (playbackState == ExoPlayer.STATE_ENDED) {
-            currentVideo.put(ParseTables.Videos.PLAYED, true);
-            currentVideo.saveInBackground();
-            if (videoPosition<videoIDS.size()) {
-                videoPosition += 1;
-                sendNextRequest();
-            }
+//            currentVideo.put(ParseTables.Videos.PLAYED, true);
+//            currentVideo.saveInBackground();
+//            if (videoPosition<videoIDS.size()) {
+//                videoPosition += 1;
+//                sendNextRequest();
+//            }
 //            QueueFragment.updateCurrentlyPlaying();
+            finish();
         }
         String text = "playWhenReady=" + playWhenReady + ", playbackState=";
         switch(playbackState) {
@@ -310,7 +192,6 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
                 text += "unknown";
                 break;
         }
-        Log.d(TAG, "text = " + text);
     }
 
     @Override
@@ -329,8 +210,8 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
     }
 
     public DemoPlayer.RendererBuilder getRendererBuilder() {
-        String userAgent = Util.getUserAgent(activity, "ExoPlayerDemo");
-        return new HlsRendererBuilder(activity, userAgent, url, audioCapabilities);
+        String userAgent = Util.getUserAgent(this, "ExoPlayerDemo");
+        return new HlsRendererBuilder(this, userAgent, url, audioCapabilities);
     }
 
     private void preparePlayer() {
@@ -389,6 +270,4 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
         super.onDestroy();
         releasePlayer();
     }
-
-
 }
