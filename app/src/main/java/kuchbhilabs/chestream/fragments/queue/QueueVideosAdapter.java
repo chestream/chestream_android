@@ -297,11 +297,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if(nonSynchronous){
                         ChannelVideoFragmentNonSynchronous.playVideo(video.getString(ParseTables.Videos.URL_M3U8));
+                    }else{
+                        v.setSelected(true);
+                        handler.postDelayed(mLongPressed, 500);
+                        Log.d("press", "pressed");
                     }
-                    v.setSelected(true);
-                    handler.postDelayed(mLongPressed, 500);
-                    Log.d("press", "pressed");
-
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.setSelected(false);
