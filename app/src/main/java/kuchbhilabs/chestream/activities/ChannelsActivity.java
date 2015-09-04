@@ -31,7 +31,6 @@ public class ChannelsActivity extends AppCompatActivity {
             case android.R.id.home:
                 super.onBackPressed();
                 break;
-
         }
 
         return super.onOptionsItemSelected(item);

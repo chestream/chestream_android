@@ -48,12 +48,12 @@ public class LoginActivity extends AppCompatActivity implements SurfaceHolder.Ca
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        prefs = getSharedPreferences("chestream", MODE_PRIVATE);
-
-        if (prefs.getBoolean("firstrun", true)) {
-            Log.d("intro", "here");
-            startIntro();
-        }
+//        prefs = getSharedPreferences("chestream", MODE_PRIVATE);
+//
+//        if (prefs.getBoolean("firstrun", true)) {
+//            Log.d("intro", "here");
+//            startIntro();
+//        }
 
         setContentView(R.layout.activity_login);
 

@@ -71,7 +71,6 @@ public class MainActivity2 extends AppCompatActivity {
         }
         dimensions.put("time", time);
         ParseAnalytics.trackEventInBackground("WholeAppUsageTime", dimensions);
-        Toast.makeText(getApplicationContext(), "closed"+time, Toast.LENGTH_LONG).show();
     }
 
     public long getElapsedTimeSecs() {

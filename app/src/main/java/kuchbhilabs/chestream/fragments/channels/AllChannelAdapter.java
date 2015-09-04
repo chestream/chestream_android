@@ -19,6 +19,7 @@ import java.util.List;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.activities.ChannelsActivity;
 import kuchbhilabs.chestream.helpers.CircularImageView;
+import kuchbhilabs.chestream.widgets.SectionedGridRecyclerViewAdapter;
 
 /**
  * Created by naman on 20/08/15.
@@ -51,7 +52,7 @@ public class AllChannelAdapter extends RecyclerView.Adapter<AllChannelAdapter.Al
 
         ChannelModel channel = arrayList.get(i);
         itemHolder.name.setText(channel.name);
-        itemHolder.details.setText(channel.activeUsers+" Active Users");
+        itemHolder.details.setText(channel.activeUsers+" users online");
 
         ImageLoader.getInstance().displayImage(channel.picture, itemHolder.avatar,
                 new DisplayImageOptions.Builder().cacheInMemory(true)
@@ -87,9 +88,13 @@ public class AllChannelAdapter extends RecyclerView.Adapter<AllChannelAdapter.Al
         @Override
         public void onClick(View v) {
             Intent intent=new Intent(mContext,ChannelsActivity.class);
-            intent.putExtra("channel",arrayList.get(getAdapterPosition()));
+            intent.putExtra("channel",arrayList.get(getActualPosition(getAdapterPosition())));
             mContext.startActivity(intent);
         }
+    }
+
+    private int getActualPosition(int position){
+        return SectionedGridRecyclerViewAdapter.sectionedPositionToPosition(position);
     }
 }
 

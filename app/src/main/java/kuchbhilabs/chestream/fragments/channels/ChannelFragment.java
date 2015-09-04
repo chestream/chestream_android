@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -44,7 +43,6 @@ public class ChannelFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable("channel",channelModel);
         fragment.setArguments(args);
-        Log.d("newAA", "hi");
         return fragment;
     }
 
@@ -53,8 +51,6 @@ public class ChannelFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_channels, null);
         activity=getActivity();
-
-        Log.d("newAA", "hi2");
 
 
         channel= (ChannelModel)getArguments().getSerializable("channel");
@@ -87,7 +83,7 @@ public class ChannelFragment extends Fragment {
         //Note: Change Fragment to WeakReference<Fragment> in case of more than 3 fragments
         SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
-        private final String[] TITLES = { "About","Videos","Chat" };
+        private final String[] TITLES = { "About","Discuss","Videos" };
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -95,7 +91,6 @@ public class ChannelFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Log.d("newAA", "hi3");
 
             return TITLES[position];
         }
@@ -114,10 +109,10 @@ public class ChannelFragment extends Fragment {
                     fragment = new AboutChannelFragment().newInstance(channel);
                     break;
                 case 1:
-                    fragment = new ChannelQueueFragment().newInstance(channel.videoIds);
+                    fragment = new CommentsFragment().newInstance(channel);
                     break;
                 case 2:
-                    fragment = new CommentsFragment().newInstance(channel);
+                    fragment = new ChannelQueueFragment().newInstance(channel.videoIds);
                     break;
             }
             return fragment;
