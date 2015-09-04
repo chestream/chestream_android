@@ -261,7 +261,7 @@ public class VideoFragment extends Fragment implements SurfaceHolder.Callback,
 
 //        commentFloating = (TextView) rootView.findViewById(R.id.commentText);
 
-        ChannelModel channelGlobal =  new ChannelModel("O4xopsCg4Y","","global","GLOBAL","Other",0,null);
+        ChannelModel channelGlobal =  new ChannelModel("O4xopsCg4Y","","global","GLOBAL","Other",0,null,false);
         CommentsFragment commentsFragment = new CommentsFragment().newInstance(channelGlobal);
         getChildFragmentManager().beginTransaction().add(R.id.comments, commentsFragment).commit();
 

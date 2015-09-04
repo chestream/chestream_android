@@ -13,10 +13,11 @@ public class ChannelModel implements Serializable {
     public final String name;
     public final String info;
     public final String category;
+    public final boolean nonSynchronous;
     public final int activeUsers;
     public final List<String> videoIds;
 
-    public ChannelModel(String id,String picture,String name,String info,String category,int activeUsers,List<String> videoIds){
+    public ChannelModel(String id,String picture,String name,String info,String category,int activeUsers,List<String> videoIds, boolean nonSynchronous){
         this.id =id;
         this.picture=picture;
         this.name=name;
@@ -24,6 +25,7 @@ public class ChannelModel implements Serializable {
         this.category=category;
         this.activeUsers=activeUsers;
         this.videoIds=videoIds;
+        this.nonSynchronous = nonSynchronous;
     }
 
 

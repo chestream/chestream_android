@@ -95,6 +95,7 @@ public class AllChannelFragment extends Fragment {
                                 String category = responseArray.getJSONObject(i).getString("category");
                                 String picture = responseArray.getJSONObject(i).getString("picture");
                                 String id = responseArray.getJSONObject(i).getString("channel_id");
+                                boolean nonSynchronous = responseArray.getJSONObject(i).getBoolean("nonSynchronous");
                                 int activeUsers =responseArray.getJSONObject(i).getInt("active_users");
                                 JSONArray videoIds = responseArray.getJSONObject(i).getJSONArray("video_ids");
                                 List<String> arr=new ArrayList<>();
@@ -102,7 +103,7 @@ public class AllChannelFragment extends Fragment {
                                     arr.add(videoIds.getString(j));
 
                                 if(!name.equals("global")) {
-                                    channelList.add(new ChannelModel(id, picture, name, info,category, activeUsers, arr));
+                                    channelList.add(new ChannelModel(id, picture, name, info,category, activeUsers, arr, nonSynchronous));
                                 }
                             }
 
