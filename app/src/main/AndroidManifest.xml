@@ -73,6 +73,7 @@
         <activity
             android:name=".activities.ChannelsActivity"
             android:label="Channels"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.FullScreen" />
 
         <service
