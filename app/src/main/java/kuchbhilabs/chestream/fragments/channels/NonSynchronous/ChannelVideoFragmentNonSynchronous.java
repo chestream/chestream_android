@@ -59,7 +59,7 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
     static  long playerPosition = 0;
     boolean playerNeedsPrepare = true;
     private static  EventLogger eventLogger;
-    private HandlerThread handlerThread;
+    private static HandlerThread handlerThread;
     private static  ExoPlayerHandler exoPlayerHandler;
     ImageView fullscreen;
 
@@ -83,10 +83,7 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
 
         audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(getActivity(), this);
 
-        Toast.makeText(getActivity(),"Click on a video to play !", Toast.LENGTH_SHORT).show();
-
-        handlerThread = new HandlerThread("HandlerThread");
-        handlerThread.start();
+        Toast.makeText(getActivity(),"Click on a video to play !", Toast.LENGTH_LONG).show();
 
         videoFrame = (AspectRatioFrameLayout) rootView.findViewById(R.id.video_frame);
         surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
@@ -94,6 +91,9 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
         holder = surfaceView.getHolder();
         holder.addCallback(this);
 
+
+        handlerThread = new HandlerThread("HandlerThread");
+        handlerThread.start();
         exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
         fullscreen.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +160,7 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
     private void setRendererBuilder() {
         if (player != null) {
             player.updateRendererBuilder(getRendererBuilder());
-//            player.seekTo(position);
+            player.seekTo(0);
         }
         playerNeedsPrepare = true;
     }
@@ -279,7 +279,7 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
 
     private static void releasePlayer() {
         if (player != null) {
-            playerPosition = player.getCurrentPosition();
+            playerPosition = 0;
             player.release();
             player = null;
             eventLogger.endSession();
@@ -312,7 +312,8 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
 
     public static void playVideo(String url){
         staticUrlrl = url;
-//        releasePlayer();
+
+        playerPosition = 0;
         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
                 ExoPlayerHandler.MSG_SET_RENDERER_BUILDER));
         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
