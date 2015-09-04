@@ -234,7 +234,7 @@ public class QueueFragment extends Fragment {
             @Override
             public void run() {
                 //In background because some important shit is being downloading inside the constructor
-                queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseVideo>());
+                queueVideosAdapter = new QueueVideosAdapter(getActivity(), new ArrayList<ParseVideo>(),false);
 
                 List<SimpleSectionedRecyclerViewAdapter.Section> sections =
                         new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();

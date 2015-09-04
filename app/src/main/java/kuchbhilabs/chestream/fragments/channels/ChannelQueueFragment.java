@@ -29,12 +29,14 @@ public class ChannelQueueFragment extends Fragment {
     List<String> videoIDS;
     int videoPosition =0;
 
+    boolean nonSynchronous = false;
     ParseVideo video;
 
-    public static ChannelQueueFragment newInstance(List<String> videoIds) {
+    public static ChannelQueueFragment newInstance(List<String> videoIds, boolean synchronous) {
         ChannelQueueFragment fragment = new ChannelQueueFragment();
         Bundle args = new Bundle();
         args.putStringArrayList("ids",new ArrayList<String>(videoIds));
+        args.putBoolean("nonSynchronous", synchronous);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,6 +52,7 @@ public class ChannelQueueFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         videoIDS=getArguments().getStringArrayList("ids");
+        nonSynchronous =getArguments().getBoolean("nonSynchronous");
 
         final List<ParseVideo> videoList =new ArrayList<>();
 
@@ -68,7 +71,7 @@ public class ChannelQueueFragment extends Fragment {
 
         }
 
-        QueueVideosAdapter adapter=new QueueVideosAdapter(getActivity(),videoList);
+        QueueVideosAdapter adapter=new QueueVideosAdapter(getActivity(),videoList, nonSynchronous);
         recyclerView.setAdapter(adapter);
 
         return rootView;

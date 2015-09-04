@@ -11,10 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.parse.ParseAnalytics;
 
@@ -23,6 +21,7 @@ import java.util.Map;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
+import kuchbhilabs.chestream.fragments.channels.NonSynchronous.ChannelVideoFragmentNonSynchronous;
 
 /**
  * Created by naman on 20/08/15.
@@ -33,6 +32,8 @@ public class ChannelFragment extends Fragment {
     ViewPager mViewPager;
     PagerAdapter mPagerAdapter;
     Toolbar toolbar;
+    boolean nonSynchronous = false;
+
 
     long startTime = 0;
     public  static String TAG = "ChannelFragment";
@@ -73,7 +74,14 @@ public class ChannelFragment extends Fragment {
 
         CommentsFragment.setUpComments(channel.id);
 
-        getChildFragmentManager().beginTransaction().replace(R.id.video_container,new ChannelVideoFragment().newInstance(channel.videoIds)).commit();
+        if(channel.name.equals("Young Guns")){
+            getChildFragmentManager().beginTransaction().replace(R.id.video_container,new ChannelVideoFragmentNonSynchronous().newInstance(channel.videoIds)).commit();
+            nonSynchronous = true;
+
+        }else{
+            getChildFragmentManager().beginTransaction().replace(R.id.video_container,new ChannelVideoFragment().newInstance(channel.videoIds)).commit();
+            nonSynchronous=false;
+        }
         return rootView;
 
     }
@@ -112,7 +120,7 @@ public class ChannelFragment extends Fragment {
                     fragment = new CommentsFragment().newInstance(channel);
                     break;
                 case 2:
-                    fragment = new ChannelQueueFragment().newInstance(channel.videoIds);
+                    fragment = new ChannelQueueFragment().newInstance(channel.videoIds,nonSynchronous);
                     break;
             }
             return fragment;

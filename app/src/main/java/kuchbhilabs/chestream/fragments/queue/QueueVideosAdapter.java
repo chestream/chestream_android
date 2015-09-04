@@ -45,6 +45,7 @@ import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.channels.ChannelFragment;
 import kuchbhilabs.chestream.fragments.channels.ChannelVideoFragment;
+import kuchbhilabs.chestream.fragments.channels.NonSynchronous.ChannelVideoFragmentNonSynchronous;
 import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
 
@@ -57,6 +58,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     private List<ParseVideo> videos;
 
     private int[] isVoted;
+    boolean nonSynchronous=false;
 
     AlertDialog.Builder builder;
     AlertDialog dialog;
@@ -99,9 +101,10 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
     }
 
 
-    public QueueVideosAdapter(Activity activity, final List<ParseVideo> videos) {
+    public QueueVideosAdapter(Activity activity, final List<ParseVideo> videos, boolean nonSynchronous) {
         this.videos = videos;
         this.activity = activity;
+        this.nonSynchronous=nonSynchronous;
         currentUser = ParseUser.getCurrentUser();
         ParseRelation<ParseVideo> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
         try {
@@ -292,6 +295,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if(nonSynchronous){
+                        ChannelVideoFragmentNonSynchronous.playVideo(video.getString(ParseTables.Videos.URL_M3U8));
+                    }
                     v.setSelected(true);
                     handler.postDelayed(mLongPressed, 500);
                     Log.d("press", "pressed");
