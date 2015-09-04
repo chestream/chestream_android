@@ -15,6 +15,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.parse.ParseAnalytics;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
@@ -29,6 +35,8 @@ public class ChannelFragment extends Fragment {
     PagerAdapter mPagerAdapter;
     Toolbar toolbar;
 
+    long startTime = 0;
+    public  static String TAG = "ChannelFragment";
     ChannelModel channel;
 
     public static ChannelFragment newInstance(ChannelModel channelModel) {
@@ -133,6 +141,58 @@ public class ChannelFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        startTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Map<String, String> dimensions = new HashMap<String, String>();
+        int elapsedTime = (int) getElapsedTimeSecs();
+        String time = " - ";
+        if(elapsedTime<15){
+            time = "0-15";
+        }
+        else if(elapsedTime>=15 && elapsedTime<30){
+            time = "15-30";
+        }
+        else if(elapsedTime>=30 && elapsedTime<60){
+            time = "30-60";
+        }
+        else if(elapsedTime>=60 && elapsedTime<90){
+            time = "60-90";
+        }
+        else if(elapsedTime>=90 && elapsedTime<120){
+            time = "90-120";
+        }
+        else if(elapsedTime>=120 && elapsedTime<150){
+            time = "120-150";
+        }
+        else if(elapsedTime>=150 && elapsedTime<180){
+            time = "150-180";
+        }
+        else if(elapsedTime>=180 && elapsedTime<210){
+            time = "180-210";
+        }
+        else if(elapsedTime>=210 && elapsedTime<240){
+            time = "210-240";
+        }
+        else {
+            time = ">240";
+        }
+        dimensions.put("time", time);
+        dimensions.put("channelName", channel.name);
+        ParseAnalytics.trackEventInBackground(TAG, dimensions);
+    }
+
+    public long getElapsedTimeSecs() {
+        long elapsed = 0;
+        elapsed = ((System.currentTimeMillis() - startTime) / 1000) % 60;
+        return elapsed;
+    }
 
 
 }
