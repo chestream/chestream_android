@@ -20,13 +20,16 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.activities.MainActivity;
@@ -44,6 +47,9 @@ public class SignUpFragment extends Fragment {
     private EditText usernameEditText;
     private Button signUpButton;
     private SimpleDraweeView userAvatar;
+
+    long startTime = 0;
+    public  static String TAG = "SignUpFragment";
 
     private Activity activity;
     private ProgressDialog mProgressDialog;
@@ -281,4 +287,58 @@ public class SignUpFragment extends Fragment {
             activity.finish();
         }
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        startTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Map<String, String> dimensions = new HashMap<String, String>();
+        int elapsedTime = (int) getElapsedTimeSecs();
+        String time = " - ";
+        if(elapsedTime<15){
+            time = "0-15";
+        }
+        else if(elapsedTime>=15 && elapsedTime<30){
+            time = "15-30";
+        }
+        else if(elapsedTime>=30 && elapsedTime<60){
+            time = "30-60";
+        }
+        else if(elapsedTime>=60 && elapsedTime<90){
+            time = "60-90";
+        }
+        else if(elapsedTime>=90 && elapsedTime<120){
+            time = "90-120";
+        }
+        else if(elapsedTime>=120 && elapsedTime<150){
+            time = "120-150";
+        }
+        else if(elapsedTime>=150 && elapsedTime<180){
+            time = "150-180";
+        }
+        else if(elapsedTime>=180 && elapsedTime<210){
+            time = "180-210";
+        }
+        else if(elapsedTime>=210 && elapsedTime<240){
+            time = "210-240";
+        }
+        else {
+            time = ">240";
+        }
+        dimensions.put("time", time);
+        ParseAnalytics.trackEventInBackground(TAG, dimensions);
+    }
+
+    public long getElapsedTimeSecs() {
+        long elapsed = 0;
+        elapsed = ((System.currentTimeMillis() - startTime) / 1000) % 60;
+        return elapsed;
+    }
+
 }

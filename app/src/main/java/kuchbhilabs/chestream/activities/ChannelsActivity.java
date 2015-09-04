@@ -26,13 +26,14 @@ public class ChannelsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
+        switch (item.getItemId()){
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+
     }
 }

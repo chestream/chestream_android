@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -21,12 +22,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.parse.ParseAnalytics;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.R;
@@ -45,6 +49,8 @@ public class AllChannelFragment extends Fragment {
     Activity activity;
     AllChannelAdapter adapter;
     SmoothProgressBar progressBar;
+
+    long startTime = 0;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -187,5 +193,55 @@ public class AllChannelFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        startTime = System.currentTimeMillis();
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Map<String, String> dimensions = new HashMap<String, String>();
+        int elapsedTime = (int) getElapsedTimeSecs();
+        String time = " - ";
+        if(elapsedTime<15){
+            time = "0-15";
+        }
+        else if(elapsedTime>=15 && elapsedTime<30){
+            time = "15-30";
+        }
+        else if(elapsedTime>=30 && elapsedTime<60){
+            time = "30-60";
+        }
+        else if(elapsedTime>=60 && elapsedTime<90){
+            time = "60-90";
+        }
+        else if(elapsedTime>=90 && elapsedTime<120){
+            time = "90-120";
+        }
+        else if(elapsedTime>=120 && elapsedTime<150){
+            time = "120-150";
+        }
+        else if(elapsedTime>=150 && elapsedTime<180){
+            time = "150-180";
+        }
+        else if(elapsedTime>=180 && elapsedTime<210){
+            time = "180-210";
+        }
+        else if(elapsedTime>=210 && elapsedTime<240){
+            time = "210-240";
+        }
+        else {
+            time = ">240";
+        }
+        dimensions.put("time", time);
+        ParseAnalytics.trackEventInBackground(TAG, dimensions);
+    }
+
+    public long getElapsedTimeSecs() {
+        long elapsed = 0;
+        elapsed = ((System.currentTimeMillis() - startTime) / 1000) % 60;
+        return elapsed;
+    }
 }
