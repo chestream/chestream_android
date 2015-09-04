@@ -52,7 +52,7 @@ public class AllChannelAdapter extends RecyclerView.Adapter<AllChannelAdapter.Al
 
         ChannelModel channel = arrayList.get(i);
         itemHolder.name.setText(channel.name);
-        itemHolder.details.setText(channel.activeUsers+" Active Users");
+        itemHolder.details.setText(channel.activeUsers+" users online");
 
         ImageLoader.getInstance().displayImage(channel.picture, itemHolder.avatar,
                 new DisplayImageOptions.Builder().cacheInMemory(true)
