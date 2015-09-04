@@ -160,7 +160,7 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
     private void setRendererBuilder() {
         if (player != null) {
             player.updateRendererBuilder(getRendererBuilder());
-            player.seekTo(0);
+            player.seekTo(playerPosition);
         }
         playerNeedsPrepare = true;
     }
@@ -279,7 +279,7 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
 
     private static void releasePlayer() {
         if (player != null) {
-            playerPosition = 0;
+            playerPosition = player.getCurrentPosition();
             player.release();
             player = null;
             eventLogger.endSession();

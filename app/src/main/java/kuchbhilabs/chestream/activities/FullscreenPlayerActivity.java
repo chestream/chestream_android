@@ -42,7 +42,7 @@ public class FullscreenPlayerActivity extends AppCompatActivity implements Surfa
     private ExoPlayerHandler exoPlayerHandler;
 
     String url = "";
-    long position;
+//    long position;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class FullscreenPlayerActivity extends AppCompatActivity implements Surfa
         audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(FullscreenPlayerActivity.this, this);
 
 
-        handlerThread = new HandlerThread("HandlerThread");
+        handlerThread = new HandlerThread("HandlerThread2");
         handlerThread.start();
 
         videoFrame = (AspectRatioFrameLayout) findViewById(R.id.video_frame);
@@ -62,9 +62,9 @@ public class FullscreenPlayerActivity extends AppCompatActivity implements Surfa
         exoPlayerHandler = new ExoPlayerHandler(handlerThread.getLooper());
 
         url = getIntent().getExtras().getString("url");
-        position=getIntent().getExtras().getLong("position");
+        playerPosition=getIntent().getExtras().getLong("position");
         Log.d("lol",url);
-        Log.d("lol",String.valueOf(position));
+        Log.d("lol",String.valueOf(playerPosition));
 
 
         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
@@ -122,7 +122,7 @@ public class FullscreenPlayerActivity extends AppCompatActivity implements Surfa
     private void setRendererBuilder() {
         if (player != null) {
             player.updateRendererBuilder(getRendererBuilder());
-            player.seekTo(position);
+            player.seekTo(playerPosition);
         }
         playerNeedsPrepare = true;
     }
