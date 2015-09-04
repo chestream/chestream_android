@@ -30,6 +30,7 @@ import java.util.List;
 
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.widgets.SectionedGridRecyclerViewAdapter;
 
 /**
  * Created by naman on 20/08/15.
@@ -59,7 +60,8 @@ public class AllChannelFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(activity,2));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(activity,3));
 
         getChannels();
 
@@ -80,10 +82,11 @@ public class AllChannelFragment extends Fragment {
                             JSONArray responseArray;
                             responseArray = responseObject.getJSONArray("data");
 
-                            final ArrayList channelList =new ArrayList<>();
+                            final ArrayList<ChannelModel> channelList =new ArrayList<>();
                             for (int i=0;i<responseArray.length();i++){
                                 String name = responseArray.getJSONObject(i).getString("name");
                                 String info = responseArray.getJSONObject(i).getString("info");
+                                String category = responseArray.getJSONObject(i).getString("category");
                                 String picture = responseArray.getJSONObject(i).getString("picture");
                                 String id = responseArray.getJSONObject(i).getString("channel_id");
                                 int activeUsers =responseArray.getJSONObject(i).getInt("active_users");
@@ -93,7 +96,7 @@ public class AllChannelFragment extends Fragment {
                                     arr.add(videoIds.getString(j));
 
                                 if(!name.equals("global")) {
-                                    channelList.add(new ChannelModel(id, picture, name, info, activeUsers, arr));
+                                    channelList.add(new ChannelModel(id, picture, name, info,category, activeUsers, arr));
                                 }
                             }
 
@@ -103,8 +106,42 @@ public class AllChannelFragment extends Fragment {
                                     activity.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            adapter=new AllChannelAdapter(activity,channelList);
-                                            recyclerView.setAdapter(adapter);
+                                            ArrayList<ChannelModel> sortredChannels = new ArrayList<ChannelModel>();
+
+                                            List<SectionedGridRecyclerViewAdapter.Section> sections =
+                                                    new ArrayList<SectionedGridRecyclerViewAdapter.Section>();
+
+                                            ArrayList<String> categories =new ArrayList<String>();
+
+                                            for (int i=0;i<channelList.size();i++){
+                                               ChannelModel channel=channelList.get(i);
+                                                if (!categories.contains(channel.category))
+                                                categories.add(channel.category);
+                                            }
+
+                                            int positionOfHeader =0;
+                                            for (int i=0;i<categories.size();i++) {
+
+                                                ArrayList<ChannelModel> categoryItems=new ArrayList<ChannelModel>();
+                                                for (int j=0;j<channelList.size();j++){
+                                                    if (channelList.get(j).category.equals(categories.get(i))){
+                                                        categoryItems.add(channelList.get(j));
+                                                    }
+                                                }
+
+                                                sections.add(new SectionedGridRecyclerViewAdapter.Section(positionOfHeader, categories.get(i)));
+                                                sortredChannels.addAll(categoryItems);
+                                                positionOfHeader+=categoryItems.size();
+                                            }
+
+                                            adapter=new AllChannelAdapter(activity,sortredChannels);
+
+                                            SectionedGridRecyclerViewAdapter.Section[] dummy = new SectionedGridRecyclerViewAdapter.Section[sections.size()];
+                                            SectionedGridRecyclerViewAdapter mSectionedAdapter = new
+                                                    SectionedGridRecyclerViewAdapter(getActivity(),R.layout.channel_category_header,R.id.section_text,recyclerView,adapter);
+                                            mSectionedAdapter.setSections(sections.toArray(dummy));
+
+                                            recyclerView.setAdapter(mSectionedAdapter);
                                             int spacingInPixels = getActivity().getResources().getDimensionPixelSize(R.dimen.spacing_channel_grid);
                                             recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
                                             progressBar.setVisibility(View.GONE);
