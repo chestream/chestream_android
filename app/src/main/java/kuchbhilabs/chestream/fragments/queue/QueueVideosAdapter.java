@@ -291,48 +291,57 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             }
         };
 
-        holder.rootLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if(nonSynchronous){
-                        ChannelVideoFragmentNonSynchronous.playVideo(video.getString(ParseTables.Videos.URL_M3U8));
-                    }else{
-                        v.setSelected(true);
-                        handler.postDelayed(mLongPressed, 500);
-                        Log.d("press", "pressed");
-                    }
-                    return true;
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    v.setSelected(false);
-                    Log.d("press", "release");
+        if(nonSynchronous) {
+            holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ChannelVideoFragmentNonSynchronous.playVideo(video.getString(ParseTables.Videos.URL_M3U8));
+                }
+            });
+        }
+        else{
+            holder.rootLayout.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        if(!nonSynchronous){
+                            v.setSelected(true);
+                            handler.postDelayed(mLongPressed, 500);
+                            Log.d("press", "pressed");
+                        }
+                        return true;
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        v.setSelected(false);
+                        Log.d("press", "release");
 //                    dialog.dismiss();
-                    handler.removeCallbacks(mLongPressed);
-                    ChannelVideoFragment.gifView.setVisibility(View.INVISIBLE);
-                    ChannelVideoFragment.progressBar.setVisibility(View.GONE);
-                    return true;
+                        handler.removeCallbacks(mLongPressed);
+                        ChannelVideoFragment.gifView.setVisibility(View.INVISIBLE);
+                        ChannelVideoFragment.progressBar.setVisibility(View.GONE);
+                        return true;
 
-                } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-                    v.setSelected(false);
-                    Log.d("press", "release");
+                    } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                        v.setSelected(false);
+                        Log.d("press", "release");
 //                    dialog.dismiss();
-                    handler.removeCallbacks(mLongPressed);
-                    ChannelVideoFragment.gifView.setVisibility(View.INVISIBLE);
-                    ChannelVideoFragment.progressBar.setVisibility(View.GONE);
-                    return true;
+                        handler.removeCallbacks(mLongPressed);
+                        ChannelVideoFragment.gifView.setVisibility(View.INVISIBLE);
+                        ChannelVideoFragment.progressBar.setVisibility(View.GONE);
+                        return true;
 
-                } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-                    v.setSelected(false);
-                    Log.d("press", "release");
+                    } else if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                        v.setSelected(false);
+                        Log.d("press", "release");
 //                    dialog.dismiss();
-                    handler.removeCallbacks(mLongPressed);
-                    ChannelVideoFragment.gifView.setVisibility(View.INVISIBLE);
-                    ChannelVideoFragment.progressBar.setVisibility(View.GONE);
-                    return true;
-                } else
-                    return false;
-            }
-        });
+                        handler.removeCallbacks(mLongPressed);
+                        ChannelVideoFragment.gifView.setVisibility(View.INVISIBLE);
+                        ChannelVideoFragment.progressBar.setVisibility(View.GONE);
+                        return true;
+                    } else
+                        return false;
+                }
+            });
+
+        }
 
         if (getItemViewType(position) == 0) {
             //do something different for current video layout
