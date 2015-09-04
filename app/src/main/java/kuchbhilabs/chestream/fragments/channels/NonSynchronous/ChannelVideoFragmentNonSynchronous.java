@@ -83,7 +83,7 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
 
         audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(getActivity(), this);
 
-        Toast.makeText(getActivity(),"Click on a video to play !", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(),"Click on a video to play !", Toast.LENGTH_SHORT).show();
 
         handlerThread = new HandlerThread("HandlerThread");
         handlerThread.start();
@@ -312,7 +312,7 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
 
     public static void playVideo(String url){
         staticUrlrl = url;
-        releasePlayer();
+//        releasePlayer();
         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
                 ExoPlayerHandler.MSG_SET_RENDERER_BUILDER));
         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(

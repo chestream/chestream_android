@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 
 import kuchbhilabs.chestream.ApplicationBase;
-import kuchbhilabs.chestream.activities.MainActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.activities.MainActivity2;
 import kuchbhilabs.chestream.externalapi.FacebookApi;
@@ -273,7 +272,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                         //TODO: download user data and sign up
                     } else {
                         Log.d(TAG, "Welcome back old user");
-                        Intent intent = new Intent(activity, MainActivity.class);
+                        Intent intent = new Intent(activity, MainActivity2.class);
                         activity.startActivity(intent);
                         activity.finish();
                     }
@@ -357,7 +356,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                         });
                     } else {
                         Log.d(TAG, "Welcome back old user");
-                        Intent intent = new Intent(activity, MainActivity.class);
+                        Intent intent = new Intent(activity, MainActivity2.class);
                         activity.startActivity(intent);
                         activity.finish();
                     }
@@ -419,7 +418,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
                                             //TODO: download user data and sign up
                                         } else {
                                             Log.d(TAG, "Welcome back old user");
-                                            Intent intent = new Intent(activity, MainActivity.class);
+                                            Intent intent = new Intent(activity, MainActivity2.class);
                                             activity.startActivity(intent);
                                             activity.finish();
                                         }
@@ -468,7 +467,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
 
                                         } else {
                                             Log.d(TAG, "Welcome back old user");
-                                            Intent intent = new Intent(activity, MainActivity.class);
+                                            Intent intent = new Intent(activity, MainActivity2.class);
                                             activity.startActivity(intent);
                                             activity.finish();
                                         }

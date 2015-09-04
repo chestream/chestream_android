@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import kuchbhilabs.chestream.ApplicationBase;
-import kuchbhilabs.chestream.activities.MainActivity;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.activities.MainActivity2;
 import kuchbhilabs.chestream.externalapi.ParseTables;

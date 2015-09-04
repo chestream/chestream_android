@@ -26,7 +26,7 @@
         <kuchbhilabs.chestream.helpers.TypefaceTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Channels"
+            android:text="Chestream"
             android:textColor="#ffffff"
             android:textStyle="bold"
             android:textSize="18sp"
