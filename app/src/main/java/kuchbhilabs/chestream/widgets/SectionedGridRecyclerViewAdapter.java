@@ -22,7 +22,7 @@ public class SectionedGridRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
     private int mTextResourceId;
     private LayoutInflater mLayoutInflater;
     private RecyclerView.Adapter mBaseAdapter;
-    private SparseArray<Section> mSections = new SparseArray<Section>();
+    private static SparseArray<Section> mSections = new SparseArray<Section>();
     private RecyclerView mRecyclerView;
 
 
@@ -159,7 +159,7 @@ public class SectionedGridRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
         return position + offset;
     }
 
-    public int sectionedPositionToPosition(int sectionedPosition) {
+    public static int sectionedPositionToPosition(int sectionedPosition) {
         if (isSectionHeaderPosition(sectionedPosition)) {
             return RecyclerView.NO_POSITION;
         }
@@ -174,7 +174,7 @@ public class SectionedGridRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
         return sectionedPosition + offset;
     }
 
-    public boolean isSectionHeaderPosition(int position) {
+    public static boolean isSectionHeaderPosition(int position) {
         return mSections.get(position) != null;
     }
 
