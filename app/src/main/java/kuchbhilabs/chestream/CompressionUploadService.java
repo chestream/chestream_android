@@ -18,10 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -85,24 +81,30 @@ public class CompressionUploadService extends Service {
 
             @Override
             protected Void doInBackground(Void... voids) {
-                try {
-                    // Retrieve storage account from connection-string.
-                    CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
 
-                    // Create the blob client.
-                    CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
 
-                    // Retrieve reference to a previously created container.
-                    CloudBlobContainer container = blobClient.getContainerReference("videos");
 
-                    // Create or overwrite the blob with contents from a local file.
+                //          AZUREEEE
 
-                    CloudBlockBlob blob = container.getBlockBlobReference(videoName + ".mp4");
-                    File file = new File(INPUT_VIDEO);
-                    blob.upload(new FileInputStream(file), file.length());
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
+
+//                try {
+//                    // Retrieve storage account from connection-string.
+//                    CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
+//
+//                    // Create the blob client.
+//                    CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+//
+//                    // Retrieve reference to a previously created container.
+//                    CloudBlobContainer container = blobClient.getContainerReference("videos");
+//
+//                    // Create or overwrite the blob with contents from a local file.
+//
+//                    CloudBlockBlob blob = container.getBlockBlobReference(videoName + ".mp4");
+//                    File file = new File(INPUT_VIDEO);
+//                    blob.upload(new FileInputStream(file), file.length());
+//                } catch (Exception exception) {
+//                    exception.printStackTrace();
+//                }
                 return null;
             }
 

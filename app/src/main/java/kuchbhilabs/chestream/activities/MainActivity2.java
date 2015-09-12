@@ -1,21 +1,40 @@
 package kuchbhilabs.chestream.activities;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.parse.ParseAnalytics;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.fragments.channels.AboutChannelFragment;
+import kuchbhilabs.chestream.fragments.channels.AllChannelAdapter;
 import kuchbhilabs.chestream.fragments.channels.AllChannelFragment;
 import kuchbhilabs.chestream.fragments.channels.ChannelFragment;
 import kuchbhilabs.chestream.fragments.channels.ChannelModel;
+import kuchbhilabs.chestream.widgets.SectionedGridRecyclerViewAdapter;
 
 public class MainActivity2 extends AppCompatActivity {
 
@@ -71,6 +90,19 @@ public class MainActivity2 extends AppCompatActivity {
         }
         dimensions.put("time", time);
         ParseAnalytics.trackEventInBackground("WholeAppUsageTime", dimensions);
+
+        String username = "NA";
+        String userid = "NA";
+        String time2 = String.valueOf(elapsedTime);
+        String activityname = "WholeAppUsageTime";
+        String channel = "NA";
+        ParseUser parseUser= ParseUser.getCurrentUser();
+        if(parseUser!=null){
+            username= parseUser.getUsername();
+            userid=parseUser.getObjectId();
+        }
+        String url = "http://104.131.207.33/chestream_raw/analytics/analytics.gif?user_name="+username+"&user_id="+userid+"&channel="+channel+"&time="+time2+"&activity_name="+activityname;
+        sendAnalytics(url);
     }
 
     public long getElapsedTimeSecs() {
@@ -80,4 +112,23 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
 
+    public void sendAnalytics(String URL){
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("analytics", "Response = " + response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(stringRequest);
+    }
 }

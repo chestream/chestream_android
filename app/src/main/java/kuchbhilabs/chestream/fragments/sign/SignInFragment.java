@@ -19,6 +19,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.auth.GoogleAuthException;
@@ -552,6 +559,19 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
         }
         dimensions.put("time", time);
         ParseAnalytics.trackEventInBackground(TAG, dimensions);
+
+        String username = "NA";
+        String userid = "NA";
+        String time2 = String.valueOf(elapsedTime);
+        String activityname = TAG;
+        String channelname = "NA";
+        ParseUser parseUser= ParseUser.getCurrentUser();
+        if(parseUser!=null){
+            username= parseUser.getUsername();
+            userid=parseUser.getObjectId();
+        }
+        String url = "http://104.131.207.33/chestream_raw/analytics/analytics.gif?user_name="+username+"&user_id="+userid+"&channel="+channelname+"&time="+time2+"&activity_name="+activityname;
+        sendAnalytics(url);
     }
 
     public long getElapsedTimeSecs() {
@@ -560,4 +580,23 @@ public class SignInFragment extends Fragment implements GoogleApiClient.Connecti
         return elapsed;
     }
 
+    public void sendAnalytics(String URL){
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("analytics", "Response = " + response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(stringRequest);
+    }
 }
