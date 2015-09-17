@@ -65,7 +65,8 @@ public class ChannelFragment extends Fragment {
 
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(channel.name);
+//        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(channel.name);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(" ");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);

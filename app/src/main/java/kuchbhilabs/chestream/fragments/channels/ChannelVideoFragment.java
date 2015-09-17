@@ -170,6 +170,9 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
     }
 
     private void sendNextRequest() {
+        if(videoPosition>=videoIDS.size()){
+            videoPosition = 0;
+        }
                             final String videoId = videoIDS.get(videoPosition);
                             ParseQuery<ParseObject> query = ParseQuery.getQuery(ParseTables.Videos._NAME);
                             query.whereEqualTo("objectId", videoId);

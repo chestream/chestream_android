@@ -54,7 +54,7 @@ public class AboutChannelFragment extends Fragment {
 
         name.setText(channel.name);
         details.setText(channel.info);
-        active_users.setText(channel.activeUsers+" Active Users");
+//        active_users.setText(channel.activeUsers+" Active Users");
 
         ImageLoader.getInstance().displayImage(channel.picture, channelPicture,
                 new DisplayImageOptions.Builder().cacheInMemory(true)
