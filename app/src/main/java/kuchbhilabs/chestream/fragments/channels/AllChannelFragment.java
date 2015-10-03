@@ -22,9 +22,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.RequestPasswordResetCallback;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -41,7 +47,7 @@ import kuchbhilabs.chestream.widgets.SectionedGridRecyclerViewAdapter;
  */
 public class AllChannelFragment extends Fragment {
 
-    private static final String CHANNELS_URL = "http://104.131.207.33:8800/channels";
+    private static final String CHANNELS_URL = "http://104.215.136.204:8000/channels";
     private static final String TAG = "AllChannelsFragment";
 
     Toolbar toolbar;
@@ -69,10 +75,100 @@ public class AllChannelFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(activity,3));
 
-        getChannels();
+        getChannels2();
 
         return rootView;
 
+    }
+
+    private void getChannels2(){
+        ParseQuery<ParseObject> query =  ParseQuery.getQuery("Channels");
+
+//        query.orderByDescending("active_users");
+        query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+        query.include("video_ids");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (parseObjects!=null && !parseObjects.isEmpty()) {
+
+                    final ArrayList<ChannelModel> channelList =new ArrayList<>();
+                    for (int i=0;i<parseObjects.size();i++){
+                        String name = parseObjects.get(i).getString("name");
+                        String info = parseObjects.get(i).getString("info");
+                        String category = parseObjects.get(i).getString("Category");
+                        String picture = parseObjects.get(i).getString("picture");
+                        String id = parseObjects.get(i).getString("channel_id");
+                        boolean nonSynchronous = parseObjects.get(i).getBoolean("nonSynchronous");
+                        int activeUsers =parseObjects.get(i).getInt("active_users");
+                        JSONArray videoIds = parseObjects.get(i).getJSONArray("video_ids");
+                        List<String> arr=new ArrayList<>();
+                        for(int j=0;j<videoIds.length();j++)
+                            try {
+                                arr.add(videoIds.getString(j));
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+
+                        if(!name.equals("global")) {
+                            channelList.add(new ChannelModel(id, picture, name, info,category, activeUsers, arr, nonSynchronous));
+                        }
+                    }
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ArrayList<ChannelModel> sortredChannels = new ArrayList<ChannelModel>();
+
+                                    List<SectionedGridRecyclerViewAdapter.Section> sections =
+                                            new ArrayList<SectionedGridRecyclerViewAdapter.Section>();
+
+                                    ArrayList<String> categories = new ArrayList<String>();
+
+                                    for (int i = 0; i < channelList.size(); i++) {
+                                        ChannelModel channel = channelList.get(i);
+                                        if (!categories.contains(channel.category))
+                                            categories.add(channel.category);
+                                    }
+
+                                    int positionOfHeader = 0;
+                                    for (int i = 0; i < categories.size(); i++) {
+
+                                        ArrayList<ChannelModel> categoryItems = new ArrayList<ChannelModel>();
+                                        for (int j = 0; j < channelList.size(); j++) {
+                                            if (channelList.get(j).category.equals(categories.get(i))) {
+                                                categoryItems.add(channelList.get(j));
+                                            }
+                                        }
+
+                                        sections.add(new SectionedGridRecyclerViewAdapter.Section(positionOfHeader, categories.get(i)));
+                                        sortredChannels.addAll(categoryItems);
+                                        positionOfHeader += categoryItems.size();
+                                    }
+
+                                    adapter = new AllChannelAdapter(activity, sortredChannels);
+
+                                    SectionedGridRecyclerViewAdapter.Section[] dummy = new SectionedGridRecyclerViewAdapter.Section[sections.size()];
+                                    SectionedGridRecyclerViewAdapter mSectionedAdapter = new
+                                            SectionedGridRecyclerViewAdapter(getActivity(), R.layout.channel_category_header, R.id.section_text, recyclerView, adapter);
+                                    mSectionedAdapter.setSections(sections.toArray(dummy));
+
+                                    recyclerView.setAdapter(mSectionedAdapter);
+                                    int spacingInPixels = getActivity().getResources().getDimensionPixelSize(R.dimen.spacing_channel_grid);
+                                    recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    Toast.makeText(getActivity(), "There is something wrong",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private void getChannels() {
@@ -104,6 +200,7 @@ public class AllChannelFragment extends Fragment {
 
                                 if(!name.equals("global")) {
                                     channelList.add(new ChannelModel(id, picture, name, info,category, activeUsers, arr, nonSynchronous));
+                                    Log.d("hihi",id+ picture+ name+ info+category+ activeUsers+ arr+ nonSynchronous);
                                 }
                             }
 

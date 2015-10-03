@@ -114,7 +114,6 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
 
         videoIDS=getArguments().getStringArrayList("ids");
 
-
         progressBar=(SmoothProgressBar) rootView.findViewById(R.id.progress);
         gifView = (SimpleDraweeView) rootView.findViewById(R.id.preview_gif);
         fullscreen=(ImageView) rootView.findViewById(R.id.fullscreen);
@@ -198,6 +197,8 @@ public class ChannelVideoFragment extends Fragment implements SurfaceHolder.Call
 
 
                                         url = currentVideo.getString(ParseTables.Videos.URL_M3U8);
+
+                                        Log.d("urllllll","kj"+url);
 
                                         exoPlayerHandler.sendMessage(exoPlayerHandler.obtainMessage(
                                                 ExoPlayerHandler.MSG_SET_RENDERER_BUILDER));
