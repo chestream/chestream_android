@@ -104,11 +104,13 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment  {
     }
 
     public void play2(String url){
-        videoView.stopPlayback();
-        videoView.suspend();
+//        videoView.stopPlayback();
+//        videoView.suspend();
 
+        Log.d("urlrryo", url);
 
         MediaController mediaController = new MediaController(getActivity());
+        mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(Uri.parse(url));
         videoView.requestFocus();

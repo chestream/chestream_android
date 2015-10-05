@@ -31,6 +31,7 @@ import java.util.Map;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.comments.CommentsFragment;
 import kuchbhilabs.chestream.fragments.channels.NonSynchronous.ChannelVideoFragmentNonSynchronous;
+import kuchbhilabs.chestream.fragments.channels.NonSynchronous.ChannelVideoFragmentNonSynchronousWithoutExo;
 
 /**
  * Created by naman on 20/08/15.
@@ -83,7 +84,7 @@ public class ChannelFragment extends Fragment {
         CommentsFragment.setUpComments(channel.id);
 
         if(channel.nonSynchronous){
-            getChildFragmentManager().beginTransaction().replace(R.id.video_container,new ChannelVideoFragmentNonSynchronous().newInstance(channel.videoIds)).commit();
+            getChildFragmentManager().beginTransaction().replace(R.id.video_container,new ChannelVideoFragmentNonSynchronousWithoutExo().newInstance(channel.videoIds)).commit();
         }else{
             getChildFragmentManager().beginTransaction().replace(R.id.video_container,new ChannelVideoFragment().newInstance(channel.videoIds)).commit();
         }
