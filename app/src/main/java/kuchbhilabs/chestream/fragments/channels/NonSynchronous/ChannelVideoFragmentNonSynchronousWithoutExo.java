@@ -1,68 +1,49 @@
 package kuchbhilabs.chestream.fragments.channels.NonSynchronous;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
 import com.google.android.exoplayer.util.Util;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import kuchbhilabs.chestream.R;
 import kuchbhilabs.chestream.activities.FullscreenPlayerActivity;
 import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
-import kuchbhilabs.chestream.externalapi.ParseTables;
-import kuchbhilabs.chestream.widgets.RippleBackground;
 
-public class ChannelVideoFragmentNonSynchronous extends Fragment implements SurfaceHolder.Callback,
-        DemoPlayer.Listener, AudioCapabilitiesReceiver.Listener {
+public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment  {
 
-
-    public static AspectRatioFrameLayout videoFrame;
-    SurfaceView surfaceView;
-    SurfaceHolder holder;
-
-    private static  DemoPlayer player;
-    private AudioCapabilities audioCapabilities;
-    private AudioCapabilitiesReceiver audioCapabilitiesReceiver;
     static  long playerPosition = 0;
     boolean playerNeedsPrepare = true;
-    private static  EventLogger eventLogger;
-    private static HandlerThread handlerThread;
-    private static  ExoPlayerHandler exoPlayerHandler;
     ImageView fullscreen;
 
+    VideoView videoView;
     static  String staticUrlrl = "";
 //    long position;
 
@@ -79,17 +60,19 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.fragment_channel, null);
+        View rootView = inflater.inflate(R.layout.fragmentvideochannelwithoutexo, null);
 
-        audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(getActivity(), this);
+        Toast.makeText(getActivity(), "Click on a video to play !", Toast.LENGTH_LONG).show();
 
-        Toast.makeText(getActivity(),"Click on a video to play !", Toast.LENGTH_LONG).show();
+        videoView = (VideoView) rootView.findViewById(R.id.dialogVV);
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                loadVideo(entriesSett.get(position));
+            }
+        });
 
-        videoFrame = (AspectRatioFrameLayout) rootView.findViewById(R.id.video_frame);
-        surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
         fullscreen=(ImageView) rootView.findViewById(R.id.fullscreen);
-        holder = surfaceView.getHolder();
-        holder.addCallback(this);
 
 //
 //        handlerThread = new HandlerThread("HandlerThread");
@@ -323,6 +306,16 @@ public class ChannelVideoFragmentNonSynchronous extends Fragment implements Surf
 
     }
 
+    public void loadVideo(Uri uri)
+    {
+        vvDialog.stopPlayback();
+        vvDialog.suspend();
+
+
+        vvDialog.setVideoURI(uri);
+        vvDialog.start();
+        vvDialog.requestFocus();
+    }
 
 //    public  void play2(){
 //        if (player != null) {

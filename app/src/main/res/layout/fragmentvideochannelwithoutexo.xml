@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/videoBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal|center|center_vertical"
+        android:gravity="center_horizontal|center|center_vertical"
+        android:orientation="vertical">
+
+
+
+        <VideoView
+            android:id="@+id/dialogVV"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal|center|center_vertical"
+            android:layout_height="match_parent"
+            />
+
+
+
+    </LinearLayout>
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:id="@+id/progress"
+        style="@style/GNowProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:indeterminate="true"
+        android:paddingTop="?attr/actionBarSize"
+        android:visibility="invisible" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/preview_gif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fullscreen"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/ic_fullscreen_white_36dp"/>
+
+</FrameLayout>
+
+
