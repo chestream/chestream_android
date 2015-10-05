@@ -46,6 +46,7 @@ import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.channels.ChannelFragment;
 import kuchbhilabs.chestream.fragments.channels.ChannelVideoFragment;
 import kuchbhilabs.chestream.fragments.channels.NonSynchronous.ChannelVideoFragmentNonSynchronous;
+import kuchbhilabs.chestream.fragments.channels.NonSynchronous.ChannelVideoFragmentNonSynchronousWithoutExo;
 import kuchbhilabs.chestream.helpers.Utilities;
 import kuchbhilabs.chestream.parse.ParseVideo;
 
@@ -295,7 +296,7 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ChannelVideoFragmentNonSynchronous.playVideo(video.getString(ParseTables.Videos.URL_M3U8));
+                    ChannelVideoFragmentNonSynchronousWithoutExo.playVideo(video.getString(ParseTables.Videos.URL));
                 }
             });
         }
