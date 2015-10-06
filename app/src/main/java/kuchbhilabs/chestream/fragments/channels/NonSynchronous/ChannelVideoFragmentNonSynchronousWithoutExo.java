@@ -1,7 +1,9 @@
 package kuchbhilabs.chestream.fragments.channels.NonSynchronous;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
@@ -30,6 +32,7 @@ import com.google.android.exoplayer.audio.AudioCapabilities;
 import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
 import com.google.android.exoplayer.util.Util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,19 +42,32 @@ import kuchbhilabs.chestream.exoplayer.DemoPlayer;
 import kuchbhilabs.chestream.exoplayer.EventLogger;
 import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 
-public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment  {
+public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment implements SurfaceHolder.Callback  {
 
     static  long playerPosition = 0;
     boolean playerNeedsPrepare = true;
     ImageView fullscreen;
 
+    Activity activity;
+    List<String> videoIDS;
+
+
     VideoView videoView;
     static  String staticUrlrl = "";
 //    long position;
 
+    SurfaceView surfaceView;
+    SurfaceHolder holder;
+    static MediaPlayer mediaPlayer;
+    private boolean isMediaPlayerInitialized = false;
+    private boolean isSurfaceCreated = false;
+    private boolean videoStarted = false;
 
-    public static ChannelVideoFragmentNonSynchronous newInstance(List<String> videoIds) {
-        ChannelVideoFragmentNonSynchronous fragment = new ChannelVideoFragmentNonSynchronous();
+
+    VideoView vidView;
+
+    public static ChannelVideoFragmentNonSynchronousWithoutExo newInstance(List<String> videoIds) {
+        ChannelVideoFragmentNonSynchronousWithoutExo fragment = new ChannelVideoFragmentNonSynchronousWithoutExo();
         Bundle args = new Bundle();
         args.putStringArrayList("ids",new ArrayList<String>(videoIds));
         fragment.setArguments(args);
@@ -64,9 +80,9 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment  {
 
         View rootView = inflater.inflate(R.layout.fragmentvideochannelwithoutexo, null);
 
-        Toast.makeText(getActivity(), "Click on a video to play !", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Click on a video to play !!", Toast.LENGTH_LONG).show();
 
-        videoView = (VideoView) rootView.findViewById(R.id.dialogVV);
+//        videoView = (VideoView) rootView.findViewById(R.id.dialogVV);
 //        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 //            @Override
 //            public void onCompletion(MediaPlayer mediaPlayer) {
@@ -74,6 +90,20 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment  {
 //        });
 ;
 
+        vidView = (VideoView)rootView.findViewById(R.id.myVideo);
+
+        videoIDS=getArguments().getStringArrayList("ids");
+
+        activity = getActivity();
+//        surfaceView = (SurfaceView) rootView.findViewById(R.id.main_surface_view);
+//        holder = surfaceView.getHolder();
+//        holder.addCallback(this);
+
+//        mediaPlayer = new MediaPlayer();
+//        isMediaPlayerInitialized = true;
+//        if (isSurfaceCreated && videoIDS.get(0)!=null) {
+//            startMediaPlayer(videoIDS.get(0));
+//        }
         fullscreen=(ImageView) rootView.findViewById(R.id.fullscreen);
 
 
@@ -92,6 +122,112 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment  {
         return rootView;
     }
 
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        isSurfaceCreated = true;
+        if (isMediaPlayerInitialized) {
+            startMediaPlayer(staticUrlrl);
+            Log.d("urlrr", "14");
+
+        }
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+            Log.d("urlrr", "15");
+
+        }
+    }
+
+    private void startMediaPlayer(final String url) {
+        Log.d("urlrr", "1");
+
+        new Thread(new Runnable() {
+
+            public void run(){
+                Log.d("urlrr", "2");
+
+                synchronized (this) {
+                    Log.d("urlrr", "3");
+
+                    if (!videoStarted) {
+                        try {
+                            Log.d("urlrr", "4");
+
+                            if (mediaPlayer == null) {
+                                mediaPlayer = new MediaPlayer();
+                            }
+                            Log.d("urlrr", "5");
+
+//                            mediaPlayer.setDataSource(activity, Uri.parse(url));
+//                            mediaPlayer.setLooping(false);
+//                            mediaPlayer.setVolume(0, 0);
+
+
+                            mediaPlayer.setDataSource(url);
+                            mediaPlayer.setLooping(false);
+
+                            mediaPlayer.prepare();
+                            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+                            Log.d("urlrr", "6");
+
+                            mediaPlayer.setDisplay(holder);
+//                            mediaPlayer.prepareAsync();
+
+                            Log.d("urlrr", "7");
+
+                            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    Log.d("urlrr", "8");
+
+                                    mediaPlayer.start();
+                                    Log.d("urlrr", "9");
+
+                                    videoStarted = true;
+                                }
+                            });
+                        } catch (IOException e) {
+                            Log.d("urlrr", "10");
+
+                            e.printStackTrace();
+                        }
+                    }
+                }            }
+        }).start();
+        Log.d("urlrr", "11");
+
+    }
+
+    @Override
+    public void onPause() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+
+            Log.d("urlrr", "12");
+
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mediaPlayer=new MediaPlayer();
+        Log.d("urlrr", "13");
+
+        IntentFilter filter = new IntentFilter("intent.omerjerk");
+    }
+
 
     public static void playVideo(String url){
         staticUrlrl = url;
@@ -104,16 +240,15 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment  {
     }
 
     public void play2(String url){
-//        videoView.stopPlayback();
-//        videoView.suspend();
 
         Log.d("urlrryo", url);
-
+        videoView.setVideoURI(Uri.parse(url));
         MediaController mediaController = new MediaController(getActivity());
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
-        videoView.setVideoURI(Uri.parse(url));
-        videoView.requestFocus();
         videoView.start();
     }
+
+
+
 }

@@ -5,7 +5,6 @@
     android:id="@+id/videoBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
     android:orientation="vertical">
 
     <LinearLayout
@@ -15,15 +14,16 @@
         android:gravity="center_horizontal|center|center_vertical"
         android:orientation="vertical">
 
-
-
         <VideoView
-            android:id="@+id/dialogVV"
-            android:layout_width="match_parent"
-            android:layout_gravity="center_horizontal|center|center_vertical"
-            android:layout_height="match_parent"
-            />
+            android:id="@+id/myVideo"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true" />
 
+        <!--<SurfaceView-->
+            <!--android:id="@+id/main_surface_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
 
 
     </LinearLayout>
