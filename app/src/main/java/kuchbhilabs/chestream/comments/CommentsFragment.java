@@ -226,18 +226,23 @@ public class CommentsFragment extends Fragment {
             view.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
         }
 
+        Log.d("commentssss", "1");
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Channels");
         query.getInBackground(channelId, new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
                 if (e == null) {
+                    Log.d("commentssss", "2");
 
                     if (object!=null) {
+                        Log.d("commentssss", "3");
+
                         if ((pUser != null)
                                 && (pUser.isAuthenticated())
                                 && (pUser.getSessionToken() != null)
                                 ) {
                             Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
 
+                            Log.d("commentssss", "4");
 
                             List<ParseObject> commentsArrray = (List<ParseObject>) object.get("comments");
                             if (commentsArrray == null) {
@@ -256,9 +261,13 @@ public class CommentsFragment extends Fragment {
                                 public void done(ParseException e) {
                                     Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
                                     setUpComments(channelId);
+                                    Log.d("commentssss", "5");
+
                                 }
                             });
                         } else {
+                            Log.d("commentssss", "6");
+
                             Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getActivity(), LoginActivity.class);
                             startActivity(intent);

@@ -29,7 +29,7 @@ public class FullscreenPlayerActivityNoExo extends AppCompatActivity {
         progressBar = (ProgressBar)findViewById(R.id.progressbar);
 
 
-            mediaController = new MediaController(getApplicationContext());
+            mediaController = new MediaController(FullscreenPlayerActivityNoExo.this);
             mediaController.setAnchorView(vidView);
             mediaController.setMediaPlayer(vidView);
 
