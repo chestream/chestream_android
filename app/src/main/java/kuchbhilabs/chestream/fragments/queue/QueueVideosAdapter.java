@@ -115,9 +115,6 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(this.videos!=null){
-            ChannelVideoFragmentNonSynchronousWithoutExo.playVideo(this.videos.get(0).getString(ParseTables.Videos.URL));
-        }
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -147,6 +144,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     @Override
     public QVHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        if(videos.get(0)!=null){
+            ChannelVideoFragmentNonSynchronousWithoutExo.playVideo(videos.get(0).getString(ParseTables.Videos.URL));
+        }
+        
         if (viewType == 0) {
             View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.queue_current_item, parent, false);
             QVHolder cvh = new QVHolder(v1);
@@ -160,6 +162,8 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
 
     @Override
     public void onBindViewHolder(final QVHolder holder, final int position) {
+
+
 
         final ParseVideo video = videos.get(position);
         Log.d(TAG, "Video voting = " + video.isVoted);
