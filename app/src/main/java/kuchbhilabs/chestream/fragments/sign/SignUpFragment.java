@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -58,7 +59,7 @@ public class SignUpFragment extends Fragment {
     public  static String TAG = "SignUpFragment";
 
     private Activity activity;
-    private ProgressDialog mProgressDialog;
+     ProgressBar mProgressDialog;
     Bundle b;
     String username;
     public SignUpFragment() {} //Required empty constructor
@@ -80,8 +81,7 @@ public class SignUpFragment extends Fragment {
                 .build());
 
 
-        mProgressDialog = new ProgressDialog(getActivity());
-        mProgressDialog.setCancelable(false);
+        mProgressDialog = new ProgressBar(getActivity());
 
         usernameEditText = (EditText) rootView.findViewById(R.id.username_edit_text);
 
@@ -156,7 +156,7 @@ public class SignUpFragment extends Fragment {
                                         public void done(ParseUser user, ParseException e) {
                                             if (user != null) {
                                                 // Hooray! The user is logged in.
-                                                mProgressDialog.dismiss();
+                                                mProgressDialog.setVisibility(View.GONE);
                                                 Intent intent = new Intent(activity, MainActivity2.class);
                                                 activity.startActivity(intent);
                                                 activity.finish();
@@ -200,8 +200,7 @@ public class SignUpFragment extends Fragment {
     private class PushUserIntoParse extends AsyncTask<Bundle, Void, Bundle> {
         @Override
         protected void onPreExecute() {
-            mProgressDialog.setMessage("Signing up...");
-            mProgressDialog.show();
+            mProgressDialog.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -287,7 +286,7 @@ public class SignUpFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Bundle b) {
-            mProgressDialog.dismiss();
+            mProgressDialog.setVisibility(View.GONE);
             Intent intent = new Intent(activity, MainActivity2.class);
             activity.startActivity(intent);
             activity.finish();
