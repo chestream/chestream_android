@@ -96,6 +96,8 @@ public class CommentsFragment extends Fragment {
 
          final ChannelModel channel=(ChannelModel) getArguments().getSerializable("channel");
         channelId = channel.id;
+        Log.d("channelLog", channelId);
+
         CommentsFragment.setUpComments(channelId);
 
         activity = getActivity();
@@ -234,7 +236,6 @@ public class CommentsFragment extends Fragment {
                     Log.d("commentssss", "2");
 
                     if (object!=null) {
-                        Log.d("commentssss", "3");
 
                         if ((pUser != null)
                                 && (pUser.isAuthenticated())
@@ -242,7 +243,6 @@ public class CommentsFragment extends Fragment {
                                 ) {
                             Log.d(TAG, pUser.getUsername() + pUser.getSessionToken());
 
-                            Log.d("commentssss", "4");
 
                             List<ParseObject> commentsArrray = (List<ParseObject>) object.get("comments");
                             if (commentsArrray == null) {
@@ -261,13 +261,9 @@ public class CommentsFragment extends Fragment {
                                 public void done(ParseException e) {
                                     Toast.makeText(getActivity(), "Comment Added", Toast.LENGTH_SHORT).show();
                                     setUpComments(channelId);
-                                    Log.d("commentssss", "5");
-
                                 }
                             });
                         } else {
-                            Log.d("commentssss", "6");
-
                             Toast.makeText(getActivity(), "Please Login first !", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getActivity(), LoginActivity.class);
                             startActivity(intent);

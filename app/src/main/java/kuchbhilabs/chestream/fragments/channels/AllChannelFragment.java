@@ -98,7 +98,7 @@ public class AllChannelFragment extends Fragment {
                         String info = parseObjects.get(i).getString("info");
                         String category = parseObjects.get(i).getString("Category");
                         String picture = parseObjects.get(i).getString("picture");
-                        String id = parseObjects.get(i).getString("channel_id");
+                        String id = parseObjects.get(i).getObjectId();
                         boolean nonSynchronous = parseObjects.get(i).getBoolean("nonSynchronous");
                         int activeUsers =parseObjects.get(i).getInt("active_users");
                         JSONArray videoIds = parseObjects.get(i).getJSONArray("video_ids");
