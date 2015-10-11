@@ -245,7 +245,7 @@ public class SignUpFragment extends Fragment {
                 if (currentUser.getSessionToken() != null) {
                     currentUser.save();
 
-                    Toast.makeText(getActivity(), "Welcome !",Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), "Welcome !",Toast.LENGTH_LONG).show();
                     ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
                     parseInstallation.put("avatar",  bundle.getString(ParseTables.Users.AVATAR));
                     parseInstallation.put("username", bundle.getString(ParseTables.Users.USERNAME));
