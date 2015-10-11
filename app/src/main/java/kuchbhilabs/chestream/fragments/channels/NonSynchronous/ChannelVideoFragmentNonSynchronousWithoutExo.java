@@ -251,17 +251,23 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
         vidView.setMediaController(mediaController);
         Log.d("urlrryo", url);
         vidView.setVideoURI(Uri.parse(url));
-
         vidView.start();
-
         progressBar.setVisibility(View.VISIBLE);
-
         vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 // TODO Auto-generated method stub
                 progressBar.setVisibility(View.GONE);
                 mp.start();
+                mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                    @Override
+                    public void onVideoSizeChanged(MediaPlayer mp, int arg1,
+                                                   int arg2) {
+                        // TODO Auto-generated method stub
+                        progressBar.setVisibility(View.GONE);
+                        mp.start();
+                    }
+                });
             }
         });
 
