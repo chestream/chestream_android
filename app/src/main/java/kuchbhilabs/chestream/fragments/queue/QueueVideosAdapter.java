@@ -2,6 +2,7 @@ package kuchbhilabs.chestream.fragments.queue;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -42,6 +44,7 @@ import java.util.List;
 
 import kuchbhilabs.chestream.ApplicationBase;
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.activities.LoginActivity;
 import kuchbhilabs.chestream.externalapi.ParseTables;
 import kuchbhilabs.chestream.fragments.channels.ChannelFragment;
 import kuchbhilabs.chestream.fragments.channels.ChannelVideoFragment;
@@ -223,7 +226,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         .setLabel(Utilities.getUserEmail(activity))
                         .build());
 
-                int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
+                if(currentUser!=null) {
+
+                    int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
                 v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
                 holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
                 if (video.isVoted == 1) {
@@ -240,6 +245,12 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                     upvote(position, 1);
                 }
                 setVoteButtons(video.isVoted, holder.upVote, holder.downVote);
+            } else {
+                Toast.makeText(activity, "Please Login first !", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(activity, LoginActivity.class);
+                activity.startActivity(intent);
+            }
+
             }
         });
         holder.downVote.setOnClickListener(new View.OnClickListener() {
@@ -256,23 +267,30 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         .setLabel(Utilities.getUserEmail(activity))
                         .build());
 
-                int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
-                v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
-                holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
-                if (video.isVoted == 1) {
-                    holder.totalVotes.setText(String.valueOf(currentVotes - 2));
-                    video.isVoted = -1;
-                    downvote(position, 2);
-                } else if (video.isVoted == -1) {
-                    holder.totalVotes.setText(String.valueOf(currentVotes + 1));
-                    video.isVoted = 0;
-                    upvote(position, 1);
-                } else {
-                    holder.totalVotes.setText(String.valueOf(currentVotes - 1));
-                    video.isVoted = -1;
-                    downvote(position, 1);
+                if(currentUser!=null) {
+                    int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
+                    v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
+                    holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
+                    if (video.isVoted == 1) {
+                        holder.totalVotes.setText(String.valueOf(currentVotes - 2));
+                        video.isVoted = -1;
+                        downvote(position, 2);
+                    } else if (video.isVoted == -1) {
+                        holder.totalVotes.setText(String.valueOf(currentVotes + 1));
+                        video.isVoted = 0;
+                        upvote(position, 1);
+                    } else {
+                        holder.totalVotes.setText(String.valueOf(currentVotes - 1));
+                        video.isVoted = -1;
+                        downvote(position, 1);
+                    }
+                    setVoteButtons(video.isVoted, holder.upVote, holder.downVote);
                 }
-                setVoteButtons(video.isVoted, holder.upVote, holder.downVote);
+                else {
+                    Toast.makeText(activity, "Please Login first !", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(activity, LoginActivity.class);
+                    activity.startActivity(intent);
+                }
             }
         });
 
