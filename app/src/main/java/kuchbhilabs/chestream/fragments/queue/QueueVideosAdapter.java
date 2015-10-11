@@ -115,6 +115,9 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if(this.videos!=null){
+            ChannelVideoFragmentNonSynchronousWithoutExo.playVideo(this.videos.get(0).getString(ParseTables.Videos.URL));
+        }
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {

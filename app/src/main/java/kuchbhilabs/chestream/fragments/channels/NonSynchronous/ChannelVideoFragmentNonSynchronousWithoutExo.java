@@ -93,7 +93,6 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
 //            startMediaPlayer(videoIDS.get(0));
 //        }
 
-        playVideo(videoIDS.get(0));
         fullscreen=(ImageView) rootView.findViewById(R.id.fullscreen);
         fullscreen.setOnClickListener(new View.OnClickListener() {
             @Override
