@@ -1,22 +1,14 @@
 package kuchbhilabs.chestream.fragments.channels.NonSynchronous;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
-import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -26,21 +18,11 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.google.android.exoplayer.AspectRatioFrameLayout;
-import com.google.android.exoplayer.ExoPlayer;
-import com.google.android.exoplayer.audio.AudioCapabilities;
-import com.google.android.exoplayer.audio.AudioCapabilitiesReceiver;
-import com.google.android.exoplayer.util.Util;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
-import kuchbhilabs.chestream.activities.FullscreenPlayerActivity;
-import kuchbhilabs.chestream.exoplayer.DemoPlayer;
-import kuchbhilabs.chestream.exoplayer.EventLogger;
-import kuchbhilabs.chestream.exoplayer.HlsRendererBuilder;
 
 public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment implements SurfaceHolder.Callback  {
 
@@ -48,11 +30,10 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
     boolean playerNeedsPrepare = true;
     ImageView fullscreen;
 
-    Activity activity;
+    static Activity activity;
     List<String> videoIDS;
 
 
-    VideoView videoView;
     static  String staticUrlrl = "";
 //    long position;
 
@@ -64,7 +45,7 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
     private boolean videoStarted = false;
 
 
-    VideoView vidView;
+    static VideoView vidView;
 
     public static ChannelVideoFragmentNonSynchronousWithoutExo newInstance(List<String> videoIds) {
         ChannelVideoFragmentNonSynchronousWithoutExo fragment = new ChannelVideoFragmentNonSynchronousWithoutExo();
@@ -235,18 +216,21 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
         Log.d("urlrr", url);
         playerPosition = 0;
 
-      new ChannelVideoFragmentNonSynchronousWithoutExo().play2(url);
+     play2(url);
 
     }
 
-    public void play2(String url){
+    public static void play2(String url){
+
+        MediaController mediaController = new MediaController(activity);
+        mediaController.setAnchorView(vidView);
+        mediaController.setMediaPlayer(vidView);
+        vidView.setMediaController(mediaController);
 
         Log.d("urlrryo", url);
-        videoView.setVideoURI(Uri.parse(url));
-        MediaController mediaController = new MediaController(getActivity());
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
-        videoView.start();
+        vidView.setVideoURI(Uri.parse(url));
+
+        vidView.start();
     }
 
 
