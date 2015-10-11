@@ -17,14 +17,14 @@
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/user_avatar_sign_up"
             fresco:roundAsCircle="true"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_width="130dp"
+            android:layout_height="130dp" />
 
         <EditText
             android:id="@+id/username_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff"
+            android:textColor="#fcc000"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="25dp"
             android:textSize="20sp"
