@@ -1,6 +1,7 @@
 package kuchbhilabs.chestream.fragments.channels.NonSynchronous;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -14,7 +15,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kuchbhilabs.chestream.R;
+import kuchbhilabs.chestream.activities.FullscreenPlayerActivityNoExo;
 
 public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment implements SurfaceHolder.Callback  {
 
@@ -86,6 +87,17 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
 //            startMediaPlayer(videoIDS.get(0));
 //        }
         fullscreen=(ImageView) rootView.findViewById(R.id.fullscreen);
+        fullscreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(activity, FullscreenPlayerActivityNoExo.class);
+                intent.putExtra("url",staticUrlrl);
+                if (vidView!=null)
+                    intent.putExtra("position",vidView.getCurrentPosition());
+                else intent.putExtra("position",0);
+                startActivity(intent);
+            }
+        });
 
 
 //        fullscreen.setOnClickListener(new View.OnClickListener() {
@@ -222,10 +234,10 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
 
     public static void play2(String url){
 
-        MediaController mediaController = new MediaController(activity);
-        mediaController.setAnchorView(vidView);
-        mediaController.setMediaPlayer(vidView);
-        vidView.setMediaController(mediaController);
+//        MediaController mediaController = new MediaController(activity);
+//        mediaController.setAnchorView(vidView);
+//        mediaController.setMediaPlayer(vidView);
+        vidView.setMediaController(null);
 
         Log.d("urlrryo", url);
         vidView.setVideoURI(Uri.parse(url));

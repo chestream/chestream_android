@@ -1,18 +1,29 @@
 package kuchbhilabs.chestream.activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.VideoView;
 
 import kuchbhilabs.chestream.R;
 
 public class FullscreenPlayerActivityNoExo extends AppCompatActivity {
 
+    VideoView vidView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen_player_activity_no_exo);
+
+        vidView = (VideoView)findViewById(R.id.myVideo);
+
+        vidView.setMediaController(null);
+
+        vidView.setVideoURI(Uri.parse(getIntent().getStringExtra("url")));
+
+        vidView.start();
     }
 
     @Override
