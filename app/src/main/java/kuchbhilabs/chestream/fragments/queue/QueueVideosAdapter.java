@@ -110,7 +110,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
         this.activity = activity;
         this.nonSynchronous=nonSynchronous;
         currentUser = ParseUser.getCurrentUser();
-        if(currentUser!=null) {
+        if ((currentUser != null)
+                && (currentUser.isAuthenticated())
+                && (currentUser.getSessionToken() != null)
+                )
+        {
             ParseRelation<ParseVideo> relation = currentUser.getRelation(ParseTables.Users.UPVOTED);
             try {
                 upVotedVideos = relation.getQuery().find();
@@ -226,7 +230,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         .setLabel(Utilities.getUserEmail(activity))
                         .build());
 
-                if(currentUser!=null) {
+                if ((currentUser != null)
+                        && (currentUser.isAuthenticated())
+                        && (currentUser.getSessionToken() != null)
+                        )
+                {
 
                     int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
                 v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
@@ -267,7 +275,11 @@ public class QueueVideosAdapter extends RecyclerView.Adapter<QueueVideosAdapter.
                         .setLabel(Utilities.getUserEmail(activity))
                         .build());
 
-                if(currentUser!=null) {
+                if ((currentUser != null)
+                        && (currentUser.isAuthenticated())
+                        && (currentUser.getSessionToken() != null)
+                        )
+                {
                     int currentVotes = Integer.parseInt(holder.totalVotes.getText().toString());
                     v.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
                     holder.totalVotes.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.pop_out));
