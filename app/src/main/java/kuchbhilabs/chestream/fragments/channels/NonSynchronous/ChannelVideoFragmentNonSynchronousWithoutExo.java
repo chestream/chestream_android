@@ -15,6 +15,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -47,6 +49,9 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
 
 
     static VideoView vidView;
+    static MediaController mediaController;
+
+    static ProgressBar progressBar;
 
     public static ChannelVideoFragmentNonSynchronousWithoutExo newInstance(List<String> videoIds) {
         ChannelVideoFragmentNonSynchronousWithoutExo fragment = new ChannelVideoFragmentNonSynchronousWithoutExo();
@@ -71,6 +76,8 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
 //            }
 //        });
 ;
+
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressbar);
 
         vidView = (VideoView)rootView.findViewById(R.id.myVideo);
 
@@ -234,15 +241,30 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
 
     public static void play2(String url){
 
-//        MediaController mediaController = new MediaController(activity);
-//        mediaController.setAnchorView(vidView);
-//        mediaController.setMediaPlayer(vidView);
-        vidView.setMediaController(null);
+//        vidView.setMediaController(null);
 
+        if(mediaController==null){
+            mediaController = new MediaController(activity);
+            mediaController.setAnchorView(vidView);
+            mediaController.setMediaPlayer(vidView);
+        }
+        vidView.setMediaController(mediaController);
         Log.d("urlrryo", url);
         vidView.setVideoURI(Uri.parse(url));
 
         vidView.start();
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                // TODO Auto-generated method stub
+                progressBar.setVisibility(View.GONE);
+                mp.start();
+            }
+        });
+
     }
 
 

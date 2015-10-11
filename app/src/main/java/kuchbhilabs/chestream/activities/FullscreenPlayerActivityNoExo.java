@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.MediaController;
 import android.widget.VideoView;
 
 import kuchbhilabs.chestream.R;
@@ -19,7 +20,13 @@ public class FullscreenPlayerActivityNoExo extends AppCompatActivity {
 
         vidView = (VideoView)findViewById(R.id.myVideo);
 
-        vidView.setMediaController(null);
+                vidView.setMediaController(null);
+
+        MediaController mediaController = new MediaController(getApplicationContext());
+        mediaController.setAnchorView(vidView);
+        mediaController.setMediaPlayer(vidView);
+        vidView.setMediaController(mediaController);
+//        vidView.setMediaController(null);
 
         vidView.setVideoURI(Uri.parse(getIntent().getStringExtra("url")));
 
