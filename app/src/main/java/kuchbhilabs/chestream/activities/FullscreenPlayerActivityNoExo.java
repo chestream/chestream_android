@@ -28,13 +28,15 @@ public class FullscreenPlayerActivityNoExo extends AppCompatActivity {
         vidView = (VideoView)findViewById(R.id.myVideo);
         progressBar = (ProgressBar)findViewById(R.id.progressbar);
 
-        if(mediaController==null){
+
             mediaController = new MediaController(getApplicationContext());
             mediaController.setAnchorView(vidView);
             mediaController.setMediaPlayer(vidView);
-        }
+
         vidView.setMediaController(mediaController);
         vidView.setVideoURI(Uri.parse(getIntent().getStringExtra("url")));
+        vidView.seekTo(getIntent().getIntExtra("position",0));
+
         vidView.start();
         progressBar.setVisibility(View.VISIBLE);
         vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -54,7 +56,6 @@ public class FullscreenPlayerActivityNoExo extends AppCompatActivity {
                 });
             }
         });
-
 
     }
 

@@ -78,7 +78,6 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
 ;
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressbar);
-
         vidView = (VideoView)rootView.findViewById(R.id.myVideo);
 
         videoIDS=getArguments().getStringArrayList("ids");
@@ -93,6 +92,8 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
 //        if (isSurfaceCreated && videoIDS.get(0)!=null) {
 //            startMediaPlayer(videoIDS.get(0));
 //        }
+
+//        playVideo(videoIDS.get(0));
         fullscreen=(ImageView) rootView.findViewById(R.id.fullscreen);
         fullscreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,11 +244,11 @@ public class ChannelVideoFragmentNonSynchronousWithoutExo extends Fragment imple
 
 //        vidView.setMediaController(null);
 
-        if(mediaController==null){
+
             mediaController = new MediaController(activity);
             mediaController.setAnchorView(vidView);
             mediaController.setMediaPlayer(vidView);
-        }
+
         vidView.setMediaController(mediaController);
         Log.d("urlrryo", url);
         vidView.setVideoURI(Uri.parse(url));
